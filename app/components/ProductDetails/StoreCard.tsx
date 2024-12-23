@@ -3,19 +3,27 @@ import Link from "next/link";
 import React from "react";
 
 import { IProduct } from "@/types";
+import Image from "next/image";
+import shopImg from "@/public/images/store.webp";
 
-const StoreCard = ({ product }: { product: IProduct }) => {
+const StoreCard = ({
+  product,
+  handleFollowShop,
+}: {
+  product: IProduct;
+  handleFollowShop?: any;
+}) => {
   console.log("product", product);
 
   return (
     <div>
       <div />
-      <div className="bg-[#FAFAFA] p-5 md:block hidden">
+      <div className="bg-[#FAFAFA] p-5 md:block hidden mt-10">
         <div>
           <section>
             <div>
               <p className="text-[#757575] text-[14px]">Sold By</p>
-              <p className="text-[#212121]">TP-Link</p>
+              <p className="text-[#212121]">{product?.shop?.name}</p>
             </div>
           </section>
           <section className=" ">
@@ -41,10 +49,10 @@ const StoreCard = ({ product }: { product: IProduct }) => {
               <p className="font-medium text-2xl">100%</p>
               <p className="font-medium text-2xl text-left">100%</p>
             </div>
-            <div>
+            <div className="mt-2">
               <Link
                 className="text-[#136cff] text-center font-medium border-y-1 p-2 mt-2"
-                href={`/store/${product.shop?.ownerId}`}
+                href={`/store/${product.shop?.id}`}
               >
                 GO TO STORE
               </Link>
@@ -52,16 +60,17 @@ const StoreCard = ({ product }: { product: IProduct }) => {
           </section>
         </div>
       </div>
-      <div className=" block md:hidden">
+      <div className=" block md:hidden mt-3">
         <section>
           <div className="flex justify-between items-center">
-            <div className="flex">
-              <p>Logo</p>
-              <p className="ml-2">Name</p>
+            <div className="flex items-center">
+              <Image src={shopImg} width={50} height={50} alt="" />
+              <p className="ml-2">{product?.shop?.name}</p>
             </div>
             <div>
               <Button
-                className="text-[#f57224] border-[#f57224] border-[1px]"
+                onClick={handleFollowShop}
+                className="text-primary border-primary border-[1px] hover:text-white hover:border-white hover:bg-primary"
                 size="sm"
                 variant="bordered"
               >
@@ -94,9 +103,12 @@ const StoreCard = ({ product }: { product: IProduct }) => {
           </div>
         </section>
         <section>
-          <p className="text-center text-[12px] text-[#f57224] mb-[20px]">
+          <Link
+            href={`/store/${product.shop!.id}`}
+            className="text-center text-[14px] text-primary mb-[20px] block"
+          >
             visit store
-          </p>
+          </Link>
         </section>
       </div>
     </div>

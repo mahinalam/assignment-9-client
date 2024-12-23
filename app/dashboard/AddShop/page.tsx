@@ -50,9 +50,8 @@ const AddShop = () => {
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold mb-4">Add Shop</h1>
         <div className="flex items-center justify-center">
-          <div className="md:w-[33%] mx-auto border p-5 bg-white">
+          <div className="md:w-[33%] mx-auto  p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Add Shop</p>
             </div>
@@ -71,14 +70,29 @@ const AddShop = () => {
                 />
               </div>
               <div className="py-3">
-                <input
+                {/* <input
                   name="logo"
                   type="file"
                   onChange={(e) => setLogoImage(e.target.files![0])}
-                />
+                /> */}
+                <div className="min-w-fit flex-1 mt-12">
+                  <label
+                    className="flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-default-200  shadow-sm transition-all duration-100 hover:border-default-400"
+                    htmlFor="image"
+                  >
+                    <span className=""> Upload Logo</span>
+                  </label>
+                  <input
+                    multiple
+                    className="hidden"
+                    id="image"
+                    type="file"
+                    onChange={(e) => setLogoImage(e.target.files![0])}
+                  />
+                </div>
               </div>
               <Button
-                className="my-3 w-full rounded-md bg-[#F57224]  font-semibold text-white"
+                className="my-3 w-full rounded-md bg-primary  font-semibold text-white"
                 size="lg"
                 type="submit"
               >

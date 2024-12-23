@@ -9,7 +9,14 @@ const shopApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    followShop: builder.mutation({
+      query: (payload: { followerId: string; shopId: string }) => ({
+        url: "/following-shop",
+        method: "POST",
+        body: payload,
+      }),
+    }),
   }),
 });
 
-export const { useCreateShopMutation } = shopApi;
+export const { useCreateShopMutation, useFollowShopMutation } = shopApi;

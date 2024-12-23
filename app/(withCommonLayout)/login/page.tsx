@@ -58,7 +58,7 @@ const LoginPage = () => {
   return (
     <>
       <Container>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mt-10">
           <div className="md:w-[33%] mx-auto border p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Login</p>
@@ -72,7 +72,7 @@ const LoginPage = () => {
               </div>
 
               <Button
-                className="my-3 w-full rounded-md bg-[#F57224]  font-semibold text-white"
+                className="my-3 w-full rounded-md bg-primary  font-semibold text-white"
                 size="lg"
                 type="submit"
               >
@@ -80,7 +80,7 @@ const LoginPage = () => {
               </Button>
               <small>
                 Dont have an Account?
-                <Link className="text-[#F57224] underline ml-1" href="/signup">
+                <Link className="text-primary underline ml-1" href="/signup">
                   Signup
                 </Link>
               </small>

@@ -5,13 +5,13 @@ import { Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import BillingCard from "@/app/components/checkout/BillingCard";
 import PackageDetailsCard from "@/app/components/checkout/PackageDetailsCard";
 import { clearCart, ICartItem } from "@/app/redux/features/cart/cartSlice";
 import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
 import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import { RootState } from "@/app/redux/store";
+
 const CheckoutPage = () => {
   const cart = useSelector((state: RootState) => state.cart);
   const [isClient, setIsClient] = useState(false);

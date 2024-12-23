@@ -18,6 +18,13 @@ import {
 import { useGetProductReviewsQuery } from "@/app/redux/features/review/reviewApi";
 import ReplaceCartModal from "@/app/components/modal/ReplaceCartModal";
 import { RootState } from "@/app/redux/store";
+import Loader from "@/app/components/sharred/Loader";
+import Rate from "rc-rate";
+import Link from "next/link";
+import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
+import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
+import { useFollowShopMutation } from "@/app/redux/features/shop/shopApi";
+import { toast } from "sonner";
 
 const ProductIdPage = ({ params }: { params: { productId: string } }) => {
   const [quantity, setQuantity] = useState<number>(1);
@@ -28,18 +35,25 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
 
   const { data: productsData, isLoading } = useGetAllProductsQuery(null);
 
-  const { data: productReviews, isLoading: productReviewsLoading } =
-    useGetProductReviewsQuery(params.productId);
-
-  const [isOpen, setIsOpen] = useState(false);
+  const [followShop] = useFollowShopMutation();
 
   const hasVendorConflict = useSelector(
     (state: RootState) => state.cart.vendorConflict
   );
-  console.log("hasVendorConflict", hasVendorConflict);
+
+  const userId = useSelector((state: RootState) => state.auth.user?.userId);
+
+  const { data: currentUserInfo, isLoading: currentUserInfoLoading } =
+    useGetSingleUserQuery(userId);
+  console.log("currentUserInfo", currentUserInfo);
+
+  const [createOrder] = useCreateOrderMutation();
+
+  // console.log("hasVendorConflict", hasVendorConflict);
   if (productLoading) {
-    return <p>Loaidnfg ...</p>;
+    return <Loader />;
   }
+
   console.log("productData", productData);
   const handleAddToCart = () => {
     try {
@@ -63,24 +77,74 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
     }
   };
 
-  // Handle replace cart action
-  const handleReplaceCart = () => {
-    dispatch(replaceCart());
+  // // Handle replace cart action
+  // const handleReplaceCart = () => {
+  //   dispatch(replaceCart());
+  // };
+
+  // // Handle cancel addition action
+  // const handleCancelAddition = () => {
+  //   dispatch(cancelAddition());
+  // };
+
+  const handleCreateOrder = async () => {
+    // if (cart.items.length === 0) {
+    //   alert("Please select at least one item to place an order.");
+    //   return;
+    // }
+
+    const orderPayload = {
+      userId: currentUserInfo?.data?.id,
+      shippingAddress: currentUserInfo?.data?.address,
+      orderItems: [
+        {
+          productId: productData?.data?.id,
+          quantity: 1,
+          price: productData?.data?.newPrice,
+        },
+      ],
+    };
+    console.log("orderPayload", orderPayload);
+    try {
+      const orderResponse: any = await createOrder(orderPayload).unwrap();
+      console.log({ orderResponse });
+      if (orderResponse.success) {
+        window.location.href = orderResponse?.data?.payment_url;
+      }
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
   };
 
-  // Handle cancel addition action
-  const handleCancelAddition = () => {
-    dispatch(cancelAddition());
+  const handleFollowShop = async () => {
+    const followShopData = {
+      shopId: productData?.data?.shop?.id,
+      followerId: userId!,
+    };
+    console.log("followShopData", followShopData);
+    // follow shop
+    try {
+      const res = await followShop(followShopData);
+      if (res?.data?.success) {
+        // setIsFollower(true);
+        toast.success(res?.data?.message);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <div>
-      {/* <ReplaceCartModal /> */}
-      <ProductDetailsCard
-        product={productData?.data}
-        handleAddToCart={handleAddToCart}
-      />
-      <div className="md:block hidden">
+      <div className="md:mt-10 mt-5">
+        <ProductDetailsCard
+          product={productData?.data}
+          handleAddToCart={handleAddToCart}
+          handleCreateOrder={handleCreateOrder}
+          handleFollowShop={handleFollowShop}
+        />
+      </div>
+      <div className="md:block hidden md:mt-10 mt-5">
         <div className="space-y-4">
           <section>
             <p className="font-semibold md:text-xl text-lg">
@@ -100,29 +164,49 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
           <section></section>
         </div>
       </div>
-      <div>
+      <div className="md:mt-10 mt-5">
         <div>
-          <p className="py-2 md:border-y-1 md:text-base text-[12px] text-[#757575] md:text-black">
+          <p className="py-2 md:border-y-1 md:text-base text-[14px] text-[#757575] md:text-black">
             Product Reviews
           </p>
-          {productData?.data?.review?.map((review: IReview) => (
-            <ReviewCart key={review.id} item={review} />
-          ))}
+          {productData?.data?.review?.length === 0 && (
+            <div className="md:block hidden ">
+              <div className="flex items-center gap-2">
+                <div>
+                  <Rate
+                    allowHalf={false}
+                    className="text-[#FACA51] text-xl "
+                    count={5}
+                    value={5}
+                  />
+                </div>
+                <div className="text-gray-500 ">
+                  ({productData?.data?.review.length})
+                </div>
+              </div>
+            </div>
+          )}
+          {productData?.data?.review?.length > 0 &&
+            productData?.data?.review?.map((review: IReview) => (
+              <ReviewCart key={review.id} item={review} />
+            ))}
         </div>
         <div>
           <div className="md:my-10 my-5">
             <p className="md:text-left text-center mb-4 md:font-bold font-normal">
               You may also like
             </p>
-            <div className="grid md:grid-cols-4 grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4">
               {productsData?.data?.map((product: IProduct) => (
-                <ProductCart key={product.id} product={product} />
+                <Link href={`/products/${productData?.data?.id}`}>
+                  {" "}
+                  <ProductCart key={product.id} product={product} />
+                </Link>
               ))}
             </div>
           </div>
         </div>
       </div>
-      {/* {isOpen && <ReplaceCartModal />} */}
     </div>
   );
 };

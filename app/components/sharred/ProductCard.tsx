@@ -13,10 +13,10 @@ const ProductCart = ({ product }: { product: IProduct }) => {
       <div className="md:h-[200px] h-[100px] md:w-auto w-auto object-cover">
         <img alt="" className="w-full h-full " src={images[0]} />
       </div>
-      <div className=" mx-2 mt-1 mb-0 leading-none">
+      <div className=" mx-2 mt-2 mb-0 leading-none">
         <div className="md:text-[14px] text-[12px]">{name}</div>
-        <div className="flex items-center gap-1 mt-2">
-          <div className="text-[rgb(245,114,36)] md:text-[18px] text-[16px] mb-1">
+        <div className="flex items-center gap-1 mt-2 mb-1">
+          <div className="text-primary md:text-[18px] text-[16px] mb-1">
             <span>৳</span>
             <span className="font-semibold">{newPrice}</span>
           </div>

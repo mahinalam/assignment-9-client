@@ -92,9 +92,8 @@ const AddProducts = () => {
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold mb-4">Add Products</h1>
         <div className="flex items-center justify-center">
-          <div className="md:w-[33%] mx-auto border p-5 bg-white">
+          <div className="md:w-[33%] mx-auto  p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Add Products</p>
             </div>
@@ -161,12 +160,12 @@ const AddProducts = () => {
                 </div>
               )}
               <Button
-                className="my-3 w-full rounded-md bg-[#F57224]  font-semibold text-white"
+                className="my-3 w-full rounded-md bg-primary  font-semibold text-white"
                 isLoading={isLoading && isSuccess}
                 size="lg"
                 type="submit"
               >
-                Create Shop
+                Create Product
               </Button>
             </GTForm>
           </div>

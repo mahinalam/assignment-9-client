@@ -60,7 +60,7 @@ const SignupPage = () => {
 
       // console.log("user", user);
     } catch (error: any) {
-      toast.error(error.error.message);
+      toast.error(error.message);
       console.error("Login failed:", error);
     }
   };
@@ -119,7 +119,7 @@ const SignupPage = () => {
               <GTInput label="Address" name="address" type="text" />
             </div>
             <Button
-              className="my-3 w-full rounded-md bg-[#F57224]  font-semibold text-white"
+              className="my-3 w-full rounded-md bg-primary  font-semibold text-white"
               size="lg"
               type="submit"
             >
@@ -127,7 +127,7 @@ const SignupPage = () => {
             </Button>
             <small>
               Already have an Account?
-              <Link className="text-[#F57224] underline ml-1" href="/signup">
+              <Link className="text-primary underline ml-1" href="/signup">
                 Login
               </Link>
             </small>

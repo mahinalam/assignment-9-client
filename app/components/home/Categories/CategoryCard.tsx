@@ -1,23 +1,3 @@
-// import React from "react";
-// import { ICategory } from "@/types";
-
-// const CategoryCard = ({ category }: { category: ICategory }) => {
-//   const { id, image, name } = category;
-
-//   return (
-//     <div className=" border-r flex flex-col justify-center items-center">
-//       <div className="md:h-[100px] h-[80px]">
-//         <img src={image} alt="" className="w-full h-full object-cover" />
-//       </div>
-//       <div>
-//         <p className="mt-5 md:text-[14px] text-[12px]">{name}</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CategoryCard;
-
 import React from "react";
 
 import { ICategory } from "@/types";

@@ -4,6 +4,7 @@ import React from "react";
 import "rc-rate/assets/index.css"; // Ensure you import the styles for rc-rate
 import "./ReviewCart.css";
 import { IReview } from "@/types";
+import moment from "moment";
 
 const ReviewCart = ({ item }: { item: IReview }) => {
   console.log(item);
@@ -26,7 +27,7 @@ const ReviewCart = ({ item }: { item: IReview }) => {
           value={rating}
         />
         <p className="text-[#757575] text-[14px] md:block hidden">
-          {createdAt?.toString()}
+          {moment(createdAt).format("DD MMM YYYY")}
         </p>
       </div>
       <div className="flex gap-2 items-center">

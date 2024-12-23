@@ -193,6 +193,10 @@ import { RootState } from "@/app/redux/store";
 import { siteConfig } from "@/config/site";
 import { logout } from "@/app/redux/features/auth/authSlice";
 import { Button } from "@nextui-org/react";
+import Container from "./Container";
+import img from "@/public/images/mobile.jpg";
+import Image from "next/image";
+import MenuDropDown from "./MenuDropDown";
 
 export const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -205,6 +209,7 @@ export const Navbar = () => {
   );
 
   // console.log(carts);
+  console.log("user", user);
 
   useEffect(() => {
     setIsClient(true);
@@ -220,121 +225,139 @@ export const Navbar = () => {
   };
 
   return (
-    <NextUINavbar className="w-full bg-[#F85606]">
-      <div className="container mx-auto flex flex-wrap items-center justify-between px-4">
-        <NavbarContent>
-          <NavbarBrand as="li" className="gap-3">
-            <NextLink className="flex items-center gap-1" href="/">
-              <p className="font-bold text-white">Daraz</p>
-            </NextLink>
-          </NavbarBrand>
-        </NavbarContent>
+    // <NextUINavbar className="w-full bg-primary">
+    //   <div className="container mx-auto flex flex-wrap items-center justify-between px-4">
+    //     <NavbarContent>
+    //       <NavbarBrand as="li" className="gap-3">
+    //         <NextLink className="flex items-center gap-1" href="/">
+    //           <p className="font-bold text-white">Electromert</p>
+    //         </NextLink>
+    //       </NavbarBrand>
+    //     </NavbarContent>
 
-        <NavbarContent className="hidden lg:flex gap-4">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "text-white hover:text-gray-300"
-                )}
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-        </NavbarContent>
+    //     <NavbarContent className="hidden lg:flex gap-4">
+    //       {siteConfig.navItems.map((item) => (
+    //         <NavbarItem key={item.href}>
+    //           <NextLink
+    //             className={clsx(
+    //               linkStyles({ color: "foreground" }),
+    //               "text-white hover:text-gray-300"
+    //             )}
+    //             href={item.href}
+    //           >
+    //             {item.label}
+    //           </NextLink>
+    //         </NavbarItem>
+    //       ))}
 
-        <NavbarContent className="hidden sm:flex items-center gap-4">
-          {user?.email ? (
-            <NavbarItem className="flex gap-2">
-              <p className="text-white">{user.email}</p>
-              <button
-                onClick={handleLogout}
-                className="text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600"
-              >
-                Logout
-              </button>
-            </NavbarItem>
-          ) : (
-            <NavbarItem>
-              <Link href="/login">
-                <Button className="bg-white text-[#F85606]">Login</Button>
-              </Link>
-            </NavbarItem>
-          )}
-          {/* 
-          <NavbarItem>
-            <NextLink href="/cart" className="cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6 text-white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                />
-              </svg>
-            </NextLink>
-          </NavbarItem> */}
+    //       {user?.role === "VENDOR" && (
+    //         <NavbarItem key="dashboard">
+    //           <NextLink
+    //             className={clsx(
+    //               linkStyles({ color: "foreground" }),
+    //               "text-white hover:text-gray-300"
+    //             )}
+    //             href="/dashboard/AllProducts"
+    //           >
+    //             Dashboard
+    //           </NextLink>
+    //         </NavbarItem>
+    //       )}
+    //     </NavbarContent>
 
-          <NavbarItem>
-            <NextLink className="relative cursor-pointer" href="/cart">
-              {/* Cart Icon */}
-              <svg
-                className="size-7 text-white"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+    //     <NavbarContent className="hidden sm:flex items-center gap-4">
+    //       {user?.email ? (
+    //         <NavbarItem className="flex gap-2">
+    //           <p className="text-white">{user.email}</p>
+    //           <button
+    //             onClick={handleLogout}
+    //             className="text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+    //           >
+    //             Logout
+    //           </button>
+    //         </NavbarItem>
+    //       ) : (
+    //         <NavbarItem>
+    //           <Link href="/login">
+    //             <Button className="bg-white text-[#F85606]">Login</Button>
+    //           </Link>
+    //         </NavbarItem>
+    //       )}
 
-              {/* Badge for Total Items */}
-              <span className="absolute -top-2 -right-2 bg-white text-[#F57224]  text-xs font-bold rounded-full px-2 py-0.5">
-                {totalCartQuantity || 0}
-                {/* Replace with dynamic cart item count */}
-              </span>
-            </NextLink>
-          </NavbarItem>
-        </NavbarContent>
+    //       <NavbarItem>
+    //         <NextLink className="relative cursor-pointer" href="/cart">
+    //           {/* Cart Icon */}
+    //           <svg
+    //             className="size-7 text-white"
+    //             fill="none"
+    //             stroke="currentColor"
+    //             strokeWidth="1.5"
+    //             viewBox="0 0 24 24"
+    //             xmlns="http://www.w3.org/2000/svg"
+    //           >
+    //             <path
+    //               d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+    //               strokeLinecap="round"
+    //               strokeLinejoin="round"
+    //             />
+    //           </svg>
 
-        <NavbarMenuToggle className="sm:hidden text-white" />
+    //           <span className="absolute -top-2 -right-2 bg-white text-[#F57224]  text-xs font-bold rounded-full px-2 py-0.5">
+    //             {totalCartQuantity || 0}
+    //           </span>
+    //         </NextLink>
+    //       </NavbarItem>
+    //     </NavbarContent>
 
-        <NavbarMenu>
-          <div className="flex flex-col gap-2 px-4">
-            {siteConfig.navMenuItems.map((item, index) => (
-              <NavbarMenuItem key={`${item}-${index}`}>
-                <Link
-                  className="text-white"
-                  color={
-                    index === 2
-                      ? "primary"
-                      : index === siteConfig.navMenuItems.length - 1
-                        ? "danger"
-                        : "foreground"
-                  }
-                  href={item.href}
-                >
-                  {item.label}
-                </Link>
-              </NavbarMenuItem>
-            ))}
+    //     <NavbarMenuToggle className="sm:hidden text-white" />
+
+    //     <NavbarMenu>
+    //       <div className="flex flex-col gap-2 px-4">
+    //         {siteConfig.navMenuItems.map((item, index) => (
+    //           <NavbarMenuItem key={`${item}-${index}`}>
+    //             <Link
+    //               className="text-white"
+    //               color={
+    //                 index === 2
+    //                   ? "primary"
+    //                   : index === siteConfig.navMenuItems.length - 1
+    //                     ? "danger"
+    //                     : "foreground"
+    //               }
+    //               href={item.href}
+    //             >
+    //               {item.label}
+    //             </Link>
+    //           </NavbarMenuItem>
+    //         ))}
+    //       </div>
+    //     </NavbarMenu>
+    //   </div>
+    // </NextUINavbar>
+    <Container>
+      <nav className="p-3 shadow-sm fixed top-0 bg-primary  right-0 left-0 max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 z-10 ">
+        <div className="flex justify-between items-center">
+          <div>
+            <Link href="/">
+              <Image src={img} className="block w-[50px] h-auto" alt="" />
+            </Link>
           </div>
-        </NavbarMenu>
-      </div>
-    </NextUINavbar>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-white">
+              Home
+            </Link>
+            <Link href="/products" className="text-white">
+              Products
+            </Link>
+            <Link href="/contact" className="text-white">
+              Conatct Us
+            </Link>
+          </div>
+          <div>
+            <MenuDropDown />
+          </div>
+        </div>
+      </nav>{" "}
+    </Container>
   );
 };
