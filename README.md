@@ -6,15 +6,13 @@ The E-Commerce Application is a scalable, high-performance platform for online s
 
 **Repository Links:**
 
-- [Backend](https://github.com/AbuBokorprog/bazaar-bridge-backend)
-- [Frontend](https://github.com/AbuBokorprog/bazaar-bridge-frontend/)
-- [Dashboard](https://github.com/AbuBokorprog/bazaar-bridge-dashboard/)
+- [Backend](https://github.com/mahinalam/assignment-9-server.git)
+- [Frontend](https://github.com/mahinalam/assignment-9-client.git)
 
 **Live Links:**
 
-- [Backend](https://bazaar-bridge.vercel.app/)
-- [Frontend](https://bazaar-bridge-front.vercel.app/)
-- [Dashboard](https://bazaar-bridge-front.vercel.app/)
+- [Backend](https://electromert-e-commerce-server.vercel.app)
+- [Frontend](https://electromert-e-commerce-client.vercel.app)
 
 ---
 
