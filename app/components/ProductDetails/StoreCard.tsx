@@ -1,9 +1,9 @@
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
 import { IProduct } from "@/types";
-import Image from "next/image";
 import shopImg from "@/public/images/store.webp";
 
 const StoreCard = ({
@@ -39,7 +39,7 @@ const StoreCard = ({
             <p>Chat Response Rate</p>
             <p>Not enough data</p>
           </div> */}
-            <div className="flex justify-between text-[#757575] text-[14px]">
+            {/* <div className="flex justify-between text-[#757575] text-[14px]">
               <p>Positive Seller Ratings</p>
               <p>Ship on Time</p>
               <p>Chat Response Rate</p>
@@ -48,7 +48,7 @@ const StoreCard = ({
               <p className="font-medium text-2xl">100%</p>
               <p className="font-medium text-2xl">100%</p>
               <p className="font-medium text-2xl text-left">100%</p>
-            </div>
+            </div> */}
             <div className="mt-2">
               <Link
                 className="text-[#136cff] text-center font-medium border-y-1 p-2 mt-2"
@@ -63,16 +63,18 @@ const StoreCard = ({
       <div className=" block md:hidden mt-3">
         <section>
           <div className="flex justify-between items-center">
+            {/* positive seller */}
             <div className="flex items-center">
-              <Image src={shopImg} width={50} height={50} alt="" />
+              <Image alt="" height={50} src={shopImg} width={50} />
               <p className="ml-2">{product?.shop?.name}</p>
             </div>
+            {/* shop on time */}
             <div>
               <Button
-                onClick={handleFollowShop}
                 className="text-primary border-primary border-[1px] hover:text-white hover:border-white hover:bg-primary"
                 size="sm"
                 variant="bordered"
+                onClick={handleFollowShop}
               >
                 Follow
               </Button>
@@ -84,7 +86,7 @@ const StoreCard = ({
                 
             </div>
         </section> */}
-        <section className="flex px-4 py-2 my-[20px]">
+        {/* <section className="flex px-4 py-2 my-[20px]">
           <div className="flex flex-col items-center text-center">
             <p className="font-2xl font-semibold">100%</p>
             <p className="text-[12px] mt-1 text-[#757575]">
@@ -95,17 +97,11 @@ const StoreCard = ({
             <p className="font-2xl font-semibold">100%</p>
             <p className="text-[12px] mt-1 text-[#757575]">Shop On Time</p>
           </div>
-          <div className="flex flex-col items-center text-center">
-            <p className="font-2xl font-semibold">100%</p>
-            <p className="text-[12px] mt-1 text-[#757575]">
-              Chat Response Rate
-            </p>
-          </div>
-        </section>
+        </section> */}
         <section>
           <Link
-            href={`/store/${product.shop!.id}`}
             className="text-center text-[14px] text-primary mb-[20px] block"
+            href={`/shop/${product.shop!.id}`}
           >
             visit store
           </Link>

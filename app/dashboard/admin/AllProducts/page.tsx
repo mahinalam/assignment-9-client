@@ -6,20 +6,18 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
 } from "@nextui-org/react";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import {
   useDeleteProductMutation,
   useGetAllProductsQuery,
-  useGetAllVendorProductsQuery,
 } from "@/app/redux/features/product/productApi";
 import { IProduct } from "@/types";
 import Loader from "@/app/components/sharred/Loader";
-import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import EmptyState from "@/app/components/dashboard/EmptyState";
@@ -38,10 +36,7 @@ const AllProducts = () => {
     onOpenChange: onDeleteModalChange,
   } = useDisclosure();
 
-  const { data: allProducts, isLoading } = useGetAllVendorProductsQuery(
-    currentUserInfo?.data?.shop?.id,
-    { skip: !isSuccess }
-  );
+  const { data: allProducts, isLoading } = useGetAllProductsQuery(null);
 
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -68,41 +63,47 @@ const AllProducts = () => {
 
   return (
     <>
-      {allProducts?.data?.length > 0 ? (
+      {allProducts?.data?.data?.length > 0 ? (
         <>
           {" "}
           <Table aria-label="Example static collection table">
             <TableHeader>
               <TableColumn>NAME</TableColumn>
+              <TableColumn>BRAND</TableColumn>
               <TableColumn>CATEGORY</TableColumn>
+              <TableColumn>SHOP NAME</TableColumn>
               <TableColumn>Price </TableColumn>
               <TableColumn>IMAGE</TableColumn>
               <TableColumn>STOCK</TableColumn>
-              <TableColumn>ACTION</TableColumn>
+              {/* <TableColumn>ACTION</TableColumn> */}
             </TableHeader>
             <TableBody>
               {!isLoading &&
-                allProducts?.data?.length > 0 &&
-                allProducts?.data?.map((item: IProduct) => (
-                  <TableRow key={item?.id}>
-                    <TableCell>{item?.name}</TableCell>
-                    <TableCell>{item?.category?.name}</TableCell>
-                    <TableCell>{item?.newPrice}</TableCell>
-                    <TableCell>
-                      <img alt="" className="size-12" src={item?.images[0]} />
-                    </TableCell>
+                allProducts?.data?.data?.length > 0 &&
+                allProducts?.data?.data?.map(
+                  (item: IProduct & { brand: Record<string, any> }) => (
+                    <TableRow key={item?.id}>
+                      <TableCell>{item?.name}</TableCell>
+                      <TableCell>{item?.brand?.name || "NO BRAND"}</TableCell>
+                      <TableCell>{item?.category?.name}</TableCell>
+                      <TableCell>{item?.shop?.name}</TableCell>
+                      <TableCell>{item?.newPrice}</TableCell>
+                      <TableCell>
+                        <img alt="" className="size-12" src={item?.images[0]} />
+                      </TableCell>
 
-                    <TableCell>{item?.stock}</TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleDeleteModalOpen(item.id)}>
-                        Delete
-                      </Button>
-                      <Button onClick={() => handleDeleteModalOpen(item.id)}>
-                        Update
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      <TableCell>{item?.stock}</TableCell>
+                      {/* <TableCell>
+                        <Button onClick={() => handleDeleteModalOpen(item.id)}>
+                          Delete
+                        </Button>
+                        <Button onClick={() => handleDeleteModalOpen(item.id)}>
+                          Update
+                        </Button>
+                      </TableCell> */}
+                    </TableRow>
+                  ),
+                )}
             </TableBody>
           </Table>
           <DeleteModal
@@ -114,9 +115,9 @@ const AllProducts = () => {
       ) : (
         <>
           <EmptyState
-            message="Products Found Empty"
             address="/dashboard/AddProducts"
             label="Add Product"
+            message="Products Found Empty"
           />
         </>
       )}

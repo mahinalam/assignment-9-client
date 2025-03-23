@@ -4,16 +4,16 @@ import { Button } from "@nextui-org/button";
 import Link from "next/link";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 import GTForm from "@/app/components/form/GTForm";
 import GTInput from "@/app/components/form/GTInput";
 import Container from "@/app/components/sharred/Container";
 import { useSignupMutation } from "@/app/redux/features/auth/authApi";
 import GTSelect from "@/app/components/form/GTSelect";
-import { toast } from "sonner";
 
 const SignupPage = () => {
   const { theme } = useTheme();
@@ -89,7 +89,7 @@ const SignupPage = () => {
 
   return (
     <Container>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center md:mt-[200px] mt-16">
         <div className="md:w-[33%] mx-auto border p-5 bg-white">
           <div>
             <p className="text-center text-[18px] font-bold">Signup</p>
@@ -127,7 +127,7 @@ const SignupPage = () => {
             </Button>
             <small>
               Already have an Account?
-              <Link className="text-primary underline ml-1" href="/signup">
+              <Link className="text-primary underline ml-1" href="/login">
                 Login
               </Link>
             </small>

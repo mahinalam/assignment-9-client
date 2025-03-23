@@ -12,6 +12,16 @@ const orderApi = baseApi.injectEndpoints({
           body: orderInfo,
         };
       },
+      invalidatesTags: ["order"],
+    }),
+    applyCouponCode: builder.mutation({
+      query: (couponCode) => {
+        return {
+          url: "/coupon/code",
+          method: "POST",
+          body: couponCode,
+        };
+      },
     }),
     getVendorOrderHistory: builder.query({
       query: (vendorId: string) => {
@@ -20,14 +30,36 @@ const orderApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["order"],
     }),
     getUsersOrderHistory: builder.query({
-      query: (userId: string) => {
+      query: () => {
         return {
-          url: `/order/order-history/${userId}`,
+          url: `/order/user-order-history`,
           method: "GET",
         };
       },
+      providesTags: ["order"],
+    }),
+
+    getUsersUnconfirmOrder: builder.query({
+      query: () => {
+        return {
+          url: `/order/unconfirm-order`,
+          method: "GET",
+        };
+      },
+      providesTags: ["order"],
+    }),
+    updateOrderStatus: builder.mutation({
+      query: (payload: { transactionId: string; totalPrice: number }) => {
+        return {
+          url: `/order/update-order`,
+          method: "PUT",
+          body: payload,
+        };
+      },
+      invalidatesTags: ["order"],
     }),
   }),
 });
@@ -36,4 +68,7 @@ export const {
   useCreateOrderMutation,
   useGetVendorOrderHistoryQuery,
   useGetUsersOrderHistoryQuery,
+  useApplyCouponCodeMutation,
+  useGetUsersUnconfirmOrderQuery,
+  useUpdateOrderStatusMutation,
 } = orderApi;

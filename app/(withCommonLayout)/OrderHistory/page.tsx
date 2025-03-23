@@ -56,7 +56,6 @@ const UsersOrderHistory = () => {
     <>
       <Table aria-label="Example static collection table">
         <TableHeader>
-          <TableColumn>USER EMAIL</TableColumn>
           <TableColumn>TRANSACTION ID</TableColumn>
           <TableColumn>PAYMENT STATUS </TableColumn>
           <TableColumn>SHIPPING ADDRESS</TableColumn>
@@ -68,10 +67,9 @@ const UsersOrderHistory = () => {
         <TableBody>
           {usersOrderHistory?.data?.map((order: IOrder) => (
             <TableRow key={order.id}>
-              <TableCell>{order.user.email}</TableCell>
               <TableCell>{order.transactionId}</TableCell>
               <TableCell>{order.paymentStatus}</TableCell>
-              <TableCell>{order.shippingAddress}</TableCell>
+              <TableCell>{order.customerShippingAddress}</TableCell>
               <TableCell>{order.orderItems.length}</TableCell>
               <TableCell>{order.totalPrice}</TableCell>
               <TableCell>

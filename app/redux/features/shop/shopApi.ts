@@ -9,9 +9,21 @@ const shopApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    getAllShops: builder.query({
+      query: () => ({
+        url: "/shop",
+        method: "GET",
+      }),
+    }),
+    getVendorShop: builder.query({
+      query: () => ({
+        url: "/shop",
+        method: "GET",
+      }),
+    }),
     followShop: builder.mutation({
-      query: (payload: { followerId: string; shopId: string }) => ({
-        url: "/following-shop",
+      query: (payload: { shopId: string }) => ({
+        url: "/shop/follow-shop",
         method: "POST",
         body: payload,
       }),
@@ -19,4 +31,8 @@ const shopApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateShopMutation, useFollowShopMutation } = shopApi;
+export const {
+  useCreateShopMutation,
+  useFollowShopMutation,
+  useGetAllShopsQuery,
+} = shopApi;

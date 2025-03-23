@@ -5,7 +5,7 @@ export type SiteConfig = typeof siteConfig;
 // const user = useSelector((state: RootState) => state.auth.user);
 
 export const siteConfig = {
-  name: "Next.js + NextUI",
+  name: "ElectroMert E-Commerce",
   description: "Make beautiful websites regardless of your design experience.",
   navItems: [
     {

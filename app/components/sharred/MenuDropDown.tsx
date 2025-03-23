@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Avatar from "./Avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/redux/store";
 import Link from "next/link";
-import { useLoginMutation } from "@/app/redux/features/auth/authApi";
+
+import Avatar from "./Avatar";
+
+import { RootState } from "@/app/redux/store";
 import { logout } from "@/app/redux/features/auth/authSlice";
 
 const MenuDropDown = () => {
@@ -31,24 +32,24 @@ const MenuDropDown = () => {
                     AirCNC your home
                 </button>} */}
 
-        <div className="hidden md:block text-sm font-semibold"></div>
+        <div className="hidden md:block text-sm font-semibold" />
         <div
-          onClick={toggleOpen}
           className="p-4 md:py-1 md:px-2 md:border-[1px] md:border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          onClick={toggleOpen}
         >
           <button className="btn btn-square btn-ghost">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              className="inline-block w-5 h-5 stroke-current text-white"
               fill="none"
               viewBox="0 0 24 24"
-              className="inline-block w-5 h-5 stroke-current text-white"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
+                d="M4 6h16M4 12h16M4 18h16"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
+              />
             </svg>
           </button>
           <div className="hidden md:block">
@@ -100,14 +101,14 @@ const MenuDropDown = () => {
             {!user ? (
               <>
                 <Link
-                  href="/login"
                   className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                  href="/login"
                 >
                   Login
                 </Link>
                 <Link
-                  href="/signup"
                   className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                  href="/signup"
                 >
                   Signup
                 </Link>
@@ -115,8 +116,8 @@ const MenuDropDown = () => {
             ) : user.role === "VENDOR" ? (
               <>
                 <Link
-                  href="/dashboard/AllProducts"
                   className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                  href="/dashboard/AllProducts"
                 >
                   Dashboard
                 </Link>
@@ -131,8 +132,8 @@ const MenuDropDown = () => {
             ) : (
               <>
                 <Link
-                  href="/signup"
                   className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                  href="/signup"
                 >
                   My Profile
                 </Link>

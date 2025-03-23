@@ -1,11 +1,15 @@
+import Container from "../components/sharred/Container";
 import Footer from "../components/sharred/Footer";
-import { Navbar } from "../components/sharred/Navbar";
+import Navbar from "../components/sharred/navbar/Navbar";
+// import { Navbar } from "../components/sharred/Navbar";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex flex-col h-screen w-[90%] mx-auto">
+    <div className="bg-[#f5f5f5]">
       <Navbar />
+      {/* <Container> */}
       <main>{children}</main>
+      {/* </Container> */}
       <Footer />
     </div>
   );

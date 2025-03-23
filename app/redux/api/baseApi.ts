@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
     const token = (getState() as RootState).auth.token;
 
     if (token) {
-      headers.set("authorization", ` Bearer ${token}`);
+      headers.set("authorization", token);
     }
 
     return headers;
@@ -20,6 +20,15 @@ const baseQuery = fetchBaseQuery({
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQuery,
-  tagTypes: ["product", "category", "shop", "user", "review"],
+  tagTypes: [
+    "product",
+    "category",
+    "shop",
+    "user",
+    "review",
+    "brand",
+    "cart",
+    "order",
+  ],
   endpoints: () => ({}),
 });

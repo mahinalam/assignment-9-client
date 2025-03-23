@@ -1,6 +1,7 @@
 import React from "react";
-import Button from "./Button";
 import { Link } from "@nextui-org/link";
+
+import Button from "./Button";
 const EmptyState = ({
   message,
   address,

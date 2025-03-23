@@ -2,28 +2,32 @@
 
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+
 import BillingCard from "@/app/components/checkout/BillingCard";
+import {
+  useApplyCouponCodeMutation,
+  useGetUsersUnconfirmOrderQuery,
+  useUpdateOrderStatusMutation,
+} from "@/app/redux/features/order/orderApi";
 import PackageDetailsCard from "@/app/components/checkout/PackageDetailsCard";
-import { clearCart, ICartItem } from "@/app/redux/features/cart/cartSlice";
-import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
-import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
-import { RootState } from "@/app/redux/store";
 
 const CheckoutPage = () => {
-  const cart = useSelector((state: RootState) => state.cart);
-  const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
-  const { data: currentUserInfo } = useGetSingleUserQuery(userId, {
-    skip: !userId,
+  const { data: unconfirmOrder, isLoading } =
+    useGetUsersUnconfirmOrderQuery(null);
+
+  const [couponValue, setCouponValue] = useState("");
+  const [isValidCoupon, setIsValidCoupon] = useState<{
+    value: boolean;
+    discount: number;
+  }>({
+    value: false,
+    discount: 0,
   });
-
-  const dispatch = useDispatch();
-
-  const [createOrder] = useCreateOrderMutation();
+  const [isClient, setIsClient] = useState(false);
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const [applyCouponCode] = useApplyCouponCodeMutation();
 
   useEffect(() => {
     setIsClient(true);
@@ -32,28 +36,29 @@ const CheckoutPage = () => {
   if (!isClient) {
     return null;
   }
-  // console.log("cartItems", cartItems);
-  const handleCreateOrder = async () => {
-    if (cart.items.length === 0) {
-      alert("Please select at least one item to place an order.");
-      return;
-    }
 
-    const orderPayload = {
-      userId,
-      shippingAddress: currentUserInfo?.data?.address,
-      orderItems: cart.items.map((item) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.newPrice,
-      })),
+  if (isLoading) {
+    return "Loading...";
+  }
+
+  const handleUpdateOrderStatus = async () => {
+    const totalPrice =
+      isValidCoupon.value && couponValue
+        ? Number(unconfirmOrder?.data?.totalPrice) -
+          Number(isValidCoupon.discount) +
+          Number(60)
+        : Number(unconfirmOrder?.data?.totalPrice) + Number(60);
+
+    const upadteOrderPayload = {
+      transactionId: unconfirmOrder?.data?.transactionId,
+      totalPrice,
     };
-    console.log("orderPayload", orderPayload);
+
     try {
-      const orderResponse: any = await createOrder(orderPayload).unwrap();
-      console.log({ orderResponse });
+      const orderResponse: any =
+        await updateOrderStatus(upadteOrderPayload).unwrap();
+
       if (orderResponse.success) {
-        dispatch(clearCart());
         window.location.href = orderResponse?.data?.payment_url;
       }
     } catch (err: any) {
@@ -61,48 +66,84 @@ const CheckoutPage = () => {
     }
   };
 
+  const handleCouponCode = async () => {
+    if (couponValue.trim()) {
+      try {
+        const res = await applyCouponCode({ couponCode: couponValue }).unwrap();
+
+        if (res?.success) {
+          setIsValidCoupon({ value: true, discount: res.data.discount });
+          toast.success("Coupon applied successfully!");
+        }
+      } catch (err: any) {
+        setIsValidCoupon({ value: false, discount: 0 });
+        toast.error(err.data.message || "Invalid coupon code!");
+      }
+    } else {
+      setIsValidCoupon({ value: false, discount: 0 });
+      toast.error("Please enter a valid coupon code.");
+    }
+  };
+
+  const totalPrice =
+    isValidCoupon.value && couponValue
+      ? Number(unconfirmOrder?.data?.totalPrice) -
+        Number(isValidCoupon.discount) +
+        Number(60)
+      : Number(unconfirmOrder?.data?.totalPrice) + Number(60);
+
   return (
-    <div className="flex gap-4">
-      <div className="md:w-8/12">
-        <BillingCard />
-        <div>
-          {cart.items.length > 0 &&
-            cart.items.map((item: ICartItem, index: number) => (
-              <PackageDetailsCard key={index} item={item} />
-            ))}
+    <div className="mt-40">
+      <div className="flex gap-4">
+        <div className="md:w-8/12">
+          <BillingCard />
+          <div>
+            {unconfirmOrder?.data?.orderItems?.length > 0 &&
+              unconfirmOrder?.data?.orderItems?.map(
+                (item: any, index: number) => (
+                  <PackageDetailsCard key={index} item={item} />
+                )
+              )}
+          </div>
         </div>
-      </div>
-      <div className="md:w-4/12 bg-white shadow p-4 rounded">
-        <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-        <div className="flex justify-between mb-2">
-          <p className="text-gray-700">Subtotal items:</p>
-          <p>{cart.items.reduce((total, item) => total + item.quantity, 0)}</p>
-        </div>
-        <div className="flex justify-between mb-2">
-          <p className="text-gray-700">Shipping Fee:</p>
-          <p>৳ 0</p>
-        </div>
-        <div className="border-t pt-4 flex justify-between text-lg font-bold">
-          <p>Total:</p>
-          <p>৳ {cart.totalAmount}</p>
-        </div>
-        <div className="mt-4">
-          <div className="flex gap-4 items-center">
-            <Input className="mb-4" placeholder="Enter voucher code" />
+        <div className="md:w-4/12 bg-white shadow p-4 rounded">
+          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+          <div className="flex justify-between mb-2">
+            <p className="text-gray-700">
+              Items Total ({unconfirmOrder?.data?.orderItems?.length} items)
+            </p>
+            <p>৳ {unconfirmOrder?.data?.totalPrice}</p>
+          </div>
+          <div className="flex justify-between mb-2">
+            <p className="text-gray-700">Shipping Fee:</p>
+            <p>৳ 60</p>
+          </div>
+          <div className="border-t pt-4 flex justify-between text-lg font-bold">
+            <p>Total:</p>
+            <p>৳ {totalPrice}</p>
+          </div>
+          <div className="mt-4">
+            <div className="flex gap-4 items-center">
+              <Input
+                className="mb-4"
+                placeholder="Enter voucher code"
+                onChange={(e) => setCouponValue(e.target.value)}
+              />
+              <Button
+                className=" bg-[#21B7D1] text-white mb-4 hover:bg-blue-600"
+                size="sm"
+                onClick={handleCouponCode}
+              >
+                Apply
+              </Button>
+            </div>
             <Button
-              className=" bg-[#21B7D1] text-white mb-4 hover:bg-blue-600"
-              size="sm"
+              className="w-full bg-primary text-white hover:bg-orange-600"
+              onClick={handleUpdateOrderStatus}
             >
-              Apply
+              Pay Now
             </Button>
           </div>
-
-          <Button
-            className="w-full bg-orange-500 text-white hover:bg-orange-600"
-            onClick={handleCreateOrder}
-          >
-            Proceed to Pay
-          </Button>
         </div>
       </div>
     </div>

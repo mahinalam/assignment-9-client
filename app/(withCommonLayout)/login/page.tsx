@@ -4,8 +4,7 @@ import { Button } from "@nextui-org/button";
 import Link from "next/link";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -51,6 +50,7 @@ const LoginPage = () => {
 
       console.log("user", user);
     } catch (err: any) {
+      console.log("from login", err);
       throw new Error(err.message);
     }
   };
@@ -58,7 +58,7 @@ const LoginPage = () => {
   return (
     <>
       <Container>
-        <div className="flex items-center justify-center mt-10">
+        <div className="flex items-center justify-center md:mt-[200px] mt-16">
           <div className="md:w-[33%] mx-auto border p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Login</p>

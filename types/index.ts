@@ -73,7 +73,7 @@ export interface IShop {
 export interface ICategory {
   id: string;
   name: string;
-  image: string;
+  imageUrl: string;
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -105,7 +105,7 @@ export interface IOrder {
   id: string;
   status: OrderStatus;
   totalPrice: number;
-  shippingAddress: string;
+  customerShippingAddress: string;
   transactionId: string;
   createdAt: Date;
   updatedAt: Date;

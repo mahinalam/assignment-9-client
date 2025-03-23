@@ -3,11 +3,11 @@ import React from "react";
 
 import "rc-rate/assets/index.css"; // Ensure you import the styles for rc-rate
 import "./ReviewCart.css";
-import { IReview } from "@/types";
 import moment from "moment";
 
+import { IReview } from "@/types";
+
 const ReviewCart = ({ item }: { item: IReview }) => {
-  console.log(item);
   const {
     id,
     rating,
@@ -19,13 +19,12 @@ const ReviewCart = ({ item }: { item: IReview }) => {
 
   return (
     <div>
-      <div className="flex  md:justify-between justify-end">
-        <Rate
-          allowHalf={false}
-          className="text-[#FACA51] text-xl "
-          count={5}
-          value={rating}
-        />
+      <div className="flex  justify-between items-center">
+        {/* user and date section for small screen */}
+        {/* <div className="flex text-[10px] text-[#999999]">
+
+        </div> */}
+        <Rate allowHalf={false} className="" count={5} value={rating} />
         <p className="text-[#757575] text-[14px] md:block hidden">
           {moment(createdAt).format("DD MMM YYYY")}
         </p>
@@ -60,9 +59,9 @@ const ReviewCart = ({ item }: { item: IReview }) => {
       </div>
       <div>
         <img
+          alt="review"
           className="md:size-[100px] size-[60px]"
           src={images?.[0] && images![0]}
-          alt="review"
         />
       </div>
     </div>

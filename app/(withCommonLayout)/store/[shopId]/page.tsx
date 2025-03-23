@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
+
+import StoreBanner from "../StoreBanner";
 
 import ProductCart from "@/app/components/sharred/ProductCard";
-import StoreBanner from "@/app/components/store/StoreBanner";
 // import { useGetAllVendorProductsQuery } from "@/app/redux/api/baseApi";
 import { IProduct } from "@/types";
 import { useGetAllVendorProductsQuery } from "@/app/redux/features/product/productApi";
 import Loader from "@/app/components/sharred/Loader";
-import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { useFollowShopMutation } from "@/app/redux/features/shop/shopApi";
-import { toast } from "sonner";
+import Container from "@/app/components/sharred/Container";
 
 const StorePage = ({ params }: { params: { shopId: string } }) => {
   console.log(params);
@@ -29,44 +31,49 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
   if (vendorProductLoading) {
     return <Loader />;
   }
-  console.log("allProducts", allProducts?.data);
+  console.log("allProducts", allProducts);
   const storeData = {
     id: allProducts?.data.id,
     name: allProducts.data.name,
     logo: allProducts.data.logo,
     follower: allProducts?.data?.followingShop?.length,
+    createdAt: allProducts?.data?.createdAt,
+    description: allProducts?.data?.descriptin,
   };
 
   const handleFollowShop = async () => {
     const followShopData = {
       shopId: params.shopId,
-      followerId: userId!,
     };
-    console.log("followShopData");
+
+    console.log("followShopData", followShopData);
     // follow shop
     try {
       const res = await followShop(followShopData);
+
       if (res?.data?.success) {
-        setIsFollower(true);
         toast.success(res?.data?.message);
+      } else {
+        toast.error("something went wrong");
       }
     } catch (err) {
+      toast.error("something went wrong");
       console.log(err);
     }
   };
 
   return (
-    <div>
-      <div className="md:my-10 my-5">
+    <Container>
+      <div className="md:my-10 my-5 pt-10 bg-white">
         <StoreBanner
+          handleFollowShop={handleFollowShop}
           isFollower={isFollower}
           storeData={storeData}
-          handleFollowShop={handleFollowShop}
         />
       </div>
       <div>
         <p className="md:text-lg text-base  font-medium md:text-left text-center">
-          All Products
+          Products
         </p>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-5">
@@ -77,7 +84,7 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
           </Link>
         ))}
       </div>
-    </div>
+    </Container>
   );
 };
 

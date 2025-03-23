@@ -1,3 +1,9 @@
 .rc-rate-star {
   margin-right: 0 !important;
+  color: #FACA15 ;
+  /* font-size: 14px !important; */
+}
+.rc-rate-star-second {
+  font-size: 16px !important;
+  /* color: #FACA15 ; */
 }

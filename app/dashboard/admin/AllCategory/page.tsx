@@ -11,12 +11,12 @@ import {
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { useGetVendorOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import { RootState } from "@/app/redux/store";
-import { IOrder } from "@/types";
+import { useGetAllCategoriesQuery } from "@/app/redux/features/category/categoryApi";
 
 const ProductReviews = () => {
   const {
@@ -25,16 +25,18 @@ const ProductReviews = () => {
     onOpenChange: onDeleteModalChange,
   } = useDisclosure();
 
-  const vendorId = useSelector((state: RootState) => state.auth.user?.userId);
+  const userId = useSelector((state: RootState) => state.auth.user?.userId);
 
-  const { data: vendorOrderHistory, isLoading: vendorOrderHistoryLoading } =
-    useGetVendorOrderHistoryQuery(vendorId as string);
+  console.log("vendor", userId);
+  const { data: categoryData, isLoading: categoryDataLoading } =
+    useGetAllCategoriesQuery(null);
 
   const [deleteProduct] = useDeleteProductMutation();
 
+  //   console.log("userProductReviews", userProductReviews);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  if (vendorOrderHistoryLoading) {
+  if (categoryDataLoading) {
     return <div>Loading...</div>;
   }
   //   console.log(isSuccess);
@@ -54,34 +56,36 @@ const ProductReviews = () => {
     <>
       <Table aria-label="Example static collection table">
         <TableHeader>
-          <TableColumn>USER EMAIL</TableColumn>
-          <TableColumn>TRANSACTION ID</TableColumn>
-          <TableColumn>PAYMENT STATUS </TableColumn>
-          <TableColumn>SHIPPING ADDRESS</TableColumn>
-          <TableColumn>ORDER ITEMS</TableColumn>
-          <TableColumn>TOTAL PRICE</TableColumn>
+          <TableColumn> IMAGE</TableColumn>
+          <TableColumn> NAME</TableColumn>
+          <TableColumn>CREATED AT</TableColumn>
           <TableColumn>ACTION</TableColumn>
         </TableHeader>
-
         <TableBody>
-          {vendorOrderHistory?.data?.map((order: IOrder) => (
-            <TableRow key={order.id}>
-              <TableCell>{order.user.email}</TableCell>
-              <TableCell>{order.transactionId}</TableCell>
-              <TableCell>{order.paymentStatus}</TableCell>
-              <TableCell>{order.shippingAddress}</TableCell>
-              <TableCell>{order.orderItems.length}</TableCell>
-              <TableCell>{order.totalPrice}</TableCell>
-              <TableCell>
-                <Button onClick={() => handleDeleteModalOpen(order.id)}>
-                  Delete
-                </Button>
-                <Button onClick={() => handleDeleteModalOpen(order.id)}>
-                  Update
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {categoryData?.data?.map(
+            (review: any) => (
+              // review.map((review: IReview) => (
+              <TableRow key={review.id}>
+                <TableCell>
+                  <img alt="" className="size-12" src={review?.imageUrl} />
+                </TableCell>
+                <TableCell>{review.name}</TableCell>
+                <TableCell>
+                  {" "}
+                  {moment(review.createdAt).format("DD MMM YYYY")}
+                </TableCell>
+                <TableCell>
+                  <Button onClick={() => handleDeleteModalOpen(review.id)}>
+                    Delete
+                  </Button>
+                  <Button onClick={() => handleDeleteModalOpen(review.id)}>
+                    Update
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ),
+            // ))
+          )}
         </TableBody>
       </Table>
       <DeleteModal

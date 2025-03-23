@@ -15,8 +15,6 @@ const Button = ({
 }) => {
   return (
     <button
-      disabled={disabled}
-      onClick={onClick}
       className={`
             relative
             disabled:opacity-70
@@ -34,15 +32,17 @@ const Button = ({
             ${small ? "font-light" : "font-semibold"}
             ${small ? "border-[1px]" : "border-2"}
           `}
+      disabled={disabled}
+      onClick={onClick}
     >
       {Icon && (
         <Icon
-          size={24}
           className="
                 absolute
                 left-4
                 top-3
               "
+          size={24}
         />
       )}
       {label}

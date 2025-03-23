@@ -1,5 +1,6 @@
-import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
+
+import { TQueryParam } from "@/types";
 
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,11 +22,31 @@ const productApi = baseApi.injectEndpoints({
       },
       providesTags: ["product"],
     }),
+    getAllProductsByCategory: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/product",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["product"],
+    }),
     getSingleProduct: builder.query({
       query: (id: string) => `/product/${id}`,
+      providesTags: ["product"],
     }),
     getAllVendorProducts: builder.query({
       query: (id: string) => `/product/vendor-products/${id}`,
+      providesTags: ["product"],
     }),
     createProduct: builder.mutation({
       query: (formData: FormData) => ({
@@ -51,4 +72,5 @@ export const {
   useGetAllVendorProductsQuery,
   useCreateProductMutation,
   useDeleteProductMutation,
+  useGetAllProductsByCategoryQuery,
 } = productApi;

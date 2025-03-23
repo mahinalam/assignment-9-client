@@ -1,138 +1,126 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
-import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
+import { useDisclosure } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import React from "react";
+import { useSelector } from "react-redux";
+import { Button } from "@nextui-org/button";
 
 import CartPage from "./components/CartPage";
 
+import CheckoutModal from "@/app/components/modal/CheckoutModal";
+import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
 import { RootState } from "@/app/redux/store";
-import { IProduct } from "@/types";
-import FlashSaleCard from "@/app/components/sharred/FlashSaleCard";
-import {
-  decrementQuantity,
-  incrementQuantity,
-  removeFromCart,
-} from "@/app/redux/features/cart/cartSlice";
-import { useGetAllProductsQuery } from "@/app/redux/features/product/productApi";
-import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
 
-const Page = () => {
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [isClient, setIsClient] = useState(false);
-  // const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+const AllCart = () => {
+  const {
+    isOpen: isCheckoutModalOpen,
+    onOpen: onCheckoutModalOpen,
+    onOpenChange: onCheckoutModalChange,
+    onClose,
+  } = useDisclosure();
+
   const router = useRouter();
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
 
-  const { data: currentUserInfo } = useGetSingleUserQuery(userId, {
-    skip: !userId,
-  });
-  const dispatch = useDispatch();
+  const { data: cart, isLoading: cartLoading } = useGetCartQuantityQuery(null);
 
-  console.log("cartItems", cartItems);
+  console.log("cart", cart);
 
-  const { data: productsData, isLoading } = useGetAllProductsQuery(null);
+  const [createOrder, { isSuccess, isLoading }] = useCreateOrderMutation();
 
-  const [createOrder] = useCreateOrderMutation();
-
-  // Ensure this component only renders on the client side
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return null;
+  if (!userId) {
+    router.push("/login");
   }
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce((total, item) => {
-      // if (checkedItems[item.productId]) {
-      return total + item.newPrice * item.quantity;
-      // }
-      // return total;
-    }, 0);
+  const handleCreateOrder = async (data: any) => {
+    console.log("order data", data);
+
+    const orderPayload = {
+      ...data,
+      shopId: cart?.data?.shopId,
+      orderItems: cart?.data?.cartItems?.map((item: any) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    };
+
+    console.log("orderpayload", orderPayload);
+
+    try {
+      const orderResponse: any = await createOrder(orderPayload).unwrap();
+
+      if (orderResponse?.success) {
+        router.push("/checkout");
+        onClose();
+      }
+    } catch (err) {}
   };
 
-  const handleInCrementQuantity = (id: string) => {
-    dispatch(incrementQuantity({ id }));
-  };
-
-  const handleDecrementQuantity = (id: string) => {
-    dispatch(decrementQuantity({ id }));
-  };
-
-  const handleRemoveFromCart = (id: string) => {
-    dispatch(removeFromCart({ id }));
-  };
+  console.log({ isSuccess });
 
   return (
-    <div>
-      <div className="flex  gap-4">
-        <div className="md:w-8/12">
-          {cartItems?.length > 0 ? (
-            cartItems.map((cart, index) => (
-              <CartPage
-                key={index}
-                cartData={cart}
-                handleDecrementQuantity={handleDecrementQuantity}
-                handleInCrementQuantity={handleInCrementQuantity}
-                handleRemoveFromCart={handleRemoveFromCart}
-                // handleCheckboxChange={handleCheckboxChange} // New prop
-                // isChecked={checkedItems[cart.productId] || false} // New prop
-              />
-            ))
-          ) : (
-            <p>Your cart is empty.</p>
-          )}
+    <div className="mt-32 flex gap-4 min-h-[60vh]">
+      <div className="md:w-8/12">
+        {/* {cart?.data?.cartItems.length > 0 && (
+          <div className="flex items-center mb-4">
+            <Checkbox
+              isSelected={allItemsSelected} // Controlled by parent
+              onChange={(e) => handleGlobalCheckboxChange(e.target.checked)}
+            />
+            <span>Select All</span>
+          </div>
+        )} */}
+        {cart?.data?.cartItems.length > 0 ? (
+          cart?.data?.cartItems.map((cartItem: any, index: number) => (
+            <CartPage
+              // onCartRemoveWarningModalOpen={onCartRemoveWarningModalOpen}
+              key={index}
+              cartData={cartItem}
+              // isChecked={selectedItems.includes(cartItem?.product?.id)
+              // handleRemoveCart={handleRemoveCart}
+            />
+          ))
+        ) : (
+          <p>Your cart is empty.</p>
+        )}
+      </div>
+      {/* Right Section: Order Summary */}
+      <div className="md:w-4/12 bg-white shadow p-4 rounded">
+        <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+        <div className="flex justify-between mb-2">
+          <p className="text-gray-700">Subtotal items:</p>
+          <p>{cart?.data?.totalPrice}</p>
         </div>
+        <div className="flex justify-between mb-2">
+          <p className="text-gray-700">Shipping Fee:</p>
+          <p>৳ {Number(60)}</p>
+        </div>
+        <div className="border-t pt-4 flex justify-between text-lg font-bold">
+          <p>Total:</p>
+          <p>৳: {Number(60 + cart?.data?.totalPrice)}</p>
+          {/* <p>৳<p/> */}
 
-        {/* Right Section: Order Summary */}
-        <div className="md:w-4/12 bg-white shadow p-4 rounded">
-          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-          <div className="flex justify-between mb-2">
-            <p className="text-gray-700">Subtotal items:</p>
-            <p>{cartItems.reduce((total, item) => total + item.quantity, 0)}</p>
-          </div>
-          <div className="flex justify-between mb-2">
-            <p className="text-gray-700">Shipping Fee:</p>
-            <p>৳ 0</p>
-          </div>
-          <div className="border-t pt-4 flex justify-between text-lg font-bold">
-            <p>Total:</p>
-            <p>৳ {calculateSubtotal()}</p>
-          </div>
-          <div className="mt-4">
-            <Input className="mb-4" placeholder="Enter voucher code" />
-            <Button className="w-full bg-blue-500 text-white mb-4 hover:bg-blue-600">
-              Apply Voucher
-            </Button>
-            <Link href="/checkout">
-              <Button className="w-full bg-orange-500 text-white hover:bg-orange-600">
-                Proceed to Checkout
-              </Button>
-            </Link>
-          </div>
+          {/* </Link> */}
         </div>
+        <Button
+          className="w-full bg-primary text-white disabled:cursor-not-allowed"
+          disabled={cart?.data?.totalQuantity === 0}
+          onClick={() => onCheckoutModalOpen()}
+        >
+          Proceed to Checkout
+        </Button>
       </div>
-      <div>
-        <p className="my-4 font-normal">Just For You</p>
-        <div className="grid grid-cols-6 mt-2 gap-4 ">
-          {productsData?.data.map((flashSaleProduct: IProduct) => (
-            <Link
-              key={flashSaleProduct.id}
-              href={`/products/${flashSaleProduct.id}`}
-            >
-              <FlashSaleCard product={flashSaleProduct} />
-            </Link>
-          ))}
-        </div>
-      </div>
+      <CheckoutModal
+        handleCreateOrder={handleCreateOrder}
+        isOpen={isCheckoutModalOpen}
+        isSuccess={isSuccess}
+        onOpenChange={onCheckoutModalChange}
+      />
     </div>
   );
 };
 
-export default Page;
+export default AllCart;

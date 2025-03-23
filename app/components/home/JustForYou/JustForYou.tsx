@@ -1,55 +1,66 @@
 import React from "react";
+import Link from "next/link";
 
 import ProductCart from "../../sharred/ProductCard";
+import Title from "../Title";
+import Loader from "../../sharred/Loader";
 
 import { IProduct } from "@/types";
 import { useGetAllProductsQuery } from "@/app/redux/features/product/productApi";
-import Title from "../Title";
-import Link from "next/link";
+import Container from "../../sharred/Container";
 
 const JustForYou = () => {
-  const { data: productsData } = useGetAllProductsQuery(null);
+  const { data: productsData, isLoading: productDataLoading } =
+    useGetAllProductsQuery(null);
+
   // console.log(productsData);
+  if (productDataLoading) {
+    return <Loader />;
+  }
 
   return (
-    <div className="w-full md:mt-10 mt-5">
-      <div>
-        <section className="flex justify-between">
-          <Title title="Just For You" />
-          <div className="md:hidden block">
-            {/* <Button /> */}
-            <Link href="products" className="block md:hidden">
-              <button className="font-medium  ">
-                <span> Shop More </span>
-                <span>{`>`}</span>
-              </button>
-            </Link>
+    <Container>
+      <div className="w-full md:mt-10 mt-3">
+        <div>
+          <section className="flex justify-between">
+            <Title title="Just For You" />
+            <div className="md:hidden block">
+              {/* <Button /> */}
+              <Link className="md:text-sm text-xs font-light" href="/products">
+                <button className="  ">
+                  <span> Shop More </span>
+                  <span>{`>`}</span>
+                </button>
+              </Link>
+            </div>
+          </section>
+          <div>
+            <section className="hidden md:block">
+              <div className="grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-2 bg-white">
+                {productsData?.data?.data?.map((product: IProduct) => (
+                  <Link key={product.id} href={`/products/${product.id}`}>
+                    <ProductCart product={product} />
+                  </Link>
+                ))}
+              </div>
+            </section>
           </div>
-        </section>
-        <div>
-          <section className="hidden md:block">
-            <div className="grid md:grid-cols-6 gap-4 mt-2">
-              {productsData?.data?.map((product: IProduct) => (
-                <Link href={`/products/${product.id}`} key={product.id}>
-                  <ProductCart product={product} />
-                </Link>
-              ))}
-            </div>
-          </section>
-        </div>
-        <div>
-          <section className="md:hidden block">
-            <div className="grid  grid-cols-1 sm:grid-cols-2 gap-4 mt-2 ">
-              {productsData?.data?.slice(0, 3).map((product: IProduct) => (
-                <Link href={`/products/${product.id}`} key={product.id}>
-                  <ProductCart product={product} />
-                </Link>
-              ))}
-            </div>
-          </section>
+          <div>
+            <section className="md:hidden block">
+              <div className="grid  grid-cols-2 sm:grid-cols-3  gap-4 mt-2 bg-white">
+                {productsData?.data?.data
+                  ?.slice(0, 6)
+                  .map((product: IProduct) => (
+                    <Link key={product.id} href={`/products/${product.id}`}>
+                      <ProductCart product={product} />
+                    </Link>
+                  ))}
+              </div>
+            </section>
+          </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

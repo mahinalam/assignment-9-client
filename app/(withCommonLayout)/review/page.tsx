@@ -152,31 +152,31 @@ const ReviewPage = () => {
         <h1 className="text-2xl font-semibold text-gray-800 text-center mb-4">
           Submit Your Review
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Name Input */}
           <div>
             <Input
-              label="Name"
-              placeholder="Enter your name"
+              fullWidth
+              required
               name="name"
               // value={review}
               // onChange={handleInputChange}
-              required
-              fullWidth
+              label="Name"
+              placeholder="Enter your name"
             />
           </div>
 
           {/* Email Input */}
           <div>
             <Input
+              fullWidth
+              required
               label="Email"
-              placeholder="Enter your email"
-              name="email"
               type="email"
               // value={reviewData.email}
               // onChange={handleInputChange}
-              required
-              fullWidth
+              name="email"
+              placeholder="Enter your email"
             />
           </div>
 
@@ -184,25 +184,25 @@ const ReviewPage = () => {
           <div className="flex items-center justify-between">
             <span className="text-gray-700 font-medium text-sm">Rating:</span>
             <Rate
-              value={review}
-              onChange={(value) => handleRatingChange(value)}
               allowClear
               className="text-xl"
               style={{ fontSize: "30px" }}
+              value={review}
+              onChange={(value) => handleRatingChange(value)}
             />
           </div>
 
           {/* Comment Textarea */}
           <div>
             <Textarea
-              label="Comment"
-              placeholder="Write your review here..."
+              fullWidth
+              required
               name="comment"
               // value={reviewData.comment}
               // onChange={handleInputChange}
+              label="Comment"
               minRows={4}
-              required
-              fullWidth
+              placeholder="Write your review here..."
             />
           </div>
           <div className="min-w-fit flex-1 mt-12">
@@ -239,7 +239,7 @@ const ReviewPage = () => {
           )}
 
           {/* Submit Button */}
-          <Button type="submit" className="w-full bg-[#F57224] text-white ">
+          <Button className="w-full bg-[#F57224] text-white " type="submit">
             Submit Review
           </Button>
         </form>
