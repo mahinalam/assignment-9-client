@@ -364,8 +364,10 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
       </div>
       <CheckoutModal />
       <ReviewModal
+        reviewsData={reviewsData}
         isOpen={isReviewModalOpen}
         onOpenChange={onReviewModalOpenChange}
+        reviews={productData?.data?.review}
       />
     </Container>
   );
