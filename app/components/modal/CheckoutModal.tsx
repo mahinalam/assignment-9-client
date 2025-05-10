@@ -24,6 +24,7 @@ export default function CheckoutModal({
   onOpenChange,
   handleCreateOrder,
   isSuccess,
+  isForBuy = false,
 }: any) {
   const [paymentValue, setPaymentValue] = useState("");
 

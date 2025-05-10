@@ -5,6 +5,8 @@ import Image from "next/image";
 
 import { IProduct } from "@/types";
 import shopImg from "@/public/images/store.webp";
+import { CiDeliveryTruck } from "react-icons/ci";
+import { PiCashRegisterLight } from "react-icons/pi";
 
 const StoreCard = ({
   product,
@@ -22,7 +24,34 @@ const StoreCard = ({
         <div>
           <section>
             <div>
-              <p className="text-[#757575] text-[14px]">Sold By</p>
+              <p className="text-[#757575] text-[14px]">Delivery Options</p>
+              <div className="flex justify-between">
+                <div className="flex gap-1 mt-2">
+                  <CiDeliveryTruck size={25} />
+                  <div className="">
+                    <p className="text-[#212121] text-sm">Standard Delivery</p>
+                    <p className="text-xs text-[#757575]">
+                      Guaranteed delivery within 3-7 days{" "}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-sm text-title">
+                    ৳ <span className="font-bold">60</span>
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-1">
+                <PiCashRegisterLight size={25} />
+                <p className="text-sm text-[#757575]">
+                  Cash on Delivery Available
+                </p>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div>
+              <p className="text-[#757575] text-[14px] mt-3">Sold By</p>
               <p className="text-[#212121]">{product?.shop?.name}</p>
             </div>
           </section>

@@ -6,10 +6,11 @@ const ShopCard = ({ shop }: any) => {
   const { name, logo, description, products, followingShop, createdAt } = shop;
 
   return (
-    <div className="border bg-white rounded-lg overflow-hidden shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md">
+    <div className="border p-4 bg-white rounded-lg overflow-hidden shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md">
       {/* Image Section */}
-      <div className="">
-        <Image alt="" height={200} src={logo} width={300} />
+      <div className="flex justify-center items-center">
+        {/* <Image alt="" height={200} src={logo} width={200} /> */}
+        <img className="lg:size-[160px] size-[100px]" alt="" src={logo} />
       </div>
       <div className="md:hidden block text-center ">
         <p className="mt-1 font-semibold ">{shop.name}</p>
@@ -91,7 +92,9 @@ const ShopCard = ({ shop }: any) => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <p className="text-gray-500">{followingShop.length} Follower</p>
+              <p className="lg:block hidden text-gray-500">
+                {followingShop.length} Follower
+              </p>
             </div>
           </div>
         </section>

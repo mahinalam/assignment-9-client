@@ -5,8 +5,8 @@ import Container from "../sharred/Container";
 
 const NewsLetter = () => {
   return (
-    <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6 md:p-10 rounded-xl mt-5 md:mt-10 shadow-lg text-white w-full">
-      <Container>
+    <Container>
+      <div className="bg-primary p-6 md:p-10 rounded-xl mt-5 md:mt-10 shadow-lg text-white w-full px-3 sm:px-0">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Icon Section */}
           <div className="flex justify-center md:justify-start">
@@ -54,8 +54,8 @@ const NewsLetter = () => {
             </Button>
           </div>
         </div>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 

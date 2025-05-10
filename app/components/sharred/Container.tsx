@@ -12,7 +12,9 @@ import React, { ReactNode } from "react";
 
 const Container = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="max-w-[1200px] mx-auto  sm:px-6 md:px-0 ">{children}</div>
+    <div className="max-w-[1200px] mx-auto   md:px-10 sm:px-2 px-4  ">
+      {children}
+    </div>
   );
 };
 

@@ -16,6 +16,7 @@ import DeleteModal from "@/app/components/modal/DeleteModal";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import { useGetUserProductReviewQuery } from "@/app/redux/features/review/reviewApi";
 import { RootState } from "@/app/redux/store";
+import SidebarButton from "../SidebarButton";
 
 const ProductReviews = () => {
   const {
@@ -31,6 +32,7 @@ const ProductReviews = () => {
     useGetUserProductReviewQuery(userId as string);
 
   const [deleteProduct] = useDeleteProductMutation();
+  const [isOpen, setIsOpen] = useState(false);
 
   console.log("userProductReviews", userProductReviews);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
@@ -53,6 +55,12 @@ const ProductReviews = () => {
 
   return (
     <>
+      <SidebarButton
+        title={"All Products"}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        role="user"
+      />
       <Table aria-label="Example static collection table">
         <TableHeader>
           <TableColumn>PRODUCT IMAGE</TableColumn>
@@ -89,7 +97,7 @@ const ProductReviews = () => {
                   </Button>
                 </TableCell>
               </TableRow>
-            ),
+            )
             // ))
           )}
         </TableBody>

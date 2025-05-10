@@ -7,24 +7,29 @@ const userApi = baseApi.injectEndpoints({
         url: "/user",
         method: "GET",
       }),
+      providesTags: ["user"],
     }),
+
     getSingleUser: builder.query({
       query: (id) => ({
         url: `/user/${id}`,
         method: "GET",
       }),
+      providesTags: ["user"],
     }),
     getMe: builder.query({
       query: () => ({
         url: "/auth/me",
         method: "GET",
       }),
+      providesTags: ["user"],
     }),
     getUserStats: builder.query({
       query: () => ({
         url: "/user/user-stats",
         method: "GET",
       }),
+      providesTags: ["user"],
     }),
     getVendorStats: builder.query({
       query: () => ({
@@ -48,6 +53,16 @@ const userApi = baseApi.injectEndpoints({
           body: formData,
         };
       },
+      invalidatesTags: ["user"],
+    }),
+    deleteUser: builder.mutation({
+      query: (userId: string) => {
+        return {
+          url: `/user/${userId}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["user"],
     }),
   }),
 });
@@ -60,4 +75,5 @@ export const {
   useGetUserStatsQuery,
   useGetAdminStatsQuery,
   useGetVendorStatsQuery,
+  useDeleteUserMutation,
 } = userApi;

@@ -9,18 +9,22 @@ import StoreBanner from "../StoreBanner";
 
 import ProductCart from "@/app/components/sharred/ProductCard";
 // import { useGetAllVendorProductsQuery } from "@/app/redux/api/baseApi";
-import { IProduct } from "@/types";
+import { IProduct, TQueryParam } from "@/types";
 import { useGetAllVendorProductsQuery } from "@/app/redux/features/product/productApi";
 import Loader from "@/app/components/sharred/Loader";
 import { RootState } from "@/app/redux/store";
 import { useFollowShopMutation } from "@/app/redux/features/shop/shopApi";
 import Container from "@/app/components/sharred/Container";
+import NotFound from "@/app/components/sharred/NotFound";
 
 const StorePage = ({ params }: { params: { shopId: string } }) => {
   console.log(params);
 
+  // const [vendorProductParams, setVendorProductParams] = useState<
+  //   TQueryParam[] | undefined
+  // >([{ name: "shopId", value: params.shopId }]);
   const { data: allProducts, isLoading: vendorProductLoading } =
-    useGetAllVendorProductsQuery(params.shopId);
+    useGetAllVendorProductsQuery(params?.shopId);
 
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
 
@@ -28,18 +32,24 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
 
   const [followShop] = useFollowShopMutation();
 
+  const [storeValue, setStoreValue] = useState<string>("");
+
   if (vendorProductLoading) {
     return <Loader />;
   }
+
+  const storeProductData = allProducts?.data;
   console.log("allProducts", allProducts);
   const storeData = {
-    id: allProducts?.data.id,
-    name: allProducts.data.name,
-    logo: allProducts.data.logo,
-    follower: allProducts?.data?.followingShop?.length,
-    createdAt: allProducts?.data?.createdAt,
-    description: allProducts?.data?.descriptin,
+    id: storeProductData?.id,
+    name: storeProductData?.name,
+    logo: storeProductData?.logo,
+    follower: storeProductData?.followingShop?.length,
+    createdAt: storeProductData?.createdAt,
+    description: storeProductData?.descriptin,
   };
+
+  //TODO: implement search in store section
 
   const handleFollowShop = async () => {
     const followShopData = {
@@ -64,25 +74,28 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
 
   return (
     <Container>
-      <div className="md:my-10 my-5 pt-10 bg-white">
-        <StoreBanner
-          handleFollowShop={handleFollowShop}
-          isFollower={isFollower}
-          storeData={storeData}
-        />
-      </div>
-      <div>
-        <p className="md:text-lg text-base  font-medium md:text-left text-center">
-          Products
-        </p>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-5">
-        {allProducts.data.products.map((product: IProduct) => (
-          <Link key={product.id} href={`/products/${product.id}`}>
-            {" "}
-            <ProductCart product={product} />
-          </Link>
-        ))}
+      <div className="md:mt-[96px] mt-[62px] lg:mt-[160px]">
+        <div className=" bg-white">
+          <StoreBanner
+            handleFollowShop={handleFollowShop}
+            isFollower={isFollower}
+            storeData={storeData}
+            setStoreValue={setStoreValue}
+          />
+        </div>
+        <div className="bg-white mt-4">
+          <p className="lg:text-lg text-base  font-bold py-4 lg:font-medium lg:text-left text-center ">
+            All Products
+          </p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 ">
+          {allProducts.data.products.map((product: IProduct) => (
+            <Link key={product.id} href={`/products/${product.id}`}>
+              {" "}
+              <ProductCart product={product} />
+            </Link>
+          ))}
+        </div>
       </div>
     </Container>
   );

@@ -13,7 +13,7 @@ import JustForYou from "@/app/components/home/JustForYou/JustForYou";
 const Home = () => {
   return (
     <div>
-      <div className="md:mt-[160px] mt-10">
+      <div className="lg:mt-[160px] md:mt-[96px] mt-[62px]">
         <CarouselPage />
       </div>
       <FlashSale />

@@ -8,24 +8,72 @@ import Loader from "../../sharred/Loader";
 import { IProduct } from "@/types";
 import { useGetAllProductsQuery } from "@/app/redux/features/product/productApi";
 import Container from "../../sharred/Container";
+import { Card, Skeleton } from "@nextui-org/react";
+import SkeletonComponent from "../../sharred/Skeleton";
 
 const FlashSale = () => {
   const { data: flashProductsData, isLoading: flashProductsLoading } =
     useGetAllProductsQuery(null);
 
   if (flashProductsLoading) {
-    return <Loader />;
+    // return <Loader />;
+    return (
+      // loading for desktop
+      <>
+        <Container>
+          <div className="block sm:hidden">
+            <Title title="Flash Sale" />
+            <div className="grid grid-cols-3 gap-4 ">
+              <SkeletonComponent isFlash={false} />
+              <SkeletonComponent isFlash={false} />
+              <SkeletonComponent isFlash={false} />
+            </div>
+          </div>
+        </Container>
+
+        {/* for small and lg loading */}
+        <Container>
+          <div className="hidden sm:block  xl:hidden ">
+            <Title title="Flash Sale" />
+            <div className="grid   grid-cols-4 gap-2 ">
+              <SkeletonComponent isFlash={false} />
+              <SkeletonComponent isFlash={false} />
+              <SkeletonComponent isFlash={false} />
+              <SkeletonComponent isFlash={false} />
+              {/* <SkeletonComponent /> */}
+            </div>
+          </div>
+        </Container>
+        {/* for xl and lg loading */}
+        <Container>
+          <div className="hidden   xl:block ">
+            <Title title="Flash Sale" />
+            <div className="grid   grid-cols-6 gap-4 ">
+              <SkeletonComponent />
+              <SkeletonComponent />
+              <SkeletonComponent />
+              <SkeletonComponent />
+              <SkeletonComponent />
+              <SkeletonComponent />
+              {/* <SkeletonComponent /> */}
+            </div>
+          </div>
+        </Container>
+        {/* for  and initial loading */}
+      </>
+    );
   }
 
+  console.log("flash sale proudcts", flashProductsData);
   return (
     <Container>
-      <div className="w-full md:mt-10 mt-3">
+      <div className="w-full px-3 sm:px-0 border-1">
         <div>
-          <div className="md:block hidden">
+          <div className="lg:block hidden">
             <Title title="Flash Sale" />
           </div>
           <section className="bg-white">
-            <div className="md:block hidden">
+            <div className="lg:block hidden">
               <div className="flex justify-between items-center py-2 md:text-sm text-xs border-b-1">
                 <p className="ml-4 text-primary font-medium">On Sale Now</p>
                 <Link href="/products">
@@ -35,18 +83,11 @@ const FlashSale = () => {
                 </Link>
               </div>
             </div>
-            <div className="md:hidden block">
+            <div className="lg:hidden block ">
               <div className="flex justify-between items-center py-2  border-b-1 ">
-                {/* <p className="ml-4 text-primary font-medium">On Sale Now</p> */}
-                {/* <Button size="sm">Shop All Products</Button> */}
-                {/* <Link href="/products">
-                  <button className="uppercase p-2 border-1 border-primary text-primary font-medium md:block hidden">
-                    Shop All Products
-                  </button>
-                </Link> */}
                 <p className=" font-bold items-center">
-                  <div className="flex items-center gap-1">
-                    <div className="flex items-center">
+                  <div className="flex items-center gap-1 mt-3">
+                    <div className="flex items-center text-xl">
                       <span>Fla</span>
                       <span>
                         <svg
@@ -67,11 +108,11 @@ const FlashSale = () => {
                       <span>h</span>
                     </div>
                     <div>
-                      <span>Sale</span>
+                      <span className="text-xl">Sale</span>
                     </div>
                   </div>
                 </p>
-                <Link className="block md:hidden" href="products">
+                <Link className="block lg:hidden" href="products">
                   <button className="text-xs font-light">
                     <span>SHOP MORE </span>
                     <span>{`>`}</span>
@@ -81,15 +122,17 @@ const FlashSale = () => {
             </div>
 
             {/* Mobile View */}
-            <div className="md:hidden block">
+            <div className="md:hidden block ">
               <div className="grid grid-cols-3 mt-2 gap-1">
                 {flashProductsData?.data?.data
                   ?.slice(0, 3)
                   .map((flashSaleProduct: any) => (
-                    <FlashSaleCard
+                    <Link
+                      href={`/products/${flashSaleProduct.id}`}
                       key={flashSaleProduct.id}
-                      product={flashSaleProduct}
-                    />
+                    >
+                      <FlashSaleCard product={flashSaleProduct} />
+                    </Link>
                   ))}
               </div>
             </div>

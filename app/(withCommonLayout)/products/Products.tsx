@@ -23,6 +23,8 @@ import Loader from "@/app/components/sharred/Loader";
 
 import "rc-rate/assets/index.css";
 import { Button } from "@nextui-org/button";
+import { Card, Skeleton } from "@nextui-org/react";
+import NotFound from "@/app/components/sharred/NotFound";
 
 // import { useRouter } from "next/router";
 
@@ -110,6 +112,24 @@ const Products = () => {
     categoryProductDataLoading
   ) {
     return <Loader />;
+    // return (
+    //   <Card className="w-[400px] space-y-5 p-4 mt-10" radius="lg">
+    //     <Skeleton className="rounded-lg">
+    //       <div className="h-24 rounded-lg bg-default-300" />
+    //     </Skeleton>
+    //     <div className="space-y-3">
+    //       <Skeleton className="w-3/5 rounded-lg">
+    //         <div className="h-3 w-3/5 rounded-lg bg-default-200" />
+    //       </Skeleton>
+    //       <Skeleton className="w-4/5 rounded-lg">
+    //         <div className="h-3 w-4/5 rounded-lg bg-default-200" />
+    //       </Skeleton>
+    //       <Skeleton className="w-2/5 rounded-lg">
+    //         <div className="h-3 w-2/5 rounded-lg bg-default-300" />
+    //       </Skeleton>
+    //     </div>
+    //   </Card>
+    // );
   }
 
   // const handlecategoryChange = (e: any) => {
@@ -268,7 +288,7 @@ const Products = () => {
         ))}
 
       </div> */}
-      <div className=" md:hidden bg-white flex items-center justify-between mt-20 md:mt-44 mb-5 overflow-x-auto space-x-1 scrollbar-hide">
+      <div className=" lg:hidden bg-white flex items-center justify-between mt-[62px] sm:mt-[96px] lg:mt-44 mb-5 overflow-x-auto space-x-1 scrollbar-hide">
         <button
           // Added a unique key for better React rendering
           onClick={() => handleTabCategory("all")}
@@ -306,8 +326,8 @@ const Products = () => {
         ))}
       </div>
 
-      <div className="w-full md:mt-40 ">
-        <div className="md:block hidden">
+      <div className="w-full lg:mt-40 ">
+        <div className="lg:block hidden">
           {/* Sort Options */}
           <div className="flex justify-end gap-2 items-center">
             <span className="text-sm font-medium">Sort By:</span>
@@ -449,7 +469,9 @@ const Products = () => {
               ))}
             </div>
           ) : (
-            <p className="text-2xl mt-10">No product found..</p>
+            <div className="lg:mt-10  w-full min-h-[60vh]">
+              <NotFound />
+            </div>
           )}
         </div>
         <div className="md:block hidden">
@@ -458,6 +480,7 @@ const Products = () => {
               initialPage={currentPage as number}
               total={totalPages} // You should have this in your API response
               onChange={handlePageChange}
+              showControls
               // renderItem={generatePageNumbers}
             />
           </div>

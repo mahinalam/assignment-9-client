@@ -54,6 +54,7 @@ export interface IUser {
   shop?: IShop;
   order: IOrder[];
   review: IReview[];
+  profilePhoto: string;
 }
 
 export interface IShop {
@@ -84,8 +85,8 @@ export interface IProduct {
   id: string;
   name: string;
   description?: string;
-  newPrice: number;
-  oldPrice: number;
+  price: number;
+  discount: number;
   stock: number;
   isFlash: boolean;
   images: string[];
@@ -106,6 +107,8 @@ export interface IOrder {
   status: OrderStatus;
   totalPrice: number;
   customerShippingAddress: string;
+  customerEmail: string;
+  customerName: string;
   transactionId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -114,6 +117,7 @@ export interface IOrder {
   userId: string;
   user: IUser;
   orderItems: IOrderItem[];
+  cutomerProfilePhoto?: string;
 }
 
 export interface IOrderItem {
@@ -129,19 +133,6 @@ export interface IOrderItem {
   order: IOrder;
 }
 
-export interface IReview {
-  id: string;
-  rating: number;
-  comment?: string;
-  images?: string[];
-  createdAt: Date;
-  productId: string;
-  product: IProduct;
-  userId: string;
-  user: IUser;
-  isDeleted: boolean;
-}
-
 export interface IInput {
   variant?: "flat" | "bordered" | "faded" | "underlined";
   size?: "sm" | "md" | "lg";
@@ -151,6 +142,28 @@ export interface IInput {
   name: string;
   disabled?: boolean;
   id?: string;
+}
+
+export interface ICoupon {
+  id: string;
+  code: string;
+  discount: number;
+  type: "PERCENTAGE" | "FIXED";
+  expiration: string;
+  createdAt: string;
+  updatedAt: string;
+  isDeleted: boolean;
+}
+
+export interface IReview {
+  id: string;
+  comment: string;
+  rating: number;
+  images: string[];
+  productId: string;
+  userId: string;
+  isDeleted: boolean;
+  createdAt: string;
 }
 
 export type TQueryParam = {

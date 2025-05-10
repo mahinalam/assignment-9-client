@@ -8,7 +8,12 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 
-const DeleteModal = ({ isOpen, onOpenChange, handleDeleteProduct }: any) => {
+const DeleteModal = ({
+  isOpen,
+  onOpenChange,
+  handleDeleteProduct,
+  title,
+}: any) => {
   return (
     <>
       <Modal isOpen={isOpen} size="lg" onOpenChange={onOpenChange}>
@@ -16,10 +21,15 @@ const DeleteModal = ({ isOpen, onOpenChange, handleDeleteProduct }: any) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Delete Product
+                {title === "Store" ? "Block Store" : `Delete ${title}`}
               </ModalHeader>
               <ModalBody>
-                <p>Are you sure you want to delete this product?</p>
+                <p className="">
+                  {/* Are you sure you want to delete this {title}? */}
+                  {title === "Store"
+                    ? `Are you sure you want to block this ${title}?`
+                    : `Are you sure you want to delete this {title}?`}
+                </p>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

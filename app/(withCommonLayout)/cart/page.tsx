@@ -12,6 +12,7 @@ import CheckoutModal from "@/app/components/modal/CheckoutModal";
 import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
 import { RootState } from "@/app/redux/store";
 import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
+import Container from "@/app/components/sharred/Container";
 
 const AllCart = () => {
   const {
@@ -62,9 +63,10 @@ const AllCart = () => {
   console.log({ isSuccess });
 
   return (
-    <div className="mt-32 flex gap-4 min-h-[60vh]">
-      <div className="md:w-8/12">
-        {/* {cart?.data?.cartItems.length > 0 && (
+    <Container>
+      <div className=" flex gap-4 min-h-[60vh] lg:mt-[160px] md:mt-[96px] mt-[62px]">
+        <div className="md:w-8/12">
+          {/* {cart?.data?.cartItems.length > 0 && (
           <div className="flex items-center mb-4">
             <Checkbox
               isSelected={allItemsSelected} // Controlled by parent
@@ -73,53 +75,55 @@ const AllCart = () => {
             <span>Select All</span>
           </div>
         )} */}
-        {cart?.data?.cartItems.length > 0 ? (
-          cart?.data?.cartItems.map((cartItem: any, index: number) => (
-            <CartPage
-              // onCartRemoveWarningModalOpen={onCartRemoveWarningModalOpen}
-              key={index}
-              cartData={cartItem}
-              // isChecked={selectedItems.includes(cartItem?.product?.id)
-              // handleRemoveCart={handleRemoveCart}
-            />
-          ))
-        ) : (
-          <p>Your cart is empty.</p>
-        )}
-      </div>
-      {/* Right Section: Order Summary */}
-      <div className="md:w-4/12 bg-white shadow p-4 rounded">
-        <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-        <div className="flex justify-between mb-2">
-          <p className="text-gray-700">Subtotal items:</p>
-          <p>{cart?.data?.totalPrice}</p>
+          {cart?.data?.cartItems.length > 0 ? (
+            cart?.data?.cartItems.map((cartItem: any, index: number) => (
+              <CartPage
+                // onCartRemoveWarningModalOpen={onCartRemoveWarningModalOpen}
+                key={index}
+                cartData={cartItem}
+                // isChecked={selectedItems.includes(cartItem?.product?.id)
+                // handleRemoveCart={handleRemoveCart}
+              />
+            ))
+          ) : (
+            <p>Your cart is empty.</p>
+          )}
         </div>
-        <div className="flex justify-between mb-2">
-          <p className="text-gray-700">Shipping Fee:</p>
-          <p>৳ {Number(60)}</p>
-        </div>
-        <div className="border-t pt-4 flex justify-between text-lg font-bold">
-          <p>Total:</p>
-          <p>৳: {Number(60 + cart?.data?.totalPrice)}</p>
-          {/* <p>৳<p/> */}
+        {/* Right Section: Order Summary */}
+        <div className="md:w-4/12 bg-white shadow p-4 rounded">
+          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+          <div className="flex justify-between mb-2">
+            <p className="text-gray-700">Subtotal items:</p>
+            <p>{cart?.data?.totalPrice}</p>
+          </div>
+          <div className="flex justify-between mb-2">
+            <p className="text-gray-700">Shipping Fee:</p>
+            <p>৳ {Number(60)}</p>
+          </div>
+          <div className="border-t pt-4 flex justify-between text-lg font-bold">
+            <p>Total:</p>
+            <p>৳: {Number(60 + cart?.data?.totalPrice)}</p>
+            {/* <p>৳<p/> */}
 
-          {/* </Link> */}
+            {/* </Link> */}
+          </div>
+          <Button
+            className="w-full bg-primary text-white disabled:cursor-not-allowed"
+            disabled={cart?.data?.totalQuantity === 0}
+            onClick={() => onCheckoutModalOpen()}
+          >
+            Proceed to Checkout
+          </Button>
         </div>
-        <Button
-          className="w-full bg-primary text-white disabled:cursor-not-allowed"
-          disabled={cart?.data?.totalQuantity === 0}
-          onClick={() => onCheckoutModalOpen()}
-        >
-          Proceed to Checkout
-        </Button>
+        <CheckoutModal
+          handleCreateOrder={handleCreateOrder}
+          isOpen={isCheckoutModalOpen}
+          isSuccess={isSuccess}
+          onOpenChange={onCheckoutModalChange}
+          isForBuy={true}
+        />
       </div>
-      <CheckoutModal
-        handleCreateOrder={handleCreateOrder}
-        isOpen={isCheckoutModalOpen}
-        isSuccess={isSuccess}
-        onOpenChange={onCheckoutModalChange}
-      />
-    </div>
+    </Container>
   );
 };
 

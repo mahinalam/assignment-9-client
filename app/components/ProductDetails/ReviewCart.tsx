@@ -14,7 +14,7 @@ const ReviewCart = ({ item }: { item: IReview }) => {
     comment,
     createdAt,
     images,
-    user: { name },
+    // user: { name },
   } = item;
 
   return (
@@ -32,7 +32,7 @@ const ReviewCart = ({ item }: { item: IReview }) => {
       <div className="flex gap-2 items-center">
         {/* <p className="mt-0"> Sk Z.Verified Purchase</p> */}
         <span className="text-[#808080] text-[14px] md:block hidden">
-          {name}
+          {/* {name} */}
         </span>
         <span className="flex items-center ">
           <svg

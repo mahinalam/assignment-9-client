@@ -5,7 +5,7 @@ import { Input } from "@nextui-org/input";
 import React, { useState } from "react";
 import { Badge } from "@nextui-org/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 import Container from "../Container";
@@ -16,7 +16,11 @@ import { useGetAllCategoriesQuery } from "@/app/redux/features/category/category
 import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
 
-const Navbar = () => {
+const Navbar = ({
+  isHaveNavSection = true,
+}: {
+  isHaveNavSection?: boolean;
+}) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
   const [query, setQuery] = useState("");
@@ -34,7 +38,10 @@ const Navbar = () => {
 
   const { data: currentUserInfo, isLoading: curentUserInfoLoading } =
     useGetSingleUserQuery(user?.userId, { skip: !user?.userId });
+
   const dispatch = useDispatch();
+
+  const pathname = usePathname();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,11 +59,19 @@ const Navbar = () => {
     router.push(`/products?category=${categoryName}`);
   };
 
+  const handleNavigateForSmallDevice = (link: string) => {
+    setIsOpen(false);
+    router.push(link);
+  };
+
   return (
-    <div className="bg-primary text-white py-3 md:py-6 fixed top-0 right-0 left-0 z-10 md:h-[160px] px-3 sm:px-0">
+    <div
+      className={`bg-primary text-white py-3 md:py-6 fixed top-0 right-0 left-0 z-10  px-3 sm:px-0 ${isHaveNavSection ? "lg:h-[160px]" : "lg:h-[100px]"}`}
+    >
       <Container>
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <div className="flex items-center justify-between">
+            {/* home button */}
             <section className="font-bold text-2xl">
               <Link href="/">
                 <span className="md:text-xl text-base">Electromert</span>
@@ -149,163 +164,192 @@ const Navbar = () => {
         </div>
 
         {/* Dropdown & Navbar Links */}
-        <div
-          className={`md:flex hidden justify-between items-center gap-4 mt-6`}
-        >
+        {isHaveNavSection && (
           <div
-            className="relative inline-block"
-            onMouseEnter={() => setIsDropdownVisible(true)}
-            onMouseLeave={() => setIsDropdownVisible(false)}
+            className={`lg:flex hidden justify-between items-center gap-4 mt-6`}
           >
-            <div className="flex items-center gap-3 cursor-pointer">
-              <p className="m-0">All Categories</p>
-              <button>
-                <svg
-                  className="size-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            {isDropdownVisible && (
-              <div className="absolute left-0 z-10 w-60 bg-white rounded-lg shadow-lg border">
-                <ul className="py-2">
-                  {categoryData?.data?.map((category: any, index: any) => (
-                    <li
-                      key={index}
-                      className="px-4 py-2 text-sm text-left text-gray-700 hover:text-primary cursor-pointer"
-                    >
-                      <button onClick={() => handleCategory(category.id)}>
-                        {category.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <p>Home</p>
-            </Link>
-            <Link href="/products">
-              <p>Products</p>
-            </Link>
-            <Link href="/store">
-              <p>Shops</p>
-            </Link>
-            <Link href="/contact">
-              <p>Contact</p>
-            </Link>
-            {user && (
-              <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
-                <p>Dashboard</p>
-              </Link>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <button>Become a Seller</button>
             <div
-              className="relative cursor-pointer"
-              onMouseEnter={() => setIsOpen(true)}
-              onMouseLeave={() => setIsOpen(false)}
+              className="relative inline-block"
+              onMouseEnter={() => setIsDropdownVisible(true)}
+              onMouseLeave={() => setIsDropdownVisible(false)}
             >
-              {user && currentUserInfo?.data?.profilePhoto ? (
-                <>
-                  <div className="size-14 rounded-full">
-                    <img
-                      alt=""
-                      className="w-full h-full rounded-full"
-                      src={currentUserInfo?.data?.profilePhoto}
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  {" "}
+              <div className="flex items-center gap-3 cursor-pointer">
+                <p className="m-0">All Categories</p>
+                <button>
                   <svg
-                    className="size-14  w-full text-center "
+                    className="size-5"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth={1.5}
+                    strokeWidth="1.5"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
-                </>
-              )}
-              {/* bsolute rounded-xl shadow-md w-[40vw] md:w-[10vw] bg-black overflow-hidden right-0 top-12 text-sm */}
-              {isOpen && (
-                <div className="absolute  z-50  bg-white rounded-xl shadow-md w-[40vw] md:w-[10vw]  overflow-hidden right-0 top-12 text-sm">
-                  <div className="flex flex-col pl-4 cursor-pointer">
-                    {!user ? (
-                      <>
-                        <Link
-                          className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
-                          href="/login"
-                        >
-                          Login
-                        </Link>
-                        <Link
-                          className=" text-black  py-2 hover:bg-neutral-100 transition font-semibold"
-                          href="/signup"
-                        >
-                          Signup
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <Link
-                          className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
-                          href="/profile"
-                        >
-                          Profile
-                        </Link>
-                        <span
-                          className=" text-red-500  py-2 hover:bg-neutral-100 transition font-semibold"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </span>
-                      </>
-                    )}
-                  </div>
+                </button>
+              </div>
+              {isDropdownVisible && (
+                <div className="absolute left-0 z-10 w-60 bg-white rounded-lg shadow-lg border">
+                  <ul className="py-2">
+                    {categoryData?.data?.map((category: any, index: any) => (
+                      <li
+                        key={index}
+                        className="px-4 py-2 text-sm text-left text-gray-700 hover:text-primary cursor-pointer"
+                      >
+                        <button onClick={() => handleCategory(category.id)}>
+                          {category.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
+
+            <div className="flex items-center gap-4">
+              <Link
+                href="/"
+                className={` ${pathname === "/" ? "text-black" : ""}`}
+                // href="/"
+              >
+                <p>Home</p>
+              </Link>
+              <Link
+                className={` ${pathname === "/products" ? "text-black" : ""}`}
+                href="/products"
+              >
+                <p>Products</p>
+              </Link>
+              <Link
+                className={` ${pathname === "/store" ? "text-black" : ""}`}
+                href="/store"
+              >
+                <p>Shops</p>
+              </Link>
+              <Link
+                className={` ${pathname === "/contact" ? "text-black" : ""}`}
+                href="/contact"
+              >
+                <p>Contact</p>
+              </Link>
+              {user && (
+                <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
+                  <p>Dashboard</p>
+                </Link>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {/* <button>Become a Seller</button> */}
+              <div
+                className="relative cursor-pointer"
+                onMouseEnter={() => setIsOpen(true)}
+                onMouseLeave={() => setIsOpen(false)}
+              >
+                {user && currentUserInfo?.data?.profilePhoto ? (
+                  <>
+                    <div className="size-14 rounded-full">
+                      <img
+                        alt=""
+                        className="w-full h-full rounded-full"
+                        src={currentUserInfo?.data?.profilePhoto}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <svg
+                      className="size-14  w-full text-center "
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </>
+                )}
+                {/* bsolute rounded-xl shadow-md w-[40vw] md:w-[10vw] bg-black overflow-hidden right-0 top-12 text-sm */}
+                {isOpen && (
+                  <div className="absolute  z-50  bg-white rounded-xl shadow-md w-[40vw] md:w-[10vw]  overflow-hidden right-0 top-12 text-sm">
+                    <div className="flex flex-col pl-4 cursor-pointer">
+                      {!user ? (
+                        <>
+                          <Link
+                            className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
+                            href="/login"
+                          >
+                            Login
+                          </Link>
+                          <Link
+                            className=" text-black  py-2 hover:bg-neutral-100 transition font-semibold"
+                            href="/signup"
+                          >
+                            Signup
+                          </Link>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
+                            href="/profile"
+                          >
+                            Profile
+                          </Link>
+                          <span
+                            className=" text-red-500  py-2 hover:bg-neutral-100 transition font-semibold"
+                            onClick={handleLogout}
+                          >
+                            Logout
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="sm:hidden md:text-base text-sm absolute top-14 left-0 right-0 bg-white text-black shadow-md rounded-md p-4">
-            <Link href="/">
-              <p className="py-2 border-b-1 hover:text-primary">Home</p>
-            </Link>
-            <Link href="/products">
-              <p className="py-2 border-b-1">Products</p>
-            </Link>
-            <Link href="/store">
-              <p className="py-2 border-b-1">Shops</p>
-            </Link>
-            <Link href="/contact">
-              <p className="py-2 border-b-1">Contact</p>
-            </Link>
+          <div className="lg:hidden md:text-base text-sm absolute top-14 left-0 right-0 bg-white text-black shadow-md rounded-md p-4">
+            {/* <Link href="/"> */}
+            <p
+              onClick={() => handleNavigateForSmallDevice("/")}
+              className="py-2 border-b-1 hover:text-primary"
+            >
+              Home
+            </p>
+            {/* </Link> */}
+            <p
+              onClick={() => handleNavigateForSmallDevice("/products")}
+              className="py-2 border-b-1"
+            >
+              Products
+            </p>
+            <p
+              onClick={() => handleNavigateForSmallDevice("/store")}
+              className="py-2 border-b-1"
+            >
+              Shops
+            </p>
+            <p
+              onClick={() => handleNavigateForSmallDevice("/contact")}
+              className="py-2 border-b-1"
+            >
+              Contact
+            </p>
             {user && (
               <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
                 <p className="py-2 border-b-1">Dashboard</p>
@@ -314,7 +358,7 @@ const Navbar = () => {
           </div>
         )}
 
-        <div className="block md:hidden relative">
+        <div className="block lg:hidden relative">
           {smallSearchIcon && (
             <form
               className=" flex items-center fixed top-[62px]  w-full"
@@ -354,7 +398,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between">
             <div className="w-1/3">
               <button
-                className=" text-white"
+                className=" text-white md:pl-5"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <svg
@@ -374,12 +418,44 @@ const Navbar = () => {
               </button>
             </div>
             {/* logo section */}
-            <section className="w-1/3">
+            <section className="w-1/3 sm:hidden block">
               <Link href="/">Electromert</Link>
             </section>
+            {/* <div className="hidden sm:block md:hidden lg:hidden xl:hidden 2xl:hidden "> */}
+            <Input
+              className="w-full hidden sm:block lg:hidden xl:hidden 2xl:hidden "
+              placeholder="Search in Electromert"
+              radius="none"
+              size="lg"
+              type="text"
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button
+              className="bg-pink-200 border-0.5 border-pink-200 hidden sm:block  lg:hidden xl:hidden 2xl:hidden "
+              radius="none"
+              type="submit"
+              size="lg"
+            >
+              <svg
+                className="size-6 text-primary font-bold"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Button>
+            {/* </div> */}
             {/* cart & search icon */}
             <section className="w-1/3">
               <div className="flex items-center justify-end gap-2">
+                {/* search icon */}
                 <svg
                   onClick={() => setSmallSearchIcon((val) => !val)}
                   xmlns="http://www.w3.org/2000/svg"
@@ -388,7 +464,9 @@ const Navbar = () => {
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className={
-                    smallSearchIcon ? "text-slate-300 size-6" : "size-6 "
+                    smallSearchIcon
+                      ? "text-slate-300 size-6 block sm:hidden"
+                      : "size-6 block sm:hidden"
                   }
                 >
                   <path
@@ -398,7 +476,7 @@ const Navbar = () => {
                   />
                 </svg>
                 {/* cart icon*/}
-                <Link href="/cart" className="mt-2">
+                <Link href="/cart" className="mt-2 md:pr-5">
                   <Badge
                     className="bg-white text-primary text-xs font-bold"
                     content={user ? cartData?.data?.totalQuantity || 0 : 0}

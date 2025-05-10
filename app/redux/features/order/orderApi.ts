@@ -24,9 +24,18 @@ const orderApi = baseApi.injectEndpoints({
       },
     }),
     getVendorOrderHistory: builder.query({
-      query: (vendorId: string) => {
+      query: () => {
         return {
-          url: `/order/${vendorId}`,
+          url: `/order/vendor-order-history`,
+          method: "GET",
+        };
+      },
+      providesTags: ["order"],
+    }),
+    getAllOrderHistory: builder.query({
+      query: () => {
+        return {
+          url: `/order/order-history`,
           method: "GET",
         };
       },
@@ -71,4 +80,5 @@ export const {
   useApplyCouponCodeMutation,
   useGetUsersUnconfirmOrderQuery,
   useUpdateOrderStatusMutation,
+  useGetAllOrderHistoryQuery,
 } = orderApi;

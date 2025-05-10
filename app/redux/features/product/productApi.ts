@@ -41,13 +41,14 @@ const productApi = baseApi.injectEndpoints({
       providesTags: ["product"],
     }),
     getSingleProduct: builder.query({
-      query: (id: string) => `/product/${id}`,
+      query: (id: string) => `/product/single-product/${id}`,
       providesTags: ["product"],
     }),
     getAllVendorProducts: builder.query({
-      query: (id: string) => `/product/vendor-products/${id}`,
+      query: (shopId: string) => `/product/vendor-products/${shopId}`,
       providesTags: ["product"],
     }),
+
     createProduct: builder.mutation({
       query: (formData: FormData) => ({
         url: "/product",
