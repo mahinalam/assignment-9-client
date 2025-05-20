@@ -195,16 +195,18 @@ const Navbar = ({
               {isDropdownVisible && (
                 <div className="absolute left-0 z-10 w-60 bg-white rounded-lg shadow-lg border">
                   <ul className="py-2">
-                    {categoryData?.data?.map((category: any, index: any) => (
-                      <li
-                        key={index}
-                        className="px-4 py-2 text-sm text-left text-gray-700 hover:text-primary cursor-pointer"
-                      >
-                        <button onClick={() => handleCategory(category.id)}>
-                          {category.name}
-                        </button>
-                      </li>
-                    ))}
+                    {categoryData?.data?.data?.map(
+                      (category: any, index: any) => (
+                        <li
+                          key={index}
+                          className="px-4 py-2 text-sm text-left text-gray-700 hover:text-primary cursor-pointer"
+                        >
+                          <button onClick={() => handleCategory(category.id)}>
+                            {category.name}
+                          </button>
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
               )}

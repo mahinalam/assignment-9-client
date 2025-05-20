@@ -62,6 +62,8 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
   const { data: currentUserInfo, isLoading: currentUserInfoLoading } =
     useGetSingleUserQuery(userId);
 
+  console.log("currentuser info", currentUserInfo);
+
   const [createOrder] = useCreateOrderMutation();
   const [createCart] = useCreateCartMutation();
   const currentUser = useSelector((state: RootState) => state.auth.user?.email);
@@ -274,10 +276,6 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
             <section />
           </div>
         </div>
-        {/* </Container> */}
-        {/* details product reviews */}
-        {/* <Container> */}
-        {/* </Container> */}
         <div>
           {/* delivery & service for small devices */}
           <section className="lg:hidden block px-3 sm:px-0 bg-white mt-3">
@@ -369,23 +367,7 @@ const ProductIdPage = ({ params }: { params: { productId: string } }) => {
                   </div>
                 )}
               </div>
-              {/* {productData?.data?.review?.length === 0 && (
-                <div className="md:block hidden">
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <Rate
-                        allowHalf={false}
-                        className="text-[#FACA51] text-xl "
-                        count={5}
-                        value={5}
-                      />
-                    </div>
-                    <div className="text-gray-500 ">
-                      ({productData?.data?.review.length})
-                    </div>
-                  </div>
-                </div>
-              )} */}
+
               <div className="md:p-5">
                 {" "}
                 {reviewsData?.data?.data?.map((review: IReview) => (

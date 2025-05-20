@@ -112,53 +112,7 @@ const Products = () => {
     categoryProductDataLoading
   ) {
     return <Loader />;
-    // return (
-    //   <Card className="w-[400px] space-y-5 p-4 mt-10" radius="lg">
-    //     <Skeleton className="rounded-lg">
-    //       <div className="h-24 rounded-lg bg-default-300" />
-    //     </Skeleton>
-    //     <div className="space-y-3">
-    //       <Skeleton className="w-3/5 rounded-lg">
-    //         <div className="h-3 w-3/5 rounded-lg bg-default-200" />
-    //       </Skeleton>
-    //       <Skeleton className="w-4/5 rounded-lg">
-    //         <div className="h-3 w-4/5 rounded-lg bg-default-200" />
-    //       </Skeleton>
-    //       <Skeleton className="w-2/5 rounded-lg">
-    //         <div className="h-3 w-2/5 rounded-lg bg-default-300" />
-    //       </Skeleton>
-    //     </div>
-    //   </Card>
-    // );
   }
-
-  // const handlecategoryChange = (e: any) => {
-  //   const value = e.target.value;
-
-  //   if (value) {
-  //     // queryParams.push({name})
-  //     // queryParams.push({name})
-  //     setCategorySelected(value);
-  //   }
-  //   // console.log("value from category", value);
-  // };
-
-  // const handleSearchInput = (value: string) => {
-  //   console.log(value);
-
-  //   // Clear any existing "searchTerms" in queryParams
-  //   const updatedQueryParams = queryParams.filter(
-  //     (param) => param.name !== "searchTerms"
-  //   );
-
-  //   if (value) {
-  //     // Add the new "searchTerms" value
-  //     updatedQueryParams.push({ name: "searchTerms", value });
-  //   }
-
-  //   setParams(updatedQueryParams); // Update the query parameters
-  //   console.log("Updated Query Params:", updatedQueryParams);
-  // };
 
   // Handle search input
   const handleSearchInput = (value: string) => {
@@ -311,7 +265,7 @@ const Products = () => {
         >
           BestSale
         </button>
-        {categoriesDataInfo?.data?.map((category: ICategory) => (
+        {categoriesDataInfo?.data?.data?.map((category: ICategory) => (
           <button
             key={category.id} // Added a unique key for better React rendering
             onClick={() => handleTabCategory(category.id)}

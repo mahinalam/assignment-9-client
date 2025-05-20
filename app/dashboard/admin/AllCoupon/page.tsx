@@ -17,6 +17,7 @@ import DeleteModal from "@/app/components/modal/DeleteModal";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import { RootState } from "@/app/redux/store";
 import { useGetAllCouponsQuery } from "@/app/redux/features/coupon/couponApi";
+import { GoPlus } from "react-icons/go";
 
 const CouponPage = () => {
   const {
@@ -53,6 +54,17 @@ const CouponPage = () => {
 
   return (
     <>
+      <div className="flex justify-end mb-2">
+        <button
+          // onClick={onCategoryModalOpen}
+          className="flex bg-primary text-sm items-center gap-1 rounded-md text-white px-4 py-2"
+        >
+          <span>Create New</span>
+          <span>
+            <GoPlus size={20} />
+          </span>
+        </button>
+      </div>
       <Table aria-label="Example static collection table">
         <TableHeader>
           <TableColumn> CODE</TableColumn>
@@ -87,7 +99,7 @@ const CouponPage = () => {
                   </Button>
                 </TableCell>
               </TableRow>
-            ),
+            )
             // ))
           )}
         </TableBody>

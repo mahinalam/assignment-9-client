@@ -12,6 +12,7 @@ const SidebarButton = ({
   role,
   hasRightButton = false,
   handleCreateProductMNodalOpen,
+  className = "",
 }: {
   isOpen: boolean;
   setIsOpen: any;
@@ -19,6 +20,7 @@ const SidebarButton = ({
   role: string;
   hasRightButton?: boolean;
   handleCreateProductMNodalOpen?: any;
+  className?: any;
 }) => {
   //   const slide = () => {
   //     if (role === "user") {
@@ -31,7 +33,7 @@ const SidebarButton = ({
   // }
   //   };
   return (
-    <div className="flex items-center gap-2 ">
+    <div className={`flex items-center gap-2 ${className}`}>
       {/* {slide()} */}
       {role === "admin" && (
         <DrawerAdminSlide isOpen={isOpen} setIsOpen={setIsOpen} />

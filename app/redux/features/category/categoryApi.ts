@@ -1,12 +1,28 @@
+import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
 
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllCategories: builder.query({
-      query: () => ({
-        url: "/category",
-        method: "GET",
-      }),
+      // query: () => ({
+      //   url: "/category",
+      //   method: "GET",
+      // }),
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/category",
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["category"],
     }),
     getSingleCategory: builder.query({

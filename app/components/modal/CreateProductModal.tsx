@@ -30,10 +30,12 @@ export default function CreateProductModal({ isOpen, onOpenChange }) {
     return;
   }
 
-  const categoriesOption = categoriesData?.data?.map((item: ICategory) => ({
-    key: item.id,
-    label: item.name,
-  }));
+  const categoriesOption = categoriesData?.data?.data?.map(
+    (item: ICategory) => ({
+      key: item.id,
+      label: item.name,
+    })
+  );
 
   //   console.log("cartQuantity", cartQuantity);
   const onSubmit = (data: any) => {

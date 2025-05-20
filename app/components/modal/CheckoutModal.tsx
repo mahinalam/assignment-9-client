@@ -37,8 +37,8 @@ export default function CheckoutModal({
     const payload = {
       customerName: data.name,
       customerEmail: data.email,
-      customerPhone: data.phoneNumber,
-      customerShippingAddress: data.address,
+      phoneNumber: data.phoneNumber,
+      shippingAddress: data.address,
     };
 
     return handleCreateOrder(payload);

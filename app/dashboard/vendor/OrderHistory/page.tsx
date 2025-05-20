@@ -38,7 +38,7 @@ const ProductReviews = () => {
 
   const [deleteProduct] = useDeleteProductMutation();
 
-  // console.log({ vendorOrderHistory });
+  console.log("order history", vendorOrderHistory);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (vendorOrderHistoryLoading) {
@@ -61,6 +61,7 @@ const ProductReviews = () => {
     onDeleteModalOpen();
   };
 
+  console.log("email", vendorOrderHistory?.data?.shop?.order);
   return (
     <>
       <SidebarButton
@@ -69,27 +70,38 @@ const ProductReviews = () => {
         setIsOpen={setIsOpen}
         role="vendor"
       />
-      <Table aria-label="Example static collection table">
+      <Table aria-label="Example static collection table" className="mt-4">
         <TableHeader>
-          <TableColumn>Product</TableColumn>
+          <TableColumn>PRODUCT</TableColumn>
+          <TableColumn>USER EMAIL</TableColumn>
           <TableColumn>TRANSACTION ID</TableColumn>
           <TableColumn>PAYMENT STATUS </TableColumn>
-          <TableColumn>SHIPPING ADDRESS</TableColumn>
           <TableColumn>ORDER ITEMS</TableColumn>
           <TableColumn>TOTAL PRICE</TableColumn>
         </TableHeader>
 
         <TableBody>
-          {vendorOrderHistory?.data?.map((order: IOrder) => (
-            <TableRow key={order.id}>
-              <TableCell>{order?.customerEmail}</TableCell>
-              <TableCell>{order?.transactionId}</TableCell>
-              <TableCell>{order?.paymentStatus}</TableCell>
-              <TableCell>{order?.customerShippingAddress}</TableCell>
-              <TableCell>{order?.orderItems.length}</TableCell>
-              <TableCell>{order?.totalPrice}</TableCell>
-            </TableRow>
-          ))}
+          {vendorOrderHistory?.data?.shop?.order?.map((order: IOrder) =>
+            order?.orderItem?.map((item) => (
+              <TableRow key={order.id}>
+                <TableCell className="">
+                  <div className="flex items-center gap-1">
+                    <img
+                      alt=""
+                      className="size-12"
+                      src={item?.product?.images[0]}
+                    />
+                    <p>{item?.product?.name}</p>
+                  </div>
+                </TableCell>
+                <TableCell>{order?.customerEmail}</TableCell>
+                <TableCell>{order?.transactionId}</TableCell>
+                <TableCell>{order?.paymentStatus}</TableCell>
+                <TableCell>{order?.orderItem.length}</TableCell>
+                <TableCell>{order?.totalPrice}</TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
       <DeleteModal

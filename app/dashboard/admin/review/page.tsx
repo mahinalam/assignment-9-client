@@ -6,34 +6,32 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
   Tooltip,
+  Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import {
-  useGetAllOrderHistoryQuery,
-  useGetVendorOrderHistoryQuery,
-} from "@/app/redux/features/order/orderApi";
-import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
-import { RootState } from "@/app/redux/store";
-import { ICoupon, IOrder, IReview } from "@/types";
+
+import { TQueryParam } from "@/types";
 import Loader from "@/app/components/sharred/Loader";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import { CgProfile } from "react-icons/cg";
-import moment from "moment";
-import { useGetAllCouponsQuery } from "@/app/redux/features/coupon/couponApi";
+import { LuUser } from "react-icons/lu";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
 import {
   useDeleteReviewMutation,
   useGetAllReviewsQuery,
 } from "@/app/redux/features/review/reviewApi";
 import { toast } from "sonner";
+import EmptyState from "@/app/components/dashboard/EmptyState";
 
 const AllReviews = () => {
+  const [params, setParams] = useState<TQueryParam[] | undefined>([
+    { name: "page", value: 1 },
+    { name: "limit", value: 5 },
+  ]);
+  const [page, setPage] = useState(1);
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
@@ -45,7 +43,7 @@ const AllReviews = () => {
   //   console.log(vendorId);
 
   const { data: allReviews, isLoading: allReviewsLoading } =
-    useGetAllReviewsQuery(undefined);
+    useGetAllReviewsQuery(params);
 
   const [deleteReview] = useDeleteReviewMutation();
   console.log("all allReviews", allReviews);
@@ -60,6 +58,19 @@ const AllReviews = () => {
       </div>
     );
   }
+
+  const totalReviews = allReviews?.data?.meta?.total || 0;
+  const totalPages = Math.ceil(totalReviews / 5);
+  // pagination handler
+  const handlePageChange = (page: number) => {
+    const queryParams: TQueryParam[] = [];
+    queryParams.push(
+      { name: "page", value: page },
+      { name: "limit", value: 5 }
+    );
+    setParams(queryParams);
+  };
+
   // console.log(vendorOrderHistory);
   const handleDeleteReview = async () => {
     if (deleteModalId) {
@@ -78,78 +89,95 @@ const AllReviews = () => {
     onDeleteModalOpen();
   };
 
-  console.log("delete modal id", deleteModalId);
+  console.log("all reviews", allReviews);
   return (
     <>
-      <SidebarButton
-        title={"Reviews"}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        role="admin"
-      />
-      <Table aria-label="Example static collection table">
-        <TableHeader>
-          <TableColumn>PRODUCT</TableColumn>
-          <TableColumn>USER </TableColumn>
-          <TableColumn>RATING</TableColumn>
-          <TableColumn>ACTION</TableColumn>
-        </TableHeader>
+      {allReviews?.data?.data?.length > 0 ? (
+        <>
+          {" "}
+          <SidebarButton
+            title={"Reviews"}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            role="admin"
+          />
+          <Table aria-label="Example static collection table">
+            <TableHeader>
+              <TableColumn>PRODUCT</TableColumn>
+              <TableColumn>USER </TableColumn>
+              <TableColumn>RATING</TableColumn>
+              <TableColumn>ACTION</TableColumn>
+            </TableHeader>
 
-        <TableBody>
-          {allReviews?.data?.map((review: IReview) => (
-            <TableRow key={review.id}>
-              <TableCell>
-                <div className="flex  gap-2">
-                  <div>
-                    <img
-                      src={review?.product?.images?.[0]}
-                      alt=""
-                      className="size-[40px]"
-                    />
-                  </div>
-                  <div>
-                    <p>{review?.product?.name}</p>
-                    <p>{review?.product?.category?.name}</p>
-                  </div>
-                  {/* <p className="mr-12 lg:mr-0">{order.name}</p> */}
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex  gap-2">
-                  <div>
-                    {review?.user?.profilePhoto ? (
-                      // TODO: fixed customerProfilePhoto pronoun
-                      <img
-                        src={review?.user?.profilePhoto}
-                        alt=""
-                        className="size-[40px]"
-                      />
-                    ) : (
-                      <CgProfile size={40} />
-                    )}
-                  </div>
-                  <div>
-                    <p>{review?.user?.name}</p>
-                    <p>{review?.user?.email}</p>
-                  </div>
-                  {/* <p className="mr-12 lg:mr-0">{order.name}</p> */}
-                </div>
-              </TableCell>
-              <TableCell>{review.rating}</TableCell>
-              <TableCell>
-                <Tooltip content="Delete review" color="danger">
-                  <span
-                    onClick={() => handleDeleteModalOpen(review?.id)}
-                    className="text-lg text-danger cursor-pointer active:opacity-50"
-                  >
-                    <DeleteIcon />
-                  </span>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            <TableBody>
+              {allReviews?.data?.data?.map((review: any) => (
+                <TableRow key={review.id}>
+                  <TableCell>
+                    <div className="flex  gap-2">
+                      <div>
+                        <img
+                          src={review?.product?.images?.[0]}
+                          alt=""
+                          className="size-[40px]"
+                        />
+                      </div>
+                      <div>
+                        <p>{review?.product?.name}</p>
+                        <p>{review?.product?.category?.name}</p>
+                      </div>
+                      {/* <p className="mr-12 lg:mr-0">{order.name}</p> */}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex  gap-2">
+                      <div>
+                        {review?.customer?.profilePhoto ? (
+                          // TODO: fixed customerProfilePhoto pronoun
+                          <img
+                            src={review?.customer?.profilePhoto}
+                            alt=""
+                            className="size-[40px]"
+                          />
+                        ) : (
+                          <CgProfile size={40} />
+                        )}
+                      </div>
+                      <div>
+                        <p>{review?.customer?.name}</p>
+                        <p>{review?.customer?.email}</p>
+                      </div>
+                      {/* <p className="mr-12 lg:mr-0">{order.name}</p> */}
+                    </div>
+                  </TableCell>
+                  <TableCell>{review.rating}</TableCell>
+                  <TableCell>
+                    <Tooltip content="Delete review" color="danger">
+                      <span
+                        onClick={() => handleDeleteModalOpen(review?.id)}
+                        className="text-lg text-danger cursor-pointer active:opacity-50"
+                      >
+                        <DeleteIcon />
+                      </span>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div className="flex  justify-center mt-8">
+            <Pagination
+              page={page}
+              total={totalPages}
+              onChange={handlePageChange}
+              showControls
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <EmptyState message="No reviews yet!" label="Go Home" />
+        </>
+      )}
       <DeleteModal
         handleDeleteProduct={handleDeleteReview}
         isOpen={isDeleteModalOpen}

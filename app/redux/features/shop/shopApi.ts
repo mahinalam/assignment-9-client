@@ -1,3 +1,4 @@
+import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
 
 const shopApi = baseApi.injectEndpoints({
@@ -10,12 +11,24 @@ const shopApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["shop"],
     }),
+
     getAllShops: builder.query({
-      query: () => ({
-        url: "/shop",
-        method: "GET",
-      }),
-      providesTags: ["product", "shop"],
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/shop",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["shop", "product"],
     }),
     getVendorShop: builder.query({
       query: () => ({
@@ -32,6 +45,21 @@ const shopApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["shop"],
     }),
+    updateShop: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "/shop",
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["shop"],
+    }),
+    blockShop: builder.mutation({
+      query: (shopId: string) => ({
+        url: `/shop/${shopId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["shop"],
+    }),
   }),
 });
 
@@ -40,4 +68,6 @@ export const {
   useFollowShopMutation,
   useGetAllShopsQuery,
   useGetVendorShopQuery,
+  useBlockShopMutation,
+  useUpdateShopMutation,
 } = shopApi;

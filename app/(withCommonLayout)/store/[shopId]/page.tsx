@@ -37,6 +37,7 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
   if (vendorProductLoading) {
     return <Loader />;
   }
+  console.log("vendor all products", allProducts);
 
   const storeProductData = allProducts?.data;
   console.log("allProducts", allProducts);
@@ -89,7 +90,7 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 ">
-          {allProducts.data.products.map((product: IProduct) => (
+          {allProducts?.data?.product?.map((product: IProduct) => (
             <Link key={product.id} href={`/products/${product.id}`}>
               {" "}
               <ProductCart product={product} />

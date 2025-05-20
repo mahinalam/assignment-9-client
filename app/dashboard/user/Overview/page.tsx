@@ -5,16 +5,16 @@ import { useGetUserStatsQuery } from "@/app/redux/features/user/userApi";
 import Loader from "@/app/components/sharred/Loader";
 
 const UserOverViewPage = () => {
-  const { data: userStatsInfo, isLoading: userStatsLoading } =
-    useGetUserStatsQuery(null);
+  // const { data: userStatsInfo, isLoading: userStatsLoading } =
+  //   useGetUserStatsQuery(null);
 
-  console.log("stats", userStatsInfo);
-  if (userStatsLoading) {
-    return <Loader />;
-  }
+  // console.log("stats", userStatsInfo);
+  // if (userStatsLoading) {
+  //   return <Loader />;
+  // }
 
-  const { totalCartItems, totalFollowedShops, totalOrders, totalReviews } =
-    userStatsInfo?.data;
+  // const { totalCartItems, totalFollowedShops, totalOrders, totalReviews } =
+  //   userStatsInfo?.data;
 
   return (
     <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 md:gap-4 gap-3">
@@ -22,7 +22,7 @@ const UserOverViewPage = () => {
         <section>
           <div className="text-xl">
             <p>Total Orders</p>
-            <p>{totalOrders || 0}</p>
+            {/* <p>{totalOrders || 0}</p> */}
           </div>
         </section>
         <section>
@@ -46,7 +46,7 @@ const UserOverViewPage = () => {
         <section>
           <div className="text-xl">
             <p>Followed Shops</p>
-            <p>{totalFollowedShops || 0}</p>
+            {/* <p>{totalFollowedShops || 0}</p> */}
           </div>
         </section>
         <section>
@@ -70,7 +70,7 @@ const UserOverViewPage = () => {
         <section>
           <div className="text-xl">
             <p>Cart Items</p>
-            <p>{totalCartItems || 0}</p>
+            {/* <p>{totalCartItems || 0}</p> */}
           </div>
         </section>
         <section>
@@ -94,7 +94,7 @@ const UserOverViewPage = () => {
         <section>
           <div className="text-xl">
             <p>My Reviews</p>
-            <p>{totalReviews || 0}</p>
+            {/* <p>{totalReviews || 0}</p> */}
           </div>
         </section>
         <section>

@@ -8,11 +8,12 @@ import {
   TableCell,
   useDisclosure,
   Tooltip,
+  Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { IUser } from "@/types";
+import { IUser, TQueryParam } from "@/types";
 import Loader from "@/app/components/sharred/Loader";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import moment from "moment";
@@ -24,9 +25,14 @@ import {
   useGetAllUsersQuery,
 } from "@/app/redux/features/user/userApi";
 import { LuUser } from "react-icons/lu";
-LuUser;
+import EmptyState from "@/app/components/dashboard/EmptyState";
 
 const AllUsers = () => {
+  const [params, setParams] = useState<TQueryParam[] | undefined>([
+    { name: "page", value: 1 },
+    { name: "limit", value: 5 },
+  ]);
+  const [page, setPage] = useState(1);
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
@@ -38,7 +44,7 @@ const AllUsers = () => {
   //   console.log(vendorId);
 
   const { data: allUsers, isLoading: allUsersLoading } =
-    useGetAllUsersQuery(undefined);
+    useGetAllUsersQuery(params);
 
   const [deleteUser] = useDeleteUserMutation();
   console.log(" allUsers", allUsers);
@@ -53,6 +59,19 @@ const AllUsers = () => {
       </div>
     );
   }
+
+  const totalUsers = allUsers?.data?.meta?.total || 0;
+  const totalPages = Math.ceil(totalUsers / 5);
+  // pagination handler
+  const handlePageChange = (page: number) => {
+    const queryParams: TQueryParam[] = [];
+    queryParams.push(
+      { name: "page", value: page },
+      { name: "limit", value: 5 }
+    );
+    setParams(queryParams);
+  };
+
   // console.log(vendorOrderHistory);
   const handleDeleteUser = async () => {
     if (deleteModalId) {
@@ -73,64 +92,82 @@ const AllUsers = () => {
   console.log("delete modal id", deleteModalId);
   return (
     <div className="">
-      <SidebarButton
-        title={"Users"}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        role="admin"
-      />
-      <Table aria-label="Example static collection table">
-        <TableHeader>
-          <TableColumn>PROFILE</TableColumn>
-          <TableColumn>ROLE </TableColumn>
-          <TableColumn>STATUS</TableColumn>
-          <TableColumn>CREATED AT</TableColumn>
-          <TableColumn>ACTION</TableColumn>
-        </TableHeader>
+      {allUsers?.data?.data?.length > 0 ? (
+        <>
+          <SidebarButton
+            title={"Users"}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            role="admin"
+          />
+          <Table aria-label="Example static collection table">
+            <TableHeader>
+              <TableColumn>PROFILE</TableColumn>
+              <TableColumn>ROLE </TableColumn>
+              <TableColumn>CREATED AT</TableColumn>
+              <TableColumn>ACTION</TableColumn>
+            </TableHeader>
 
-        <TableBody>
-          {allUsers?.data?.map((user: IUser) => (
-            <TableRow key={user.id}>
-              <TableCell>
-                <div className="flex  gap-2">
-                  <div>
-                    {user?.profilePhoto ? (
-                      // TODO: fixed customerProfilePhoto pronoun
-                      <img
-                        src={user.profilePhoto}
-                        alt=""
-                        className="size-[40px]"
-                      />
-                    ) : (
-                      <LuUser size={40} />
-                    )}
-                  </div>
-                  <div>
-                    <p>{user?.name}</p>
-                    <p>{user?.email}</p>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>{user?.role}</TableCell>
-              <TableCell>{user?.status}</TableCell>
-              <TableCell>
-                {moment(user?.createdAt).format("DD MMM YYYY")}~
-                {moment(user?.createdAt).format("HH:mm:ss")}
-              </TableCell>
-              <TableCell>
-                <Tooltip content="Delete user" color="danger">
-                  <span
-                    onClick={() => handleDeleteModalOpen(user?.id)}
-                    className="text-lg text-danger cursor-pointer active:opacity-50"
-                  >
-                    <DeleteIcon />
-                  </span>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            <TableBody>
+              {allUsers?.data?.data?.map((user: IUser) => (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <div className="flex  gap-2">
+                      <div>
+                        {user?.profilePhoto ? (
+                          // TODO: fixed customerProfilePhoto pronoun
+                          <img
+                            src={user.profilePhoto}
+                            alt=""
+                            className="size-[40px]"
+                          />
+                        ) : (
+                          <LuUser size={40} />
+                        )}
+                      </div>
+                      <div>
+                        <p>{user?.name}</p>
+                        <p>{user?.email}</p>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>{user?.role}</TableCell>
+                  <TableCell>
+                    {moment(user?.createdAt).format("DD MMM YYYY")}~
+                    {moment(user?.createdAt).format("HH:mm:ss")}
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip content="Delete user" color="danger">
+                      <span
+                        onClick={() => handleDeleteModalOpen(user?.id)}
+                        className="text-lg text-danger cursor-pointer active:opacity-50"
+                      >
+                        <DeleteIcon />
+                      </span>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div className="flex  justify-center mt-8">
+            <Pagination
+              page={page}
+              total={totalPages}
+              onChange={handlePageChange}
+              showControls
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <EmptyState
+            message="Users found empty!"
+            label="Go Home"
+            address="/"
+          />
+        </>
+      )}
       <DeleteModal
         handleDeleteProduct={handleDeleteUser}
         isOpen={isDeleteModalOpen}

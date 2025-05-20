@@ -106,7 +106,7 @@ export interface IOrder {
   id: string;
   status: OrderStatus;
   totalPrice: number;
-  customerShippingAddress: string;
+  shippingAddress: string;
   customerEmail: string;
   customerName: string;
   transactionId: string;
@@ -116,8 +116,8 @@ export interface IOrder {
   paymentStatus: PaymentStatus;
   userId: string;
   user: IUser;
-  orderItems: IOrderItem[];
-  cutomerProfilePhoto?: string;
+  orderItem: IOrderItem[];
+  profilePhoto?: string;
 }
 
 export interface IOrderItem {

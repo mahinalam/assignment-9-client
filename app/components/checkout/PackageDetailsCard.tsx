@@ -4,8 +4,8 @@ import React from "react";
 
 const PackageDetailsCard = ({ item }: { item: any }) => {
   console.log("item", item);
-  const { quantity } = item;
-  const { newPrice, oldPrice, description, images } = item?.product;
+
+  const { price, oldPrice, description, images, quantity } = item;
 
   return (
     <div>
@@ -26,7 +26,7 @@ const PackageDetailsCard = ({ item }: { item: any }) => {
                 <span className="line-through text-gray-400 mr-2">
                   ৳ {oldPrice}
                 </span>
-                ৳ {newPrice}
+                ৳ {price}
               </p>
             </div>
             <div>

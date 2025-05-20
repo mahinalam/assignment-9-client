@@ -1,18 +1,29 @@
+import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllUsers: builder.query({
-      query: () => ({
-        url: "/user",
-        method: "GET",
-      }),
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/user",
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["user"],
     }),
-
     getSingleUser: builder.query({
-      query: (id) => ({
-        url: `/user/${id}`,
+      query: () => ({
+        url: `/user/single-user`,
         method: "GET",
       }),
       providesTags: ["user"],
@@ -45,8 +56,6 @@ const userApi = baseApi.injectEndpoints({
     }),
     updateMyProfile: builder.mutation({
       query: (formData: FormData) => {
-        console.log("from hook", formData);
-
         return {
           url: "/user",
           method: "PUT",

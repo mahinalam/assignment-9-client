@@ -17,7 +17,7 @@ const StorePage = () => {
     return <Loader />;
   }
 
-  // console.log("shopdata", shopData);
+  console.log("shopdata", shopData);
 
   return (
     <Container>

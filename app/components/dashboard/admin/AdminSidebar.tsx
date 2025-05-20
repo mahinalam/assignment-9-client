@@ -109,13 +109,13 @@ const AdminSidebar = ({ currentUserInfo }: any) => {
   return (
     <div className="lg:block hidden">
       <Link
-        href="/dashboard/vendor/profile"
+        href="/dashboard/admin/profile"
         className="hover:bg-gray-500 bg-red-500"
       >
         <SidebarComponent
           icon={<LuUserRoundPen />}
           title="Profile"
-          link="/dashboard/vendor/profile"
+          link="/dashboard/admin/profile"
           pathname={pathname}
         />
       </Link>
@@ -157,7 +157,7 @@ const AdminSidebar = ({ currentUserInfo }: any) => {
           pathname={pathname}
           link="/dashboard/admin/AllOrders"
           icon={<VscListOrdered />}
-          title="All Orders"
+          title="Orders"
         />
       </Link>
       <Link href="/dashboard/admin/coupon">

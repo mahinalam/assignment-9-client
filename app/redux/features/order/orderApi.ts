@@ -1,3 +1,4 @@
+import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
 
 const orderApi = baseApi.injectEndpoints({
@@ -33,10 +34,19 @@ const orderApi = baseApi.injectEndpoints({
       providesTags: ["order"],
     }),
     getAllOrderHistory: builder.query({
-      query: () => {
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
         return {
-          url: `/order/order-history`,
+          url: "/order/order-history",
           method: "GET",
+          params: params,
         };
       },
       providesTags: ["order"],

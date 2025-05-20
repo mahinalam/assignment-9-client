@@ -81,7 +81,7 @@ const layout = ({ children }: { children: ReactNode }) => {
       return <AdminSidebar currentUserInfo={currentUserInfo} />;
     } else if (userRole === "VENDOR") {
       return <VendorSidebar currentUserInfo={currentUserInfo} />;
-    } else if (userRole === "USER") {
+    } else if (userRole === "CUSTOMER") {
       return <UserSidebar currentUserInfo={currentUserInfo} />;
     } else {
       return null; // Fallback for unrecognized roles
@@ -124,7 +124,7 @@ const layout = ({ children }: { children: ReactNode }) => {
             {renderSidebar()}
           </div>
           {/* children*/}
-          <div className="lg:col-span-9 p-4 ">{children}</div>
+          <div className="lg:col-span-9  ">{children}</div>
         </div>
         <Footer />
       </div>

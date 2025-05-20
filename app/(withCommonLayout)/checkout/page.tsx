@@ -102,12 +102,12 @@ const CheckoutPage = () => {
           <div className="md:w-8/12">
             <BillingCard />
             <div>
-              {unconfirmOrder?.data?.orderItems?.length > 0 &&
-                unconfirmOrder?.data?.orderItems?.map(
+              {/* {unconfirmOrder?.data?.cartItem?.length > 0 &&
+                unconfirmOrder?.data?.cartItem?.map(
                   (item: any, index: number) => (
                     <PackageDetailsCard key={index} item={item} />
                   )
-                )}
+                )} */}
             </div>
           </div>
           <div className="md:w-4/12 bg-white shadow p-4 rounded">

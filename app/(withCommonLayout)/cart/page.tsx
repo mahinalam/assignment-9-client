@@ -52,9 +52,10 @@ const AllCart = () => {
 
     try {
       const orderResponse: any = await createOrder(orderPayload).unwrap();
-
+      console.log("order response", orderResponse);
       if (orderResponse?.success) {
-        router.push("/checkout");
+        window.location.href = orderResponse?.data?.payment_url;
+
         onClose();
       }
     } catch (err) {}

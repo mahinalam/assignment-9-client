@@ -117,7 +117,7 @@ const Categories = () => {
         <div className="block  bg-white">
           <section className="overflow-x-auto">
             <div className="flex gap-3 w-max">
-              {categoriesData?.data?.map((category: ICategory) => (
+              {categoriesData?.data?.data?.map((category: ICategory) => (
                 <Link
                   key={category.id}
                   className="flex-shrink-0  bg-white p-3 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-200 ease-in-out"

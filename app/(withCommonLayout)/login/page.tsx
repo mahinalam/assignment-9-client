@@ -37,6 +37,7 @@ const LoginPage = () => {
   //   // console.log("user", user);
   // };
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    console.log("login data", data);
     try {
       // Wait for the loginUser Promise to resolve
       const res = await loginUser(data).unwrap();

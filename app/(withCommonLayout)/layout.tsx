@@ -1,6 +1,8 @@
 import Container from "../components/sharred/Container";
 import Footer from "../components/sharred/Footer";
 import Navbar from "../components/sharred/navbar/Navbar";
+// import "./layout.css";
+import ScrollToTopButton from "./ScrollToTopBtn";
 // import { Navbar } from "../components/sharred/Navbar";
 
 export default function layout({ children }: { children: React.ReactNode }) {
@@ -11,6 +13,8 @@ export default function layout({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
       {/* </Container> */}
       <Footer />
+      <ScrollToTopButton />
+      {/* <button className="scrollToTopBtn">&#8593;</button> */}
     </div>
   );
 }

@@ -15,12 +15,16 @@ import { useSelector } from "react-redux";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
-import { useGetVendorProductReviewsQuery } from "@/app/redux/features/review/reviewApi";
+import {
+  useDeleteReviewMutation,
+  useGetVendorProductReviewsQuery,
+} from "@/app/redux/features/review/reviewApi";
 import { RootState } from "@/app/redux/store";
 import { IProduct, IReview } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
 import Loader from "@/app/components/sharred/Loader";
+import { toast } from "sonner";
 
 const ProductReviews = () => {
   const {
@@ -35,9 +39,9 @@ const ProductReviews = () => {
   const {
     data: vendorProductsReviews,
     isLoading: vendorProductsReviewsLoading,
-  } = useGetVendorProductReviewsQuery(vendorId as string);
+  } = useGetVendorProductReviewsQuery(undefined);
 
-  const [deleteProduct] = useDeleteProductMutation();
+  const [deleteReview] = useDeleteReviewMutation();
 
   console.log("vendorProductsReviews", vendorProductsReviews);
 
@@ -52,10 +56,18 @@ const ProductReviews = () => {
     );
   }
   //   console.log(isSuccess);
-  const handleDeleteProduct = () => {
-    if (deleteModalId) {
-      deleteProduct(deleteModalId);
-      onDeleteModalChange(); //   }
+  const handleDeleteProduct = async () => {
+    try {
+      if (deleteModalId) {
+        const res = await deleteReview(deleteModalId);
+        console.log("res", res);
+        if (res?.data?.success) {
+          toast.success("Review deleted successfully!");
+        }
+        onDeleteModalChange(); //   }
+      }
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
   const handleDeleteModalOpen = (id: string) => {
@@ -80,55 +92,41 @@ const ProductReviews = () => {
           <TableColumn>ACTION</TableColumn>
         </TableHeader>
         <TableBody>
-          {vendorProductsReviews?.data?.products?.map((product: IProduct) =>
-            product.review.map((review: IReview) => (
-              <TableRow key={review.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={product?.images[0]}
-                      alt=""
-                      className="size-[40px]"
-                    />
-                    <p className="mr-12 lg:mr-0">{product.name}</p>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {" "}
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={review?.user?.profilePhoto}
-                      alt=""
-                      className="size-[40px]"
-                    />
-                    <div>
-                      <p className="mr-12 lg:mr-0">{review?.user?.name}</p>
-                      <p className="mr-12 lg:mr-0">{review?.user?.email}</p>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>{review.rating}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-4">
-                    <Tooltip content="Delete review" color="danger">
-                      <span
-                        onClick={() => handleDeleteModalOpen(review?.id)}
-                        className="text-lg text-danger cursor-pointer active:opacity-50"
-                      >
-                        <DeleteIcon />
-                      </span>
-                    </Tooltip>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+          {vendorProductsReviews?.data?.map((review: any) => (
+            <TableRow key={review.id}>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={review?.product?.images[0]}
+                    alt=""
+                    className="size-[40px]"
+                  />
+                  <p className="mr-12 lg:mr-0">{review.product?.name}</p>
+                </div>
+              </TableCell>
+              <TableCell>{review?.customer.email}</TableCell>
+              <TableCell>{review.rating}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-4">
+                  <Tooltip content="Delete review" color="danger">
+                    <span
+                      onClick={() => handleDeleteModalOpen(review?.id)}
+                      className="text-lg text-danger cursor-pointer active:opacity-50"
+                    >
+                      <DeleteIcon />
+                    </span>
+                  </Tooltip>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteModalChange}
+        title="Review"
       />
     </>
   );

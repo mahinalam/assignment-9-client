@@ -69,13 +69,6 @@ const CreateCoupon = () => {
                   />
                 </div>
               </div>
-              <div className="py-3">
-                <GTInput
-                  label="Min. Purchase"
-                  name="minPurchase"
-                  type="number"
-                />
-              </div>
               <Button
                 className="my-3 w-full rounded-md bg-primary  font-semibold text-white"
                 isLoading={isLoading && isSuccess}

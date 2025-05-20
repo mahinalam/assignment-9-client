@@ -48,8 +48,7 @@ const FlashSale = () => {
         <Container>
           <div className="hidden   xl:block ">
             <Title title="Flash Sale" />
-            <div className="grid   grid-cols-6 gap-4 ">
-              <SkeletonComponent />
+            <div className="grid   grid-cols-5 gap-4 ">
               <SkeletonComponent />
               <SkeletonComponent />
               <SkeletonComponent />
@@ -67,7 +66,7 @@ const FlashSale = () => {
   console.log("flash sale proudcts", flashProductsData);
   return (
     <Container>
-      <div className="w-full px-3 sm:px-0 border-1">
+      <div className="w-full  border-1">
         <div>
           <div className="lg:block hidden">
             <Title title="Flash Sale" />
@@ -139,7 +138,8 @@ const FlashSale = () => {
 
             {/* Desktop View */}
             <div className="hidden md:block bg-white">
-              <div className="grid  sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 mt-2 gap-4">
+              <div className="grid  sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
+                {/* <div className="grid  grid-cols-2"> */}
                 {flashProductsData?.data?.data?.map(
                   (flashSaleProduct: IProduct) => (
                     <Link

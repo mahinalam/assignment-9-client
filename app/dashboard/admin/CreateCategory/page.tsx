@@ -11,7 +11,7 @@ import { useCreateCategoryMutation } from "@/app/redux/features/category/categor
 import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import { RootState } from "@/app/redux/store";
 
-const CreateBrand = () => {
+const CreateCategory = () => {
   const [addCategory, { isSuccess, isLoading }] = useCreateCategoryMutation();
 
   const user = useSelector((state: RootState) => state.auth.user?.userId);
@@ -69,4 +69,4 @@ const CreateBrand = () => {
   );
 };
 
-export default CreateBrand;
+export default CreateCategory;
