@@ -31,10 +31,21 @@ const shopApi = baseApi.injectEndpoints({
       providesTags: ["shop", "product"],
     }),
     getVendorShop: builder.query({
-      query: () => ({
-        url: "/shop/vendor-shop",
-        method: "GET",
-      }),
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/shop/vendor-shop",
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["product", "shop"],
     }),
     followShop: builder.mutation({

@@ -97,7 +97,7 @@ const productApi = baseApi.injectEndpoints({
     updateProduct: builder.mutation({
       query: (formData: FormData) => ({
         url: "/product",
-        method: "POST",
+        method: "PUT",
         body: formData,
       }),
       invalidatesTags: ["product"],
@@ -130,4 +130,5 @@ export const {
   useGetAllFeaturedProductsQuery,
   useGetAllFlashProductsQuery,
   useUpdateProductStatusMutation,
+  useUpdateProductMutation,
 } = productApi;

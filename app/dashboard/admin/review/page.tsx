@@ -25,6 +25,7 @@ import {
 } from "@/app/redux/features/review/reviewApi";
 import { toast } from "sonner";
 import EmptyState from "@/app/components/dashboard/EmptyState";
+import ReviewsLoading from "./Loading";
 
 const AllReviews = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -54,7 +55,7 @@ const AllReviews = () => {
   if (allReviewsLoading) {
     return (
       <div>
-        <Loader />
+        <ReviewsLoading />
       </div>
     );
   }

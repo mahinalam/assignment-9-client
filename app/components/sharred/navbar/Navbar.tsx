@@ -64,6 +64,10 @@ const Navbar = ({
     router.push(link);
   };
 
+  const customerRole =
+    userRole?.toLowerCase() === "CUSTOMER" && "/dashboard/user/Overview";
+  //  <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
+
   return (
     <div
       className={`bg-primary text-white py-3 md:py-6 fixed top-0 right-0 left-0 z-10  px-3 sm:px-0 ${isHaveNavSection ? "lg:h-[160px]" : "lg:h-[100px]"}`}
@@ -239,8 +243,10 @@ const Navbar = ({
                 <p>Contact</p>
               </Link>
               {user && (
-                <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
-                  <p>Dashboard</p>
+                <Link
+                  href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/Overview`}
+                >
+                  Dashboard
                 </Link>
               )}
             </div>

@@ -26,6 +26,7 @@ import {
 import { MdBlock } from "react-icons/md";
 import "./Store.css";
 import EmptyState from "@/app/components/dashboard/EmptyState";
+import StoresLoading from "./Loading";
 
 const AllShops = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -55,7 +56,7 @@ const AllShops = () => {
   if (allShopsLoading) {
     return (
       <div>
-        <Loader />
+        <StoresLoading />
       </div>
     );
   }
@@ -170,7 +171,7 @@ const AllShops = () => {
       ) : (
         <>
           <EmptyState
-            message="Vendor's stores found empty"
+            message="Vendor's stores found empty!"
             address="/"
             label="Go Home"
           />

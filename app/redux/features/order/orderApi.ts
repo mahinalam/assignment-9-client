@@ -25,10 +25,19 @@ const orderApi = baseApi.injectEndpoints({
       },
     }),
     getVendorOrderHistory: builder.query({
-      query: () => {
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
         return {
           url: `/order/vendor-order-history`,
           method: "GET",
+          params: params,
         };
       },
       providesTags: ["order"],
@@ -51,16 +60,24 @@ const orderApi = baseApi.injectEndpoints({
       },
       providesTags: ["order"],
     }),
+
     getUsersOrderHistory: builder.query({
-      query: () => {
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
         return {
-          url: `/order/user-order-history`,
+          url: "/order/user-order-history",
           method: "GET",
+          params: params,
         };
       },
       providesTags: ["order"],
     }),
-
     getUsersUnconfirmOrder: builder.query({
       query: () => {
         return {
@@ -80,6 +97,15 @@ const orderApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["order"],
     }),
+    deleteUsersOrder: builder.mutation({
+      query: (orderItemId: string) => {
+        return {
+          url: `/order/${orderItemId}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["order"],
+    }),
   }),
 });
 
@@ -91,4 +117,5 @@ export const {
   useGetUsersUnconfirmOrderQuery,
   useUpdateOrderStatusMutation,
   useGetAllOrderHistoryQuery,
+  useDeleteUsersOrderMutation,
 } = orderApi;

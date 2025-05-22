@@ -86,7 +86,7 @@ const ProductReviews = () => {
     if (deleteModalId) {
       const { data } = await deleteCategory(deleteModalId);
       if (data?.success) {
-        toast.success("Category Deleted Successfull.");
+        toast.success("Category Deleted Successfully.");
       } else {
         toast.error("Failed to delete category.");
       }

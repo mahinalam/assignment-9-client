@@ -14,6 +14,7 @@ import Container from "@/app/components/sharred/Container";
 import { verifyToken } from "@/app/utils/verifyToken";
 import { setUser } from "@/app/redux/features/auth/authSlice";
 import { useLoginMutation } from "@/app/redux/features/auth/authApi";
+import { useState } from "react";
 
 const LoginPage = () => {
   // const [login] = useLoginMutation();
@@ -25,6 +26,13 @@ const LoginPage = () => {
   // const redirect = searchParams.get("redirect");
 
   const [loginUser, result] = useLoginMutation();
+  const [userLoginDefaultValue, setUserLoginDefaultValue] = useState<
+    | {
+        email: string;
+        password: string;
+      }
+    | undefined
+  >(undefined);
 
   //   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
 
@@ -56,6 +64,7 @@ const LoginPage = () => {
     }
   };
 
+  console.log("user deffault", userLoginDefaultValue);
   return (
     <>
       <Container>
@@ -63,13 +72,63 @@ const LoginPage = () => {
           <div className="md:w-[33%] mx-auto border p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Login</p>
+              <div className="flex gap-2">
+                <button
+                  className="bg-primary"
+                  onClick={() =>
+                    setUserLoginDefaultValue({
+                      email: "customer@gmail.com",
+                      password: "123456",
+                    })
+                  }
+                >
+                  Vendor Credentials
+                </button>
+                <button
+                  className="bg-primary"
+                  onClick={() =>
+                    setUserLoginDefaultValue({
+                      email: "customer@gmail.com",
+                      password: "123456",
+                    })
+                  }
+                >
+                  Admin Credentials
+                </button>
+                <button
+                  className="bg-primary"
+                  onClick={() =>
+                    setUserLoginDefaultValue({
+                      email: "customer@gmail.com",
+                      password: "123456",
+                    })
+                  }
+                >
+                  Customer Credentials
+                </button>
+              </div>
             </div>
             <GTForm onSubmit={onSubmit}>
               <div className="py-3">
-                <GTInput label="Email" name="email" type="email" />
+                <GTInput
+                  defaultValue={
+                    userLoginDefaultValue?.email && userLoginDefaultValue?.email
+                  }
+                  label="Email"
+                  name="email"
+                  type="email"
+                />
               </div>
               <div className="py-3">
-                <GTInput label="Password" name="password" type="password" />
+                <GTInput
+                  defaultValue={
+                    userLoginDefaultValue?.password &&
+                    userLoginDefaultValue.password
+                  }
+                  label="Password"
+                  name="password"
+                  type="password"
+                />
               </div>
 
               <Button

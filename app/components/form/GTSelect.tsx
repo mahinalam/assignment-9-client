@@ -19,6 +19,7 @@ export default function GTSelect({
   variant = "bordered",
   disabled,
   id,
+  defaultSelectedKeys,
 }: IProps) {
   const {
     register,
@@ -33,6 +34,7 @@ export default function GTSelect({
       isDisabled={disabled}
       label={label}
       variant={variant}
+      defaultSelectedKeys={[defaultSelectedKeys as any]}
     >
       {options.map((option) => (
         <SelectItem key={option.key}>{option.label}</SelectItem>

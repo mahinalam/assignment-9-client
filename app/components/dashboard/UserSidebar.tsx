@@ -63,7 +63,9 @@ import { FiUser } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { logout } from "@/app/redux/features/auth/authSlice";
-
+import { RiDashboardLine } from "react-icons/ri";
+import { AiTwotoneHeart } from "react-icons/ai";
+import { RiShoppingBag4Line } from "react-icons/ri";
 const UserSidebar = ({ currentUserInfo }: { currentUserInfo: any }) => {
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -85,10 +87,23 @@ const UserSidebar = ({ currentUserInfo }: { currentUserInfo: any }) => {
             <FiUser size={70} className="rounded-full" />
           )}
         </div>
-        <p className="font-bold">{currentUserInfo?.data?.name}</p>
+        <p className="font-bold">{currentUserInfo?.data?.customer?.name}</p>
         <p>{currentUserInfo?.data?.email}</p>
       </div>
       <div className="space-y-2">
+        <Link
+          href="/dashboard/user/Overview"
+
+          // className={` ${pathname === "//dashboard/user/profile" ? "text-black" : ""}`}
+          // className={`${pathname === "/dashboard/user/profile" ? "bg-gray-100" : ""}`}
+        >
+          <SidebarComponent
+            pathname={pathname}
+            link="/dashboard/user/Overview"
+            icon={<RiDashboardLine />}
+            title="Overview"
+          />
+        </Link>
         <Link
           href="/dashboard/user/profile"
 
@@ -102,7 +117,16 @@ const UserSidebar = ({ currentUserInfo }: { currentUserInfo: any }) => {
             title="Profile"
           />
         </Link>
-        <Link href="/dashboard/user/MyOrder">
+        <Link href="/dashboard/user/wishlist">
+          <SidebarComponent
+            pathname={pathname}
+            link="/dashboard/user/wishlist"
+            icon={<AiTwotoneHeart />}
+            title="Wishlist"
+          />
+        </Link>
+
+        <Link href="/dashboard/user/FollowedShops">
           {" "}
           <SidebarComponent
             link="/dashboard/user/MyOrder"
@@ -111,13 +135,12 @@ const UserSidebar = ({ currentUserInfo }: { currentUserInfo: any }) => {
             title="Orders"
           />
         </Link>
-        <Link href="/dashboard/user/settings">
-          {" "}
+        <Link href="/dashboard/user/wishlist">
           <SidebarComponent
-            link="/dashboard/user/settings"
             pathname={pathname}
-            icon={<RiSettings2Line />}
-            title="Settings"
+            link="/dashboard/user/FollowedShops"
+            icon={<RiShoppingBag4Line />}
+            title="Following Shops"
           />
         </Link>
         <div onClick={handleLogout}>

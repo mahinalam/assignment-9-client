@@ -6,25 +6,24 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
   Tooltip,
+  Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import {
   useDeleteReviewMutation,
   useGetVendorProductReviewsQuery,
 } from "@/app/redux/features/review/reviewApi";
 import { RootState } from "@/app/redux/store";
-import { IProduct, IReview } from "@/types";
+import { TQueryParam } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
-import Loader from "@/app/components/sharred/Loader";
 import { toast } from "sonner";
+import ReviewsLoading from "./Loading";
 
 const ProductReviews = () => {
   const {
@@ -34,12 +33,17 @@ const ProductReviews = () => {
   } = useDisclosure();
 
   const vendorId = useSelector((state: RootState) => state.auth.user?.userId);
+  const [params, setParams] = useState<TQueryParam[] | undefined>([
+    { name: "page", value: 1 },
+    { name: "limit", value: 5 },
+  ]);
 
   console.log("vendor", vendorId);
   const {
     data: vendorProductsReviews,
     isLoading: vendorProductsReviewsLoading,
-  } = useGetVendorProductReviewsQuery(undefined);
+    isFetching,
+  } = useGetVendorProductReviewsQuery(params);
 
   const [deleteReview] = useDeleteReviewMutation();
 
@@ -47,14 +51,29 @@ const ProductReviews = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
 
-  if (vendorProductsReviewsLoading) {
+  if (vendorProductsReviewsLoading || isFetching) {
     return (
       <div>
-        <Loader />
+        <ReviewsLoading />
       </div>
     );
   }
+
+  const totalReviews = vendorProductsReviews?.data?.meta?.total || 0;
+  const totalPages = Math.ceil(totalReviews / 5);
+
+  // pagination handler
+  const handlePageChange = (page: number) => {
+    const queryParams: TQueryParam[] = [];
+    queryParams.push(
+      { name: "page", value: page },
+      { name: "limit", value: 5 }
+    );
+    setParams(queryParams);
+  };
+
   //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     try {
@@ -92,7 +111,7 @@ const ProductReviews = () => {
           <TableColumn>ACTION</TableColumn>
         </TableHeader>
         <TableBody>
-          {vendorProductsReviews?.data?.map((review: any) => (
+          {vendorProductsReviews?.data?.data?.map((review: any) => (
             <TableRow key={review.id}>
               <TableCell>
                 <div className="flex items-center gap-2">
@@ -122,6 +141,14 @@ const ProductReviews = () => {
           ))}
         </TableBody>
       </Table>
+      <div className="flex  justify-center mt-8">
+        <Pagination
+          page={page}
+          total={totalPages}
+          onChange={handlePageChange}
+          showControls
+        />
+      </div>
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}

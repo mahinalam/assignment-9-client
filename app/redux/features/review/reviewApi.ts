@@ -21,8 +21,26 @@ const reviewApi = baseApi.injectEndpoints({
       },
       providesTags: ["review"],
     }),
+    // getVendorProductReviews: builder.query({
+    //   query: () => `/review/vendor-products-reviews`,
+    //   providesTags: ["review"],
+    // }),
     getVendorProductReviews: builder.query({
-      query: () => `/review/vendor-products-reviews`,
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: `/review/vendor-products-reviews`,
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["review"],
     }),
     getProductReviews: builder.query({

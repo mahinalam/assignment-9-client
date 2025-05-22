@@ -26,6 +26,7 @@ import {
 } from "@/app/redux/features/user/userApi";
 import { LuUser } from "react-icons/lu";
 import EmptyState from "@/app/components/dashboard/EmptyState";
+import UsersLoading from "./Loading";
 
 const AllUsers = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -55,7 +56,7 @@ const AllUsers = () => {
   if (allUsersLoading) {
     return (
       <div>
-        <Loader />
+        <UsersLoading />
       </div>
     );
   }

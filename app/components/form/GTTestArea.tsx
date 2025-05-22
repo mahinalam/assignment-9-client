@@ -17,6 +17,7 @@ export default function GTTextArea({
   label,
   name,
   id,
+  defaultValue = "",
 }: IProps) {
   const {
     register,
@@ -35,6 +36,7 @@ export default function GTTextArea({
       size={size}
       type={type}
       variant={variant}
+      defaultValue={defaultValue}
     />
   );
 }

@@ -114,10 +114,10 @@ const layout = ({ children }: { children: ReactNode }) => {
 
   return (
     <DashboardContainer>
-      <div className="lg:mt-[100px] md:mt-[72px] mt-[62px]">
+      <div className="lg:mt-[100px] md:mt-[72px] mt-[62px] ">
         <Navbar isHaveNavSection={false} />
         {/* <div className="lg:grid lg:grid-cols-12 bg-[#F6F7F8]"> */}
-        <div className="lg:grid lg:grid-cols-12 ">
+        <div className="lg:grid lg:grid-cols-12">
           {/* sidebar */}
           <div className="lg:col-span-3 lg:mr-6 bg-white">
             {/* <SidebarComponent icon={<RiDashboardLine />} title="Dashboard" /> */}
@@ -126,7 +126,7 @@ const layout = ({ children }: { children: ReactNode }) => {
           {/* children*/}
           <div className="lg:col-span-9  ">{children}</div>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </DashboardContainer>
   );

@@ -142,6 +142,8 @@ export interface IInput {
   name: string;
   disabled?: boolean;
   id?: string;
+  defaultSelectedKeys?: string[];
+  defaultValue?: string;
 }
 
 export interface ICoupon {

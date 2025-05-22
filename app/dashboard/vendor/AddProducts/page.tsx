@@ -21,9 +21,6 @@ const AddProducts = () => {
   const [imagePreviews, setImagePreviews] = useState<string[] | []>([]);
   const [addProduct, { isSuccess, isLoading }] = useCreateProductMutation();
 
-  console.log("is success", isSuccess);
-  console.log("is loading", isLoading);
-
   const { data: categoriesData, isLoading: categoriesDataLoading } =
     useGetAllCategoriesQuery(null);
 
