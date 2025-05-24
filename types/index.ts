@@ -144,6 +144,7 @@ export interface IInput {
   id?: string;
   defaultSelectedKeys?: string[];
   defaultValue?: string;
+  rows?: number;
 }
 
 export interface ICoupon {

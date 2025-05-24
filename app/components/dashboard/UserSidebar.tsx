@@ -135,7 +135,16 @@ const UserSidebar = ({ currentUserInfo }: { currentUserInfo: any }) => {
             title="Orders"
           />
         </Link>
-        <Link href="/dashboard/user/wishlist">
+        <Link href="/dashboard/user/MyReviews">
+          {" "}
+          <SidebarComponent
+            link="/dashboard/user/MyReviews"
+            pathname={pathname}
+            icon={<VscListOrdered />}
+            title="Reviews"
+          />
+        </Link>
+        <Link href="/dashboard/user/FollowedShops">
           <SidebarComponent
             pathname={pathname}
             link="/dashboard/user/FollowedShops"

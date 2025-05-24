@@ -18,6 +18,7 @@ export default function GTTextArea({
   name,
   id,
   defaultValue = "",
+  rows,
 }: IProps) {
   const {
     register,
@@ -37,6 +38,7 @@ export default function GTTextArea({
       type={type}
       variant={variant}
       defaultValue={defaultValue}
+      maxRows={rows}
     />
   );
 }

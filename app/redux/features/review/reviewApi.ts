@@ -61,9 +61,40 @@ const reviewApi = baseApi.injectEndpoints({
       },
       providesTags: ["review"],
     }),
-    getUserProductReview: builder.query({
-      query: (id: string) => `review/user-products-reviews/${id}`,
+    getAllUsersReview: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: `/review/user-reviews`,
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["review"],
+    }),
+
+    createReview: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "/review",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["review"],
+    }),
+    createPublicReview: builder.mutation({
+      query: (payload: any) => ({
+        url: "/review/public",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["review"],
     }),
     deleteReview: builder.mutation({
       query: (id) => ({
@@ -79,6 +110,8 @@ export const {
   useGetAllReviewsQuery,
   useGetVendorProductReviewsQuery,
   useGetProductReviewsQuery,
-  useGetUserProductReviewQuery,
+  useGetAllUsersReviewQuery,
   useDeleteReviewMutation,
+  useCreateReviewMutation,
+  useCreatePublicReviewMutation,
 } = reviewApi;

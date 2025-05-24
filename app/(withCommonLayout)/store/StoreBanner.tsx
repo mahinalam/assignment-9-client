@@ -7,16 +7,24 @@ import { Input } from "@nextui-org/input";
 import { IoSearchOutline } from "react-icons/io5";
 import { TQueryParam } from "@/types";
 
-const StoreBanner = ({ isFollower, storeData, handleFollowShop }: any) => {
+const StoreBanner = ({
+  isFollower,
+  storeData,
+  handleFollowShop,
+  hanldeUnfollowShop,
+  followLoading,
+  unFollowLoading,
+}: any) => {
   const { follower, id, logo, name, description, createdAt } = storeData;
 
   // console.log("storedata", storeData);
+  console.log("is follower", isFollower);
   const [value, setValue] = useState("");
-  console.log("value from store baneer", value);
+
   return (
     <section className="lg:px-2 lg:pt-8 pt-6">
-      <div className="flex items-center justify-between">
-        <div className="flex lg:gap-6 gap-2">
+      <div className="flex items-center justify-between ">
+        <div className="flex justify-between lg:gap-6 gap-4">
           {/* image */}
           <section>
             <div className="relative ">
@@ -61,13 +69,25 @@ const StoreBanner = ({ isFollower, storeData, handleFollowShop }: any) => {
 
           {/* follow button */}
           <div className="text-end lg:text-start ">
-            <Button
-              size="sm"
-              className="text-[#2abbe8] bg-white mt-4 border-[#2abbe8] border-1 hover:bg-[#2abbe8] hover:text-white"
-              onClick={() => handleFollowShop()}
-            >
-              {!isFollower ? "Follow" : "Following"}
-            </Button>
+            {isFollower ? (
+              <Button
+                disabled={unFollowLoading}
+                size="sm"
+                className="text-white bg-primary mt-4 border-primary border-1 hover:bg-primary"
+                onClick={() => hanldeUnfollowShop()}
+              >
+                Unfollow
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                className="text-white bg-primary mt-4 border-primary border-1 hover:bg-primary"
+                onClick={() => handleFollowShop()}
+                disabled={followLoading}
+              >
+                Follow
+              </Button>
+            )}
           </div>
         </div>
         {/* <section>

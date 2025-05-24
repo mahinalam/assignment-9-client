@@ -54,7 +54,36 @@ const shopApi = baseApi.injectEndpoints({
         method: "POST",
         body: payload,
       }),
-      invalidatesTags: ["shop"],
+      invalidatesTags: ["following_shop"],
+    }),
+    unFollowShop: builder.mutation({
+      query: (shopId: string) => {
+        console.log("shop id", shopId);
+        return {
+          url: `/shop/user/unfollow-shop/${shopId}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["following_shop"],
+    }),
+
+    getUsersFollowingShops: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+
+        return {
+          url: "/shop/following-shop",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["following_shop"],
     }),
     updateShop: builder.mutation({
       query: (formData: FormData) => ({
@@ -63,6 +92,13 @@ const shopApi = baseApi.injectEndpoints({
         body: formData,
       }),
       invalidatesTags: ["shop"],
+    }),
+    checkIsFollowing: builder.query({
+      query: (shopId: string) => ({
+        url: `/shop/isFollowing/${shopId}`,
+        method: "GET",
+      }),
+      providesTags: ["following_shop"],
     }),
     blockShop: builder.mutation({
       query: (shopId: string) => ({
@@ -81,4 +117,7 @@ export const {
   useGetVendorShopQuery,
   useBlockShopMutation,
   useUpdateShopMutation,
+  useGetUsersFollowingShopsQuery,
+  useUnFollowShopMutation,
+  useCheckIsFollowingQuery,
 } = shopApi;

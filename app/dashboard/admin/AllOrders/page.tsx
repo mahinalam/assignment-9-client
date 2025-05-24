@@ -40,6 +40,7 @@ const ProductReviews = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
+  const [page, setPage] = useState(1);
 
   const vendorId = useSelector((state: RootState) => state.auth.user?.userId);
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +55,6 @@ const ProductReviews = () => {
 
   console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
 
   if (allOrdersLoading) {
     return (
@@ -149,10 +149,9 @@ const ProductReviews = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               page={page}
-              total={totalPages} // You should have this in your API response
+              total={totalPages}
               onChange={handlePageChange}
               showControls
-              // renderItem={generatePageNumbers}
             />
           </div>
         </>

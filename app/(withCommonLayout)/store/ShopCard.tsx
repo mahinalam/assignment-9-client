@@ -3,7 +3,10 @@ import moment from "moment";
 import Image from "next/image";
 
 const ShopCard = ({ shop }: any) => {
-  const { name, logo, description, products, followingShop, createdAt } = shop;
+  const { name, logo, description, product, followingShop, createdAt } = shop;
+  console.log("products", product);
+
+  // #64748B
 
   return (
     <div className="border p-4 bg-white rounded-lg overflow-hidden shadow-sm transition-transform duration-300  hover:shadow-md">
@@ -12,8 +15,9 @@ const ShopCard = ({ shop }: any) => {
         {/* <Image alt="" height={200} src={logo} width={200} /> */}
         <img className="lg:size-[160px] size-[100px]" alt="" src={logo} />
       </div>
+      {/* small view */}
       <div className="md:hidden block text-center ">
-        <p className="mt-1 font-semibold ">{shop.name}</p>
+        <p className="mt-1 font-bold ">{shop.name}</p>
         <div className="flex items-center justify-center mb-2 mt-1 text-sm text-slate-500">
           <svg
             className="w-4 h-4 mr-1"
@@ -29,13 +33,14 @@ const ShopCard = ({ shop }: any) => {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="">{products?.length} products</p>
+          <p className="font-semibold">{product?.length} products</p>
         </div>
       </div>
       {/* Text Section */}
-      <div className="space-y-3 py-5 pl-4 md:block hidden">
-        <section>
-          <div className="flex items-center">
+      {/* large view */}
+      <div className="space-y-3  md:block hidden">
+        <section className="mb-4">
+          <div className="flex items-center justify-center">
             <button>
               <svg
                 className="w-6 h-6"
@@ -56,11 +61,11 @@ const ShopCard = ({ shop }: any) => {
           </div>
         </section>
         <section>
-          <p className="text-gray-500">{description}</p>
+          <p className=" text-sm text-[#64748B] ">{description}</p>
         </section>
-        <section>
-          <div className="flex">
-            <div className="flex items-center">
+        <section className="pt-2">
+          <div className="flex justify-between">
+            <div className="flex items-center text-sm justify-center font-medium">
               <svg
                 className="w-5 h-5 mr-1"
                 fill="none"
@@ -75,11 +80,11 @@ const ShopCard = ({ shop }: any) => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <p className="text-gray-500">{products?.length} products</p>
+              <p className="">{product?.length} products</p>
             </div>
-            <div className="flex items-center pl-16">
+            <div className="flex items-center text-sm justify-center">
               <svg
-                className="w-5 h-5 mr-1"
+                className="size-4 mr-1"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.5"
@@ -92,29 +97,10 @@ const ShopCard = ({ shop }: any) => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <p className="lg:block hidden text-gray-500">
+              <p className="lg:block hidden text-[#64748B]">
                 {followingShop.length} Followers
               </p>
             </div>
-          </div>
-        </section>
-        <section>
-          <div className="flex text-gray-500">
-            <svg
-              className="w-5 h-5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <p>Joined {moment(createdAt).format("DD MMM YYYY")}</p>
           </div>
         </section>
       </div>

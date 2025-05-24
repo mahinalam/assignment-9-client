@@ -32,7 +32,7 @@ const StorePage = () => {
           </div>
         </div>
         <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-2 gap-1  md:gap-4 md:mt-10 mt-5">
-          {shopData?.data?.map((shop: any) => (
+          {shopData?.data?.data?.map((shop: any) => (
             <Link key={shop.id} href={`/store/${shop.id}`}>
               <ShopCard shop={shop} />
             </Link>

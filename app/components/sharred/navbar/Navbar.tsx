@@ -246,7 +246,7 @@ const Navbar = ({
                 <Link
                   href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/Overview`}
                 >
-                  Dashboard
+                  <p> Dashboard</p>
                 </Link>
               )}
             </div>

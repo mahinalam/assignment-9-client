@@ -31,6 +31,7 @@ export const baseApi = createApi({
     "order",
     "coupon",
     "wishlist",
+    "following_shop",
   ],
   endpoints: () => ({}),
 });

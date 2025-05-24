@@ -13,13 +13,16 @@ import { IProduct, TQueryParam } from "@/types";
 import { useGetAllVendorProductsQuery } from "@/app/redux/features/product/productApi";
 import Loader from "@/app/components/sharred/Loader";
 import { RootState } from "@/app/redux/store";
-import { useFollowShopMutation } from "@/app/redux/features/shop/shopApi";
+import {
+  useCheckIsFollowingQuery,
+  useFollowShopMutation,
+  useUnFollowShopMutation,
+} from "@/app/redux/features/shop/shopApi";
 import Container from "@/app/components/sharred/Container";
 import NotFound from "@/app/components/sharred/NotFound";
+import FlashSaleCard from "@/app/components/sharred/FlashSaleCard";
 
 const StorePage = ({ params }: { params: { shopId: string } }) => {
-  console.log(params);
-
   // const [vendorProductParams, setVendorProductParams] = useState<
   //   TQueryParam[] | undefined
   // >([{ name: "shopId", value: params.shopId }]);
@@ -28,19 +31,22 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
 
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
 
-  const [isFollower, setIsFollower] = useState(false);
-
-  const [followShop] = useFollowShopMutation();
+  const [followShop, { isLoading: followLoading }] = useFollowShopMutation();
+  const [unFollowShop, { isLoading: unFollowLoading }] =
+    useUnFollowShopMutation();
 
   const [storeValue, setStoreValue] = useState<string>("");
 
+  const { data: isFollowing } = useCheckIsFollowingQuery(params.shopId, {
+    skip: !params.shopId,
+  });
+  console.log("unFollow loading", unFollowLoading);
+  console.log("follow loading", followLoading);
   if (vendorProductLoading) {
     return <Loader />;
   }
-  console.log("vendor all products", allProducts);
 
   const storeProductData = allProducts?.data;
-  console.log("allProducts", allProducts);
   const storeData = {
     id: storeProductData?.id,
     name: storeProductData?.name,
@@ -53,50 +59,69 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
   //TODO: implement search in store section
 
   const handleFollowShop = async () => {
+    console.log("follow clicked");
     const followShopData = {
       shopId: params.shopId,
     };
 
-    console.log("followShopData", followShopData);
     // follow shop
-    try {
-      const res = await followShop(followShopData);
 
-      if (res?.data?.success) {
-        toast.success(res?.data?.message);
-      } else {
-        toast.error("something went wrong");
-      }
-    } catch (err) {
-      toast.error("something went wrong");
-      console.log(err);
+    const res = await followShop(followShopData);
+
+    if (res?.data?.success) {
+      toast.success("Successfully followed shop");
+    } else {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleUnfollowShop = async () => {
+    const res = await unFollowShop(params.shopId);
+
+    if (res?.data?.success) {
+      toast.success("Successfully unfollowed shop");
+    } else {
+      toast.error("Something went wrong");
     }
   };
 
   return (
     <Container>
-      <div className="md:mt-[96px] mt-[62px] lg:mt-[160px]">
+      <div className="md:mt-[96px] mt-[62px] lg:mt-[160px] ">
         <div className=" bg-white">
           <StoreBanner
             handleFollowShop={handleFollowShop}
-            isFollower={isFollower}
+            isFollower={isFollowing?.data?.success}
             storeData={storeData}
             setStoreValue={setStoreValue}
+            hanldeUnfollowShop={handleUnfollowShop}
+            followLoading={followLoading}
+            unFollowLoading={unFollowLoading}
           />
         </div>
-        <div className="bg-white mt-4">
+        <div className="bg-white mt-4 p-5">
           <p className="lg:text-lg text-base  font-bold py-4 lg:font-medium lg:text-left text-center ">
             All Products
           </p>
+          <div className="grid  sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
+            {/* <div className="grid  grid-cols-2"> */}
+            {allProducts?.data?.product?.map((flashSaleProduct: IProduct) => (
+              <Link
+                key={flashSaleProduct.id}
+                href={`/products/${flashSaleProduct.id}`}
+              >
+                <FlashSaleCard product={flashSaleProduct} />
+              </Link>
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 ">
-          {allProducts?.data?.product?.map((product: IProduct) => (
+
+        {/* {allProducts?.data?.product?.map((product: IProduct) => (
             <Link key={product.id} href={`/products/${product.id}`}>
               {" "}
               <ProductCart product={product} />
             </Link>
-          ))}
-        </div>
+          ))} */}
       </div>
     </Container>
   );

@@ -118,7 +118,7 @@ const ProductReviews = () => {
                   <img
                     src={review?.product?.images[0]}
                     alt=""
-                    className="size-[40px]"
+                    className="size-12"
                   />
                   <p className="mr-12 lg:mr-0">{review.product?.name}</p>
                 </div>

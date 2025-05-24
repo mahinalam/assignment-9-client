@@ -7,7 +7,14 @@ import moment from "moment";
 
 import { IReview } from "@/types";
 
-const ReviewCart = ({ item }: { item: IReview }) => {
+const ReviewCart = ({
+  item,
+  className,
+}: {
+  item: IReview;
+  className: string;
+}) => {
+  console.log("ite,m review", item);
   const {
     id,
     rating,
@@ -18,18 +25,14 @@ const ReviewCart = ({ item }: { item: IReview }) => {
   } = item;
 
   return (
-    <div>
-      <div className="flex  justify-between items-center">
-        {/* user and date section for small screen */}
-        {/* <div className="flex text-[10px] text-[#999999]">
-
-        </div> */}
+    <div className={`${className} `}>
+      <div className="flex   items-center">
         <Rate allowHalf={false} className="" count={5} value={rating} />
-        <p className="text-[#757575] text-[14px] md:block hidden">
+        <p className="text-[#757575] lg:pl-28 text-[14px] ">
           {moment(createdAt).format("DD MMM YYYY")}
         </p>
       </div>
-      <div className="flex gap-2 items-center">
+      <div className="flex  items-center">
         {/* <p className="mt-0"> Sk Z.Verified Purchase</p> */}
         <span className="text-[#808080] text-[14px] md:block hidden">
           {/* {name} */}
