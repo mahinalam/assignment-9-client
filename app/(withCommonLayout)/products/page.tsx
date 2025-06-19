@@ -331,19 +331,12 @@ import React, { Suspense } from "react";
 
 import Products from "./Products";
 
-import Loader from "@/app/components/sharred/Loader";
 import Container from "@/app/components/sharred/Container";
 
 const SuspenseProductComponent = () => {
   return (
     <Container>
-      <Suspense
-        fallback={
-          <div>
-            <Loader />
-          </div>
-        }
-      >
+      <Suspense fallback={<div>{/* <ProductsLoading /> */}</div>}>
         <Products />
       </Suspense>
     </Container>

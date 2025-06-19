@@ -1,5 +1,6 @@
-import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
+
+import { TQueryParam } from "@/types";
 
 const reviewApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,10 +22,6 @@ const reviewApi = baseApi.injectEndpoints({
       },
       providesTags: ["review"],
     }),
-    // getVendorProductReviews: builder.query({
-    //   query: () => `/review/vendor-products-reviews`,
-    //   providesTags: ["review"],
-    // }),
     getVendorProductReviews: builder.query({
       query: (args) => {
         const params = new URLSearchParams();

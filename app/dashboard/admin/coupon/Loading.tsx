@@ -1,4 +1,3 @@
-import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import {
   Skeleton,
   Table,
@@ -10,10 +9,12 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 
+import SidebarButton from "@/app/components/dashboard/SidebarButton";
+
 const CouponsLoading = () => {
   return (
     <>
-      <SidebarButton title={"Coupons"} role="admin" />
+      <SidebarButton role="admin" title={"Coupons"} />
       <div className="flex justify-end mb-2">
         <Skeleton className="w-[140px] h-10 rounded-md" />
       </div>

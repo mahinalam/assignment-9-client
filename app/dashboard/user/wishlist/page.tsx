@@ -15,21 +15,19 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-
-import DeleteModal from "@/app/components/modal/DeleteModal";
-import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
-import { RootState } from "@/app/redux/store";
-import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { toast } from "sonner";
+
+import DeleteModal from "@/app/components/modal/DeleteModal";
 import {
   useDeleteWishlistMutation,
   useGetUsersWishlistQuery,
 } from "@/app/redux/features/wishlist/wishlistApi";
-import { toast } from "sonner";
 import { TQueryParam } from "@/types";
-// import { useGetUsersWishlistQuery } from "@/app/redux/features/wishlist/wishlistapi";
+import EmptyState from "@/app/components/dashboard/EmptyState";
+import SidebarButton from "@/app/components/dashboard/SidebarButton";
+import Loading from "./Loading";
 
 const Wishlists = () => {
   const {
@@ -44,29 +42,23 @@ const Wishlists = () => {
   ]);
   const [page, setPage] = useState(1);
 
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
-  const { data: currentUserInfo } = useGetSingleUserQuery(userId);
-
   // get users wishhlist
   const { data: usersWishlistsData, isLoading: usersWishlistLoading } =
     useGetUsersWishlistQuery(params);
-  console.log("users wishlist", usersWishlistsData);
-  console.log("currentUserInfo", currentUserInfo);
-  //   const { data: userProductReviews, isLoading: userProductReviewLoading } =
-  //     useGetUserProductReviewQuery(userId as string);
 
   const [deleteWishlist] = useDeleteWishlistMutation();
+  const [isOpen, setIsOpen] = useState(false);
 
-  //   console.log("userProductReviews", userProductReviews);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  //   if (userProductReviewLoading) {
-  //     return <div>Loading...</div>;
-  //   }
-  //   console.log(isSuccess);
+  if (usersWishlistLoading) {
+    return <Loading />;
+  }
+
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
       const res = await deleteWishlist(deleteModalId);
+
       if (res.data.success) {
         toast.success("Wishlist deleted successfully.");
         onDeleteModalChange(); //   }
@@ -77,7 +69,6 @@ const Wishlists = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };
@@ -86,8 +77,8 @@ const Wishlists = () => {
   const totalPages = Math.ceil(totalWishlists / 5);
 
   const handlePageChange = (page: number) => {
-    console.log("page value", page);
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -97,78 +88,97 @@ const Wishlists = () => {
 
   return (
     <>
-      <Table aria-label="Example static collection table">
-        <TableHeader>
-          <TableColumn>PRODUCT</TableColumn>
-          <TableColumn>CATEGORY</TableColumn>
-          <TableColumn>PRICE</TableColumn>
-          <TableColumn>CREATED DATE </TableColumn>
-          <TableColumn>ACTION</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {usersWishlistsData?.data?.data?.wishlistItem?.map(
-            (wishlist: any) => (
-              // review.map((review: IReview) => (
-              <TableRow key={wishlist.id}>
-                <TableCell>
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        alt=""
-                        className="size-12"
-                        src={wishlist?.product?.images[0]}
-                      />
-                    </div>
-                    <div>
-                      <p>{wishlist?.product?.name}</p>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>{wishlist.product?.category?.name}</TableCell>
-                <TableCell>{wishlist?.product?.price} ৳</TableCell>
-                <TableCell>{wishlist?.createdAt}</TableCell>
-                <TableCell>
-                  <Dropdown placement="bottom-end">
-                    <DropdownTrigger>
-                      <Button isIconOnly size="sm" variant="light">
-                        <BiDotsVerticalRounded size={20} />
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Product Actions">
-                      <DropdownItem
-                        onClick={() =>
-                          handleDeleteModalOpen(wishlist.product.id)
-                        }
-                      >
-                        <span className="flex items-center gap-1">
-                          <span>
-                            <RiDeleteBin5Line size={20} />
-                          </span>
-                          <span>Delete</span>
-                        </span>
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </TableCell>
-              </TableRow>
-            )
-            // ))
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex  justify-center mt-8">
-        <Pagination
-          page={page}
-          total={totalPages} // You should have this in your API response
-          onChange={handlePageChange}
-          showControls
+      <div className="mb-5">
+        <SidebarButton
+          isOpen={isOpen}
+          role="user"
+          setIsOpen={setIsOpen}
+          title={"My Wishlist"}
         />
       </div>
+      {usersWishlistsData?.data?.data?.wishlistItem?.length > 0 ? (
+        <>
+          <Table aria-label="Example static collection table">
+            <TableHeader>
+              <TableColumn>PRODUCT</TableColumn>
+              <TableColumn>CATEGORY</TableColumn>
+              <TableColumn>PRICE</TableColumn>
+              <TableColumn>CREATED DATE </TableColumn>
+              <TableColumn>ACTION</TableColumn>
+            </TableHeader>
+            <TableBody>
+              {usersWishlistsData?.data?.data?.wishlistItem?.map(
+                (wishlist: any) => (
+                  <TableRow key={wishlist.id}>
+                    <TableCell>
+                      <div className="flex gap-2 items-center">
+                        <div>
+                          <img
+                            alt=""
+                            className="size-12"
+                            src={wishlist?.product?.images[0]}
+                          />
+                        </div>
+                        <div>
+                          <p>{wishlist?.product?.name}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{wishlist.product?.category?.name}</TableCell>
+                    <TableCell>{wishlist?.product?.price} ৳</TableCell>
+                    <TableCell>{wishlist?.createdAt}</TableCell>
+                    <TableCell>
+                      <Dropdown placement="bottom-end">
+                        <DropdownTrigger>
+                          <Button isIconOnly size="sm" variant="light">
+                            <BiDotsVerticalRounded size={20} />
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Product Actions">
+                          <DropdownItem
+                            onClick={() =>
+                              handleDeleteModalOpen(wishlist.product.id)
+                            }
+                          >
+                            <span className="flex items-center gap-1">
+                              <span>
+                                <RiDeleteBin5Line size={20} />
+                              </span>
+                              <span>Delete</span>
+                            </span>
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
+            </TableBody>
+          </Table>
+          <div className="flex  justify-center mt-8">
+            <Pagination
+              showControls
+              page={page}
+              total={totalPages}
+              onChange={handlePageChange}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <EmptyState
+            address="/products"
+            label="Browse Products"
+            message="Your wishlist is empty."
+          />
+        </>
+      )}
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
+        subTitle="Are you sure want to delete this wishlist?"
+        title="Delete Wishlist"
         onOpenChange={onDeleteModalChange}
-        title="Wishlist"
       />
     </>
   );

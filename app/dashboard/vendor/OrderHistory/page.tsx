@@ -6,22 +6,19 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
-  Tooltip,
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+
+import OrdersLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { useGetVendorOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
-import { RootState } from "@/app/redux/store";
 import { IOrder, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import OrdersLoading from "./Loading";
+import EmptyState from "@/app/components/dashboard/EmptyState";
 
 const ProductReviews = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -36,10 +33,7 @@ const ProductReviews = () => {
     onOpenChange: onDeleteModalChange,
   } = useDisclosure();
 
-  const vendorId = useSelector((state: RootState) => state.auth.user?.userId);
   const [isOpen, setIsOpen] = useState(false);
-
-  console.log(vendorId);
 
   const {
     data: vendorOrderHistory,
@@ -48,8 +42,6 @@ const ProductReviews = () => {
   } = useGetVendorOrderHistoryQuery(params);
 
   const [deleteProduct] = useDeleteProductMutation();
-
-  console.log("order history", vendorOrderHistory);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (vendorOrderHistoryLoading || isFetching) {
@@ -65,6 +57,7 @@ const ProductReviews = () => {
   // pagination handler
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -72,71 +65,130 @@ const ProductReviews = () => {
     setParams(queryParams);
   };
 
-  // console.log(vendorOrderHistory);
   const handleDeleteProduct = () => {
     if (deleteModalId) {
       deleteProduct(deleteModalId);
       onDeleteModalChange(); //   }
     }
   };
-  const handleDeleteModalOpen = (id: string) => {
-    // console.log("id", id);
-    setDeleteModalId(id);
-    onDeleteModalOpen();
-  };
 
-  console.log("email", vendorOrderHistory?.data?.shop?.order);
   return (
     <>
-      <SidebarButton
-        title={"Orders"}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        role="vendor"
-      />
-      <Table aria-label="Example static collection table" className="mt-4">
-        <TableHeader>
-          <TableColumn>PRODUCT</TableColumn>
-          <TableColumn>USER EMAIL</TableColumn>
-          <TableColumn>TRANSACTION ID</TableColumn>
-          <TableColumn>PAYMENT STATUS </TableColumn>
-          <TableColumn>ORDER ITEMS</TableColumn>
-          <TableColumn>TOTAL PRICE</TableColumn>
-        </TableHeader>
-
-        <TableBody>
-          {vendorOrderHistory?.data?.data?.shop?.order?.map((order: IOrder) =>
-            order?.orderItem?.map((item) => (
-              <TableRow key={order.id}>
-                <TableCell className="">
-                  <div className="flex items-center gap-1">
-                    <img
-                      alt=""
-                      className="size-12"
-                      src={item?.product?.images[0]}
-                    />
-                    <p>{item?.product?.name}</p>
-                  </div>
-                </TableCell>
-                <TableCell>{order?.customerEmail}</TableCell>
-                <TableCell>{order?.transactionId}</TableCell>
-                <TableCell>{order?.paymentStatus}</TableCell>
-                <TableCell>{order?.orderItem.length}</TableCell>
-                <TableCell>{order?.totalPrice}</TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex  justify-center mt-8">
-        <Pagination
-          page={page}
-          total={totalPages}
-          onChange={handlePageChange}
-          showControls
-        />
-      </div>
+      {vendorOrderHistory?.data?.data?.length > 0 ? (
+        <>
+          {" "}
+          <Table aria-label="Example static collection table" className="mt-4">
+            <TableHeader>
+              <TableColumn>PRODUCT</TableColumn>
+              <TableColumn>SHOP NAME</TableColumn>
+              <TableColumn>PRICE </TableColumn>
+              <TableColumn>STOCK</TableColumn>
+              <TableColumn>DISCOUNT</TableColumn>
+              <TableColumn>ACTION</TableColumn>
+            </TableHeader>
+            <TableBody>
+              {!vendorShopProductsLoading &&
+                shop?.product?.length > 0 &&
+                shop?.product?.map(
+                  (item: IProduct & { brand: Record<string, any> }) => (
+                    <TableRow key={item?.id}>
+                      {/* <TableCell>{item?.name.slice(0, 15)}...</TableCell> */}
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <div>
+                            <img
+                              alt=""
+                              className="size-12"
+                              src={item?.images[0]}
+                            />
+                          </div>
+                          <div>
+                            <p>{item?.name.slice(0, 15)}...</p>
+                            <p className="text-[#737682]">
+                              {item.category.name}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{shop?.name}</TableCell>
+                      <TableCell>{item?.price} ৳</TableCell>
+                      <TableCell>{item?.stock}</TableCell>
+                      <TableCell>{item?.discount} ৳</TableCell>
+                      <TableCell>
+                        <Dropdown placement="bottom-end">
+                          <DropdownTrigger>
+                            <Button isIconOnly size="sm" variant="light">
+                              <BiDotsVerticalRounded size={20} />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Product Actions">
+                            <DropdownItem
+                              onClick={() => handleEditProductModalOpen(item)}
+                            >
+                              {/* flash button */}
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  <AiTwotoneEdit size={20} />
+                                </span>
+                                <span>Edit</span>
+                              </span>
+                            </DropdownItem>
+                            <DropdownItem
+                              // onClick={() =>
+                              //   makeFlashOrFeaturedProductModalOpen(
+                              //     item.id,
+                              //     "featured"
+                              //   )
+                              // }
+                              className=""
+                            >
+                              {/* feature btn */}
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  <HiOutlineDuplicate size={20} />
+                                </span>
+                                <span>Duplicate</span>
+                              </span>
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => handleDeleteModalOpen(item.id)}
+                            >
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  <RiDeleteBin5Line size={20} />
+                                </span>
+                                <span>Delete</span>
+                              </span>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
+            </TableBody>
+          </Table>
+          <div className="flex  justify-center mt-8">
+            <Pagination
+              showControls
+              page={page}
+              total={totalPages}
+              onChange={handlePageChange}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <EmptyState
+            label="Go Home"
+            message="Orders found empty!"
+            address="/"
+          />
+        </>
+      )}
       <DeleteModal
+        title="Delete Order"
+        subTitle="Are you sure want to delete this order?"
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteModalChange}

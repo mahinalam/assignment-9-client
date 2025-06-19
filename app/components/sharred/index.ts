@@ -8,7 +8,7 @@
 
 export const calculateDiscountPercentage = (
   price: number, // discounted price
-  discount: number // amount reduced from original
+  discount: number, // amount reduced from original
 ) => {
   if (price <= 0 || discount <= 0)
     return { discountPercentage: 0, discountPrice: price };

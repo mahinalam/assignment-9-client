@@ -6,28 +6,23 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
-  Tooltip,
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { LuUser } from "react-icons/lu";
+import moment from "moment";
+
+import OrdersLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import {
-  useGetAllOrderHistoryQuery,
-  useGetVendorOrderHistoryQuery,
-} from "@/app/redux/features/order/orderApi";
+import { useGetAllOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import { RootState } from "@/app/redux/store";
 import { IOrder, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import { LuUser } from "react-icons/lu";
-import moment from "moment";
 import EmptyState from "@/app/components/dashboard/EmptyState";
-import OrdersLoading from "./Loading";
 
 const ProductReviews = () => {
   const {
@@ -45,15 +40,11 @@ const ProductReviews = () => {
   const vendorId = useSelector((state: RootState) => state.auth.user?.userId);
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log(vendorId);
-
   const { data: allOrders, isLoading: allOrdersLoading } =
     useGetAllOrderHistoryQuery(params);
 
   const [deleteProduct] = useDeleteProductMutation();
-  console.log("all orders", allOrders);
 
-  console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (allOrdersLoading) {
@@ -63,25 +54,19 @@ const ProductReviews = () => {
       </div>
     );
   }
-  // console.log(vendorOrderHistory);
   const handleDeleteProduct = () => {
     if (deleteModalId) {
       deleteProduct(deleteModalId);
-      onDeleteModalChange(); //   }
+      onDeleteModalChange();
     }
-  };
-  const handleDeleteModalOpen = (id: string) => {
-    // console.log("id", id);
-    setDeleteModalId(id);
-    onDeleteModalOpen();
   };
 
   const totalOrders = allOrders?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalOrders / 5);
 
   const handlePageChange = (page: number) => {
-    console.log("page value", page);
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -91,16 +76,17 @@ const ProductReviews = () => {
 
   return (
     <>
+      <SidebarButton
+        className="mt-8"
+        isOpen={isOpen}
+        role="admin"
+        setIsOpen={setIsOpen}
+        title={"All Orders"}
+        hasLeftButton={false}
+      />
       {allOrders?.data?.data?.length > 0 ? (
         <>
           {" "}
-          <SidebarButton
-            title={"Orders"}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            role="admin"
-            className="mt-8"
-          />
           <Table aria-label="Example static collection table" className="mt-4">
             <TableHeader>
               <TableColumn>USER</TableColumn>
@@ -120,9 +106,9 @@ const ProductReviews = () => {
                         {order?.profilePhoto ? (
                           // TODO: fixed customerProfilePhoto pronoun
                           <img
-                            src={order.profilePhoto}
                             alt=""
                             className="size-[40px]"
+                            src={order.profilePhoto}
                           />
                         ) : (
                           <LuUser size={40} />
@@ -148,10 +134,10 @@ const ProductReviews = () => {
           </Table>
           <div className="flex  justify-center mt-8">
             <Pagination
+              showControls
               page={page}
               total={totalPages}
               onChange={handlePageChange}
-              showControls
             />
           </div>
         </>
@@ -159,9 +145,9 @@ const ProductReviews = () => {
         <>
           {" "}
           <EmptyState
-            message="Orders found empty!"
-            label="Go Home"
             address="/"
+            label="Go Home"
+            message="Orders found empty!"
           />
         </>
       )}

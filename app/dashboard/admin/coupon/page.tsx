@@ -6,38 +6,28 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
   Tooltip,
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import moment from "moment";
+import { GoPlus } from "react-icons/go";
+import { toast } from "sonner";
+
+import CouponsLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import {
-  useGetAllOrderHistoryQuery,
-  useGetVendorOrderHistoryQuery,
-} from "@/app/redux/features/order/orderApi";
-import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
-import { RootState } from "@/app/redux/store";
-import { ICoupon, IOrder, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
+import { ICoupon, TQueryParam } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import { CgProfile } from "react-icons/cg";
-import moment from "moment";
 import {
   useCreateCouponMutation,
   useDeleteCouponMutation,
   useGetAllCouponsQuery,
 } from "@/app/redux/features/coupon/couponApi";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
-import { GoPlus } from "react-icons/go";
-import CreateCoupon from "../AddCoupon/page";
 import CreateCouponModal from "@/app/components/modal/CreateCouponModal";
-import { toast } from "sonner";
 import EmptyState from "@/app/components/dashboard/EmptyState";
-import CouponsLoading from "./Loading";
 
 const AllCoupons = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -79,6 +69,7 @@ const AllCoupons = () => {
   const handlePageChange = (page: number) => {
     console.log("page value", page);
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -128,6 +119,7 @@ const AllCoupons = () => {
     try {
       if (deleteModalId) {
         const res = await deleteCoupon(deleteModalId).unwrap();
+
         console.log("res", res);
         onDeleteModalChange(); //   }
         console.log("from deltew", deleteModalId);
@@ -147,19 +139,21 @@ const AllCoupons = () => {
 
   return (
     <>
+      <SidebarButton
+        isOpen={isOpen}
+        role="admin"
+        setIsOpen={setIsOpen}
+        title={"Coupons"}
+        className={"mb-5"}
+        hasLeftButton={false}
+      />
       {allCoupons?.data?.data?.length > 0 ? (
         <>
           {" "}
-          <SidebarButton
-            title={"Coupons"}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            role="admin"
-          />
           <div className="flex justify-end mb-2">
             <button
-              onClick={onCouponModalOpen}
               className="flex bg-primary text-sm items-center gap-1 rounded-md text-white px-4 py-2"
+              onClick={onCouponModalOpen}
             >
               <span>Create New</span>
               <span>
@@ -187,10 +181,10 @@ const AllCoupons = () => {
                     {moment(coupon?.expiration).format("HH:mm:ss")}
                   </TableCell>
                   <TableCell>
-                    <Tooltip content="Delete coupon" color="danger">
+                    <Tooltip color="danger" content="Delete coupon">
                       <span
-                        onClick={() => handleDeleteModalOpen(coupon?.id)}
                         className="text-lg text-danger cursor-pointer active:opacity-50"
+                        onClick={() => handleDeleteModalOpen(coupon?.id)}
                       >
                         <DeleteIcon />
                       </span>
@@ -214,25 +208,25 @@ const AllCoupons = () => {
         <>
           {" "}
           <EmptyState
-            onClick={onCouponModalOpen}
-            message="Coupons found empty!"
             label="Add Coupon"
+            message="Coupons found empty!"
+            onClick={onCouponModalOpen}
           />
         </>
       )}
       <DeleteModal
         handleDeleteProduct={handleDeleteCoupon}
         isOpen={isDeleteModalOpen}
-        onOpenChange={onDeleteModalChange}
         title="Coupon"
+        onOpenChange={onDeleteModalChange}
       />
       <CreateCouponModal
-        isOpen={isCouponModalOpen}
-        onOpenChange={onCouponModalOpenChange}
-        handleCreateCoupon={handleCreateCoupon}
-        setDateValue={setDateValue}
-        isLoading={couponLoading}
         couponLoadingName={couponLoadingName}
+        handleCreateCoupon={handleCreateCoupon}
+        isLoading={couponLoading}
+        isOpen={isCouponModalOpen}
+        setDateValue={setDateValue}
+        onOpenChange={onCouponModalOpenChange}
       />
     </>
   );

@@ -11,22 +11,23 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-
-import DeleteModal from "@/app/components/modal/DeleteModal";
-import { IShop, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
-import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import moment from "moment";
 import { toast } from "sonner";
 import { LuUser } from "react-icons/lu";
+import { MdBlock } from "react-icons/md";
+
+import StoresLoading from "./Loading";
+
+import DeleteModal from "@/app/components/modal/DeleteModal";
+import { IShop, TQueryParam } from "@/types";
+import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import {
   useBlockShopMutation,
   useGetAllShopsQuery,
 } from "@/app/redux/features/shop/shopApi";
-import { MdBlock } from "react-icons/md";
+
 import "./Store.css";
 import EmptyState from "@/app/components/dashboard/EmptyState";
-import StoresLoading from "./Loading";
 
 const AllShops = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -42,15 +43,11 @@ const AllShops = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  //   console.log(vendorId);
-
   const { data: allShops, isLoading: allShopsLoading } =
     useGetAllShopsQuery(params);
 
   const [blockShop] = useBlockShopMutation();
-  console.log(" allShops", allShops);
 
-  //   console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (allShopsLoading) {
@@ -66,6 +63,7 @@ const AllShops = () => {
   // pagination handler
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -73,10 +71,10 @@ const AllShops = () => {
     setParams(queryParams);
   };
 
-  // console.log(vendorOrderHistory);
   const handleDeleteUser = async () => {
     if (deleteModalId) {
       const { data } = await blockShop(deleteModalId);
+
       if (data?.success) {
         toast.success(data.message);
       } else {
@@ -92,26 +90,24 @@ const AllShops = () => {
 
   return (
     <>
+      <SidebarButton
+        isOpen={isOpen}
+        role="admin"
+        setIsOpen={setIsOpen}
+        title={"Vendor Shops"}
+        hasLeftButton={false}
+        className="mb-5"
+      />
       {allShops?.data?.data?.length > 0 ? (
         <>
           {" "}
-          <SidebarButton
-            title={"Vendor Stores"}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            role="admin"
-          />
-          <Table
-            // style={{ borderTopLeftRadius: "0px", borderTopRightRadius: "0px" }}
-            aria-label="Example static collection table"
-            // className="table"
-          >
+          <Table aria-label="Example static collection table">
             <TableHeader
+              className="table"
               style={{
                 borderTopLeftRadius: "0px",
                 borderTopRightRadius: "0px",
               }}
-              className="table"
             >
               <TableColumn>SHOP</TableColumn>
               <TableColumn>OWNER </TableColumn>
@@ -127,8 +123,7 @@ const AllShops = () => {
                     <div className="flex  gap-2">
                       <div>
                         {shop?.logo ? (
-                          // TODO: fixed customerProfilePhoto pronoun
-                          <img src={shop.logo} alt="" className="size-[40px]" />
+                          <img alt="" className="size-[40px]" src={shop.logo} />
                         ) : (
                           <LuUser size={40} />
                         )}
@@ -146,10 +141,10 @@ const AllShops = () => {
                     {moment(shop?.createdAt).format("HH:mm:ss")}
                   </TableCell>
                   <TableCell>
-                    <Tooltip content="Block" color="danger">
+                    <Tooltip color="danger" content="Block">
                       <span
-                        onClick={() => handleDeleteModalOpen(shop?.id)}
                         className="text-lg  cursor-pointer active:opacity-50"
+                        onClick={() => handleDeleteModalOpen(shop?.id)}
                       >
                         <MdBlock />
                       </span>
@@ -161,27 +156,27 @@ const AllShops = () => {
           </Table>
           <div className="flex  justify-center mt-8">
             <Pagination
+              showControls
               page={page}
               total={totalPages}
               onChange={handlePageChange}
-              showControls
             />
           </div>
         </>
       ) : (
         <>
           <EmptyState
-            message="Vendor's stores found empty!"
             address="/"
             label="Go Home"
+            message="Vendor's stores found empty!"
           />
         </>
       )}
       <DeleteModal
         handleDeleteProduct={handleDeleteUser}
         isOpen={isDeleteModalOpen}
-        onOpenChange={onDeleteModalChange}
         title="Store"
+        onOpenChange={onDeleteModalChange}
       />
     </>
   );

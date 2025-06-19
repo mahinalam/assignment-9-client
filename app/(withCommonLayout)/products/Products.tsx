@@ -1,50 +1,36 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
-
-// import SortSearch from "@/app/components/products/SortSearch";
-import { Input, Pagination, Select, SelectItem } from "@nextui-org/react";
+import {
+  Checkbox,
+  Input,
+  Pagination,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-
+import { useSearchParams } from "next/navigation";
+import { Button } from "@nextui-org/button";
 import RateComponent from "./Rate";
-
-import ProductCart from "@/app/components/sharred/ProductCard";
+import ProductsLoading from "./ProductsLoading";
 import {
   useGetAllCategoriesQuery,
   useGetSingleCategoryQuery,
 } from "@/app/redux/features/category/categoryApi";
-import {
-  useGetAllProductsByCategoryQuery,
-  useGetAllProductsQuery,
-} from "@/app/redux/features/product/productApi";
+import { useGetAllProductsQuery } from "@/app/redux/features/product/productApi";
 import { ICategory, IProduct, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
-
 import "rc-rate/assets/index.css";
-import { Button } from "@nextui-org/button";
-import { Card, Skeleton } from "@nextui-org/react";
 import NotFound from "@/app/components/sharred/NotFound";
-
-// import { useRouter } from "next/router";
+import FlashSaleCard from "@/app/components/sharred/FlashSaleCard";
 
 const Products = () => {
-  // const router = useRouter();
-  // const { search } = router.query;
   const [params, setParams] = useState<TQueryParam[] | undefined>(undefined);
   const searchParams = useSearchParams();
   const value = searchParams.get("search");
   const categoryValue = searchParams.get("category");
-
-  console.log("categoryValue", categoryValue);
-
-  console.log("value", value);
   const [minPrice, setMinPrice] = useState<string | number>(1);
   const [maxPrice, setMaxPrice] = useState<string | number>(1);
   const [currentPage, setCurrentPage] = useState<string | number>(1);
   const [tabValue, setTabValue] = useState("all");
-
-  const router = useRouter();
 
   const {
     data: productsData,
@@ -52,48 +38,26 @@ const Products = () => {
     isFetching,
   } = useGetAllProductsQuery(params);
 
-  const {
-    data: categoriesDataInfo,
-    isLoading: categoryDataInfoLoading,
-    // isFetching,
-  } = useGetAllCategoriesQuery(null);
-
-  const [categorySelected, setCategorySelected] = useState("");
+  const { data: categoriesDataInfo, isLoading: categoryDataInfoLoading } =
+    useGetAllCategoriesQuery(null);
 
   const [isCheckBoxSelected, setIsCheckBoxSelected] = useState("");
 
-  const [checkCategory, setCheckCategory] = useState<
-    {
-      id: string;
-      isSelected: boolean;
-    }[]
-  >([]);
-
-  const { data: categoryProductData, isLoading: categoryProductDataLoading } =
-    useGetAllProductsByCategoryQuery(params);
-
-  console.log("categoryProductData", categoryProductData);
-
-  console.log("products data", productsData);
-  console.log("isFetching", isFetching);
-
-  const { data: categoriesData, isLoading: categoriesDataLoading } =
-    useGetAllCategoriesQuery(null);
   const { data: singleCategoryData, isLoading: singleCategoryLoading } =
     useGetSingleCategoryQuery(categoryValue);
-  // console.log("categoriesData", categoriesData);
 
   const [selectedRatingValue, setSelecdRatingValue] = useState(0);
-
-  // const { data: brandData, isLoading: brandLoading } =
-  //   useGetAllBrandsQuery(null);
 
   let queryParams: TQueryParam[] = [];
 
   useEffect(() => {
     if (value) {
-      queryParams.push({ name: "searchTerm", value });
-      setParams(queryParams);
+      const updatedQueryParams = queryParams.filter(
+        (param) => param.name !== "searchTerm"
+      );
+
+      updatedQueryParams.push({ name: "searchTerm", value });
+      setParams(updatedQueryParams);
     }
     if (categoryValue) {
       const updatedQueryParams = queryParams.filter(
@@ -105,26 +69,10 @@ const Products = () => {
     }
   }, [value, categoryValue]);
 
-  // console.log("brandData", brandData);
-  if (
-    categoriesDataLoading ||
-    productsDataLoading ||
-    categoryProductDataLoading
-  ) {
-    return <Loader />;
+  if (productsDataLoading || isFetching) {
+    return <ProductsLoading />;
   }
 
-  // Handle search input
-  const handleSearchInput = (value: string) => {
-    const updatedQueryParams =
-      params?.filter((param) => param.name !== "searchTerms") || [];
-
-    if (value) {
-      updatedQueryParams.push({ name: "searchTerms", value });
-    }
-    setParams(updatedQueryParams); // Update query parameters
-  };
-  console.log("tab value", tabValue);
   const handleSortInput = (value: string) => {
     // Clear any existing "sortOrder" or "sortBy" in queryParams
     const updatedQueryParams = queryParams.filter(
@@ -134,11 +82,10 @@ const Products = () => {
     if (value) {
       // Add the new "sortOrder" and "sortBy" values
       updatedQueryParams.push({ name: "sortOrder", value });
-      updatedQueryParams.push({ name: "sortBy", value: "newPrice" });
+      updatedQueryParams.push({ name: "sortBy", value: "price" });
     }
 
-    setParams(updatedQueryParams); // Update the query parameters
-    // console.log("Updated Query Params:", updatedQueryParams);
+    setParams(updatedQueryParams);
   };
 
   const handlePriceFunctionality = () => {
@@ -153,7 +100,6 @@ const Products = () => {
     setParams(updatedQueryParams);
   };
 
-  console.log({ singlecatgeory: singleCategoryData?.data?.name });
   const handleRatingFunctionality = (ratingValue: any) => {
     console.log("value", ratingValue);
     if (ratingValue) {
@@ -165,13 +111,6 @@ const Products = () => {
       updatedQueryParams.push({ name: "rating", value: ratingValue });
       setParams(updatedQueryParams);
     }
-  };
-
-  // const handleCheckFunctionality = (categoryId, isSelected) => {};
-
-  const handleChecked = (id: string) => {
-    console.log("cheked", id);
-    setIsCheckBoxSelected(id);
   };
 
   const totalProducts = productsData?.data?.meta?.total || 0;
@@ -224,56 +163,40 @@ const Products = () => {
     setParams(updatedQueryParams);
   };
 
-  // console.log("queryParams", queryParams);
+  const hanldeCheck = (stock: string) => {
+    setIsCheckBoxSelected(stock);
+
+    const updatedQueryParams = queryParams.filter(
+      (param) => param.name !== "stock"
+    );
+
+    updatedQueryParams.push({ name: "stock", value: stock });
+    setParams(updatedQueryParams);
+  };
+
   return (
     <div className="">
-      {/* <div className="md:hidden flex items-center justify-between mt-20 md:mt-44 mb-5 ">
-        {categoriesDataInfo?.data?.map((category: ICategory) => (
-          <button
-            onClick={() => handleTabCategory(category.id)}
-            className={
-              category.id === tabValue
-                ? "text-primary border-b-2 border-b-primary"
-                : ""
-            }
-          >
-            {category.name}
-          </button>
-        ))}
-
-      </div> */}
-      <div className=" lg:hidden bg-white flex items-center justify-between mt-[62px] sm:mt-[96px] lg:mt-44 mb-5 overflow-x-auto space-x-1 scrollbar-hide">
+      <div className=" lg:hidden bg-white flex items-center gap-2 mt-[62px] sm:mt-[96px] lg:mt-44 mb-5 overflow-x-auto space-x-1 scrollbar-hide">
         <button
           // Added a unique key for better React rendering
-          onClick={() => handleTabCategory("all")}
           className={`px-4 py-2 whitespace-nowrap ${
             "all" === tabValue
               ? "text-primary border-b-2 border-b-primary"
               : "text-gray-700"
           }`}
+          onClick={() => handleTabCategory("all")}
         >
           All
-        </button>
-        <button
-          // Added a unique key for better React rendering
-          onClick={() => handleTabCategory("bestSale")}
-          className={`px-4 py-2 whitespace-nowrap ${
-            "bestSale" === tabValue
-              ? "text-primary border-b-2 border-b-primary"
-              : "text-gray-700"
-          }`}
-        >
-          BestSale
         </button>
         {categoriesDataInfo?.data?.data?.map((category: ICategory) => (
           <button
             key={category.id} // Added a unique key for better React rendering
-            onClick={() => handleTabCategory(category.id)}
             className={`px-4 py-2 whitespace-nowrap ${
               category.id === tabValue
                 ? "text-primary border-b-2 border-b-primary"
                 : "text-gray-700"
             }`}
+            onClick={() => handleTabCategory(category.id)}
           >
             {category.name}
           </button>
@@ -281,56 +204,8 @@ const Products = () => {
       </div>
 
       <div className="w-full lg:mt-40 ">
-        <div className="lg:block hidden">
-          {/* Sort Options */}
-          <div className="flex justify-end gap-2 items-center">
-            <span className="text-sm font-medium">Sort By:</span>
-            <Select
-              onChange={(e) => handleSortInput(e.target.value)}
-              className="w-48"
-              // label="Select a Price"
-            >
-              <SelectItem key="asc">Price Low to High</SelectItem>
-              <SelectItem key="desc">Price High to Low</SelectItem>
-            </Select>
-          </div>
-        </div>
         <div className="flex ">
           <div className="hidden lg:block lg:w-[25%]">
-            {/* <section>
-              <div className="py-4 border-y-1">
-                <p className="text-[14px] text-[#121212] mb-2">Category</p>
-                <div>
-                  {categoriesData?.data?.map((brand: any) => (
-                    <CheckboxComponent
-                      key={brand.id}
-                      handleChecked={handleChecked}
-                      id={brand.id}
-                      title={brand.name}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section> */}
-            {/* <section>
-              <div className="py-4 border-y-1">
-                <p className="text-[14px] text-[#121212] mb-2">Brand</p>
-                <div>
-                  {categoriesData?.data?.map((brand: any) => (
-                    <Checkbox
-                      size="sm"
-                      onClick={() => handleCheckFunctionality(brand.id, true)}
-                    >
-                      <span className="ml-3 text-[13px] text-[#757575]">
-              
-                        {brand.name}
-                      </span>
-                    </Checkbox>
-                  ))}
-                </div>
-              </div>
-            </section> */}
-
             {/* price section */}
             {categoryValue && (
               <section>
@@ -342,6 +217,42 @@ const Products = () => {
                 </div>
               </section>
             )}
+            <section>{/* categories section */}</section>
+            {/* stock section */}
+            <section className="mt-2">
+              <p className="text-[14px] text-[#121212]">Stock</p>
+              <div className="flex items-center justify-around mt-1">
+                <div className="flex gap-1 items-center">
+                  <Checkbox
+                    className="p-0"
+                    isSelected={isCheckBoxSelected === "all"}
+                    size="sm"
+                    onClick={() => hanldeCheck("all")}
+                  />
+                  <p className="text-sm">All</p>
+                </div>
+
+                <div className="flex text-sm gap-1 items-center">
+                  <Checkbox
+                    className="p-0"
+                    isSelected={isCheckBoxSelected === "in_stock"}
+                    size="sm"
+                    onClick={() => hanldeCheck("in_stock")}
+                  />
+                  In Stock
+                </div>
+
+                <div className="flex text-sm gap-1 items-center">
+                  <Checkbox
+                    className="p-0"
+                    isSelected={isCheckBoxSelected === "out_of_stock"}
+                    size="sm"
+                    onClick={() => hanldeCheck("out_of_stock")}
+                  />
+                  Out of stock
+                </div>
+              </div>
+            </section>
             <section className="pr-3">
               <div className="my-3 ">
                 <p className="text-[14px] text-[#121212]">Price</p>
@@ -350,9 +261,9 @@ const Products = () => {
                     <Input
                       className="bg-transparent"
                       placeholder="Min"
+                      size="sm"
                       type="number"
                       onChange={(e) => setMinPrice(e.target.value)}
-                      size="sm"
                     />
                   </div>
                   <div>
@@ -362,17 +273,17 @@ const Products = () => {
                     <Input
                       className="border rounded-none bg-transparent"
                       placeholder="Max"
-                      type="number"
                       size="sm"
+                      type="number"
                       onChange={(e) => setMaxPrice(e.target.value)}
                     />
                   </div>
                   <div>
                     <Button
+                      className="bg-[#2abbe8] text-white hover:text-white hover:bg-primary m-0"
                       radius="none"
                       size="sm"
                       onClick={handlePriceFunctionality}
-                      className="bg-[#2abbe8] text-white hover:text-white hover:bg-primary m-0"
                     >
                       Apply
                     </Button>
@@ -383,7 +294,7 @@ const Products = () => {
 
             {/* rating section */}
             <section>
-              <div className="border-y-1 py-3 mt-2">
+              <div className=" py-3 mt-2">
                 <p className="text-[14px] text-[#121212]">Rating</p>
                 <RateComponent
                   handleRatingFunctionality={handleRatingFunctionality}
@@ -413,12 +324,32 @@ const Products = () => {
                 />
               </div>
             </section>
+
+            {/* // sort section */}
+            <section className="mt-2">
+              <div className="lg:block hidden w-full">
+                {/* Sort Options */}
+                <div className=" gap-2 items-center">
+                  <span className="text-sm flex-shrink-0 font-medium mb-1">
+                    Sort By
+                  </span>
+                  <Select
+                    className=""
+                    defaultSelectedKeys={["asc"]}
+                    onChange={(e) => handleSortInput(e.target.value)}
+                  >
+                    <SelectItem key="asc">Price Low to High</SelectItem>
+                    <SelectItem key="desc">Price High to Low</SelectItem>
+                  </Select>
+                </div>
+              </div>
+            </section>
           </div>
           {productsData?.data?.data?.length > 0 ? (
-            <div className="grid md:grid-cols-4 grid-cols-2 sm:grid-cols-3 gap-4 lg:w-[75%]">
+            <div className="grid  md:grid-cols-4 grid-cols-2 sm:grid-cols-3 gap-4 lg:w-[75%]">
               {productsData?.data?.data?.map((item: IProduct) => (
                 <Link key={item.id} href={`/products/${item.id}`}>
-                  <ProductCart product={item} />
+                  <FlashSaleCard product={item} />
                 </Link>
               ))}
             </div>
@@ -431,11 +362,10 @@ const Products = () => {
         <div className="md:block hidden">
           <div className=" mt-8 flex justify-end">
             <Pagination
+              showControls
               initialPage={currentPage as number}
               total={totalPages} // You should have this in your API response
               onChange={handlePageChange}
-              showControls
-              // renderItem={generatePageNumbers}
             />
           </div>
         </div>

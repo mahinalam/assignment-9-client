@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
   useDisclosure,
   Tooltip,
   Pagination,
@@ -14,9 +13,9 @@ import {
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
-
+import { toast } from "sonner";
+import { GoPlus } from "react-icons/go";
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import { RootState } from "@/app/redux/store";
 import {
   useCreateCategoryMutation,
@@ -25,10 +24,6 @@ import {
 } from "@/app/redux/features/category/categoryApi";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
-import { toast } from "sonner";
-import Loader from "@/app/components/sharred/Loader";
-import { GoPlus } from "react-icons/go";
-import CreateProductModal from "@/app/components/modal/CreateProductModal";
 import CreateCategoryModal from "@/app/components/modal/CreateCategoryModal";
 import CategoryLoading from "@/app/components/dashboard/CategoryLoading";
 import { TQueryParam } from "@/types";
@@ -47,29 +42,30 @@ const ProductReviews = () => {
     onOpenChange: onCategoryModalChange,
   } = useDisclosure();
 
-  const [params, setParams] = useState<TQueryParam[] | undefined>(undefined);
-
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
+  const [params, setParams] = useState<TQueryParam[] | undefined>([
+    { name: "page", value: 1 },
+    { name: "limit", value: 5 },
+  ]);
+  const [page, setPage] = useState(1);
+  const [imageFile, setImageFile] = useState<File | undefined>(undefined);
   const [isOpen, setIsOpen] = useState(false);
-
-  console.log("vendor", userId);
-  const { data: categoryData, isLoading: categoryDataLoading } =
-    useGetAllCategoriesQuery(params);
+  const {
+    data: categoryData,
+    isLoading: categoryDataLoading,
+    isFetching,
+  } = useGetAllCategoriesQuery(params);
 
   const [deleteCategory] = useDeleteCategoryMutation();
   const [CreateCategory, isLoading] = useCreateCategoryMutation();
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [categoryLoadingName, setCategoryLoadingName] =
     useState("Create Category");
+  console.log("category data", categoryData);
 
   //   console.log("userProductReviews", userProductReviews);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  const [currentPage, setCurrentPage] = useState<string | number>(1);
-
-  let queryParams: TQueryParam[] = [];
-
-  if (categoryDataLoading) {
+  if (categoryDataLoading || isFetching) {
     return (
       <div>
         {/* <Loader /> */}
@@ -77,14 +73,16 @@ const ProductReviews = () => {
       </div>
     );
   }
+  console.log("image files", imageFile);
 
   const totalCategories = categoryData?.data?.meta?.total || 0;
-  const totalPages = Math.ceil(totalCategories / 10);
+  const totalPages = Math.ceil(totalCategories / 5);
 
   //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
       const { data } = await deleteCategory(deleteModalId);
+
       if (data?.success) {
         toast.success("Category Deleted Successfully.");
       } else {
@@ -100,14 +98,23 @@ const ProductReviews = () => {
   };
 
   // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    const updatedQueryParams = queryParams.filter(
-      (param) => param.name !== "page"
-    );
+  // const handlePageChange = (page: number) => {
+  //   setCurrentPage(page);
+  //   const updatedQueryParams = queryParams.filter(
+  //     (param) => param.name !== "page"
+  //   );
 
-    updatedQueryParams.push({ name: "page", value: page });
-    setParams(updatedQueryParams);
+  //   updatedQueryParams.push({ name: "page", value: page });
+  //   setParams(updatedQueryParams);
+  // };
+  const handlePageChange = (page: number) => {
+    const queryParams: TQueryParam[] = [];
+
+    queryParams.push(
+      { name: "page", value: page },
+      { name: "limit", value: 5 }
+    );
+    setParams(queryParams);
   };
 
   // create category
@@ -122,9 +129,15 @@ const ProductReviews = () => {
         ...data,
       };
 
-      const res = await CreateCategory(categoryData).unwrap();
+      const formData = new FormData();
 
-      console.log("res", res);
+      formData.append("data", JSON.stringify(categoryData));
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const res = await CreateCategory(formData).unwrap();
+
       if (res?.success) {
         setCategoryLoading(false);
         onCategoryModalChange();
@@ -144,17 +157,18 @@ const ProductReviews = () => {
     <>
       {categoryData?.data?.data?.length > 0 ? (
         <>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-5">
             <SidebarButton
-              title={"Categories"}
               isOpen={isOpen}
-              setIsOpen={setIsOpen}
               role="admin"
+              setIsOpen={setIsOpen}
+              title={"Categories"}
+              hasLeftButton={false}
             />
             <div className="flex justify-end mb-2">
               <button
-                onClick={onCategoryModalOpen}
                 className="flex bg-primary text-sm items-center gap-1 rounded-md text-white px-4 py-2"
+                onClick={onCategoryModalOpen}
               >
                 <span>Create New</span>
                 <span>
@@ -171,74 +185,74 @@ const ProductReviews = () => {
               <TableColumn>ACTION</TableColumn>
             </TableHeader>
             <TableBody>
-              {categoryData?.data?.data?.map(
-                (category: any) => (
-                  // review.map((review: IReview) => (
-                  <TableRow key={category.id}>
-                    <TableCell className="">
-                      <div className="flex items-center gap-1">
-                        <img
-                          alt=""
-                          className="size-12"
-                          src={category?.imageUrl}
-                        />
-                        <p>{category?.name}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {" "}
-                      {moment(category.createdAt).format("DD MMM YYYY")}
-                    </TableCell>
-                    <TableCell>
-                      {" "}
-                      {moment(category.updatedAt).format("DD MMM YYYY")}
-                    </TableCell>
-                    <TableCell>
-                      <Tooltip content="Delete category" color="danger">
-                        <span
-                          onClick={() => handleDeleteModalOpen(category?.id)}
-                          className="text-lg text-danger cursor-pointer active:opacity-50"
-                        >
-                          <DeleteIcon />
-                        </span>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                )
-                // ))
-              )}
+              {categoryData?.data?.data?.map((category: any) => (
+                <TableRow key={category.id}>
+                  <TableCell className="">
+                    <div className="flex items-center gap-1">
+                      <img
+                        alt=""
+                        className="size-12"
+                        src={category?.imageUrl}
+                      />
+                      <p>{category?.name}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    {moment(category.createdAt).format("DD MMM YYYY")}
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    {moment(category.updatedAt).format("DD MMM YYYY")}
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip color="danger" content="Delete category">
+                      <span
+                        className="text-lg text-danger cursor-pointer active:opacity-50"
+                        onClick={() => handleDeleteModalOpen(category?.id)}
+                      >
+                        <DeleteIcon />
+                      </span>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
-          <Pagination
-            initialPage={currentPage as number}
-            total={totalPages} // You should have this in your API response
-            onChange={handlePageChange}
-            showControls
-            // renderItem={generatePageNumbers}
-          />
+          <div className="flex  justify-center mt-8">
+            <Pagination
+              showControls
+              page={page as number}
+              total={totalPages}
+              onChange={handlePageChange}
+            />
+          </div>
         </>
       ) : (
         <>
           <EmptyState
-            onClick={onCategoryModalOpen}
-            message="Categories found empty!"
             label="Add Category"
+            message="Categories found empty!"
+            onClick={onCategoryModalOpen}
           />
         </>
       )}
 
       <DeleteModal
-        title="Category"
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
+        subTitle="Are you sure want to delete this category?"
+        title="Delete Category"
         onOpenChange={onDeleteModalChange}
       />
       <CreateCategoryModal
-        isOpen={isCategoryModalOpen}
-        onOpenChange={onCategoryModalChange}
-        handleCreateCategory={handleCreateCategory}
-        isLoading={categoryLoading}
         categoryLoadingName={categoryLoadingName}
+        handleCreateCategory={handleCreateCategory}
+        imageFile={imageFile}
+        isLoading={categoryLoading}
+        isOpen={isCategoryModalOpen}
+        setImageFile={setImageFile}
+        onOpenChange={onCategoryModalChange}
       />
     </>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -16,7 +15,6 @@ import { RootState } from "@/app/redux/store";
 import { ICategory } from "@/types";
 
 const AddProducts = () => {
-  const router = useRouter();
   const [imageFiles, setImageFiles] = useState<File[] | []>([]);
   const [imagePreviews, setImagePreviews] = useState<string[] | []>([]);
   const [addProduct, { isSuccess, isLoading }] = useCreateProductMutation();
@@ -33,16 +31,12 @@ const AddProducts = () => {
   if (categoriesDataLoading) {
     return;
   }
-
-  // console.log(currentUserInfo?.data?.shop?.id);
-  // console.log("categoriesData", categoriesData);
   const categoriesOption = categoriesData?.data?.map((item: ICategory) => ({
     key: item.id,
     label: item.name,
   }));
 
   const onSubmit = async (data: any) => {
-    // console.log("form data", data);
     try {
       const productData = {
         ...data,
@@ -51,8 +45,6 @@ const AddProducts = () => {
         stock: Number(data.stock),
         shopId: currentUserInfo?.data?.shop?.id,
       };
-
-      console.log("product data", productData);
       const formData = new FormData();
 
       formData.append("data", JSON.stringify(productData));
@@ -65,9 +57,7 @@ const AddProducts = () => {
       if (res?.success) {
         toast.success("Product added successfully!");
       }
-    } catch (err: any) {
-      console.log(err.message);
-    }
+    } catch (err: any) {}
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {

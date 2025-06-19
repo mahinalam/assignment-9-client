@@ -1,11 +1,13 @@
 import React from "react";
 import Image from "next/image";
 import Rate from "rc-rate";
+
 import "rc-rate/assets/index.css";
 import "./ProductCard.css";
+import { calculateDiscountPercentage } from ".";
+
 import { IProduct } from "@/types";
 import { useGetProductReviewsQuery } from "@/app/redux/features/review/reviewApi";
-import { calculateDiscountPercentage } from ".";
 
 const ProductCart = ({ product }: { product: IProduct }) => {
   const { id, name, images, price, discount } = product;
@@ -13,11 +15,12 @@ const ProductCart = ({ product }: { product: IProduct }) => {
   const { data: reviewData } = useGetProductReviewsQuery([
     { name: "productId", value: id },
   ]);
+
   console.log("review data", reviewData);
 
   const { discountPercentage, discountPrice } = calculateDiscountPercentage(
     Number(price),
-    Number(discount)
+    Number(discount),
   );
 
   return (

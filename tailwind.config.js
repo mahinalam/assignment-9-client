@@ -14,8 +14,10 @@ module.exports = {
       },
       colors: {
         primary: "#E21B70",
+        secondary: "#DCDCDC",
         title: "#333333",
-        subTitle: "#999999"
+        subTitle: "#999999",
+        border: "#E5E7EB"
       },
       textColor: {
         secondary: "#9e9e9e"

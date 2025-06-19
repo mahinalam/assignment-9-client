@@ -1,19 +1,13 @@
 import React from "react";
-import moment from "moment";
-import Image from "next/image";
 
 const ShopCard = ({ shop }: any) => {
-  const { name, logo, description, product, followingShop, createdAt } = shop;
-  console.log("products", product);
-
-  // #64748B
+  const { name, logo, description, product, followingShop } = shop;
 
   return (
     <div className="border p-4 bg-white rounded-lg overflow-hidden shadow-sm transition-transform duration-300  hover:shadow-md">
       {/* Image Section */}
       <div className="flex justify-center items-center">
-        {/* <Image alt="" height={200} src={logo} width={200} /> */}
-        <img className="lg:size-[160px] size-[100px]" alt="" src={logo} />
+        <img alt="" className="lg:size-[160px] size-[100px]" src={logo} />
       </div>
       {/* small view */}
       <div className="md:hidden block text-center ">

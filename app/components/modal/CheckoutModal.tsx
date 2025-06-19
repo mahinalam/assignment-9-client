@@ -24,7 +24,7 @@ export default function CheckoutModal({
   onOpenChange,
   handleCreateOrder,
   isSuccess,
-  isForBuy = false,
+  loading,
 }: any) {
   const [paymentValue, setPaymentValue] = useState("");
 
@@ -95,8 +95,9 @@ export default function CheckoutModal({
                     </Button>
                     <Button
                       color="primary"
-                      isLoading={isSuccess}
+                      isLoading={loading}
                       type="submit"
+
                       // onPress={() => onClose()}
                     >
                       Proceed to Pay

@@ -1,23 +1,43 @@
 "use client";
 
+import { Button } from "@nextui-org/button";
+import { toast } from "sonner";
+import { useState } from "react";
+
 import GTForm from "@/app/components/form/GTForm";
 import GTInput from "@/app/components/form/GTInput";
 import GTTextArea from "@/app/components/form/GTTestArea";
 import Container from "@/app/components/sharred/Container";
-import { Button } from "@nextui-org/button";
-import { Collapse, Divider } from "antd";
-import "antd/dist/reset.css"; // Import Ant Design styles
+import { useSendMessageMutation } from "@/app/redux/features/contact/contactApi";
+import "antd/dist/reset.css";
 
-const { Panel } = Collapse;
 const ContactUs = () => {
-  const handleSendMessage = (data) => {
-    console.log("form data", data);
+  const [sendMessageLoading, setSendMessageLoading] = useState(false);
+  const [sendMessage] = useSendMessageMutation();
+
+  const handleSendMessage = async (data: any, methods: any) => {
+    setSendMessageLoading(true);
+    try {
+      const res = await sendMessage(data);
+
+      console.log("res", res);
+      if (res.data.success) {
+        setSendMessageLoading(false);
+        toast.success("Message sent successfully!");
+        setSendMessageLoading(false);
+        methods.reset();
+      }
+    } catch (err) {
+      toast.error("Failed to send message!");
+      setSendMessageLoading(false);
+    }
   };
+
   return (
     <Container>
       <div className="mt-[62px] sm:mt-[96px] lg:mt-44 bg-white p-8">
         <div className="text-center mb-1 border-b-[1px] border-b-[#E5E7EB] lg:pb-8 pb-5">
-          <h1 className="lg:text-5xl text-2xl mb-2 font-bold">Contact Us</h1>
+          <h1 className="lg:text-3xl text-2xl  mb-2 font-bold">Contact Us</h1>
           <p className="text-[#475569] lg:text-base text-sm lg:mt-4 mt-2">
             We’re here for you. Whether you have a question about our services,
             feedback you'd like to offer, ab— we’d love to hear from you. Our
@@ -41,22 +61,22 @@ const ContactUs = () => {
               {/* icon */}
               <div>
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
                   className="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                   />
                   <path
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
                   />
                 </svg>
               </div>
@@ -81,34 +101,38 @@ const ContactUs = () => {
                 <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-4 gap-3">
                   <GTInput
                     required
-                    label="Your email *"
+                    label="Your name *"
                     name="name"
                     type="text"
                   />
                   <GTInput
                     required
-                    label="Your name *"
+                    label="Your email *"
                     name="email"
                     type="email"
                   />
                 </div>
-                <GTInput required label="Subject *" name="name" type="text" />
+                <GTInput
+                  required
+                  label="Subject *"
+                  name="subject"
+                  type="text"
+                />
                 <GTTextArea
-                  rows={5}
                   required
                   label="Your message "
-                  name="review"
+                  name="message"
+                  rows={5}
                 />
               </div>
 
               <Button
                 className="my-4 rounded-md bg-primary  font-semibold text-white"
-                //   isLoading={createProductLoading}
+                isLoading={sendMessageLoading}
                 size="md"
                 type="submit"
               >
                 Send message
-                {/* {createProductLoadingName} */}
               </Button>
             </GTForm>
           </div>

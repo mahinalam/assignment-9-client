@@ -28,17 +28,17 @@ export default function GTTextArea({
   return (
     <Textarea
       {...register(name)}
+      defaultValue={defaultValue}
       errorMessage={errors[name] ? (errors[name].message as string) : ""}
       id={id}
       isInvalid={!!errors[name]}
       label={label}
+      maxRows={rows}
       minRows={8}
       required={required}
       size={size}
       type={type}
       variant={variant}
-      defaultValue={defaultValue}
-      maxRows={rows}
     />
   );
 }

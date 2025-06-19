@@ -1,16 +1,17 @@
 import React from "react";
+
 import Container from "./Container";
 
 const Footer: React.FC = () => {
   return (
-    <footer className=" text-sm text-[#0f136d] py-12  w-full">
+    <footer className=" text-sm text-black py-12  w-full">
       <Container>
         <div className="px-3 sm:px-0">
           <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:px-6">
             {/* Column 1: About Us */}
             <div>
-              <h2 className=" text-lg mb-4 text-[#0f136d]">About Us</h2>
-              <p className="text-[#0f136d] leading-relaxed">
+              <h2 className=" text-lg mb-4 text-black">About Us</h2>
+              <p className="text-black leading-relaxed">
                 We are dedicated to providing top-notch services, ensuring our
                 customers enjoy the best experience at the most competitive
                 prices.
@@ -19,11 +20,11 @@ const Footer: React.FC = () => {
 
             {/* Column 2: Quick Links */}
             <div>
-              <h2 className=" text-lg mb-4 text-[#0f136d]">Quick Links</h2>
+              <h2 className=" text-lg mb-4 text-black">Quick Links</h2>
               <ul className="space-y-2">
                 <li>
                   <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
+                    className="text-black hover:text-primary transition-colors duration-300"
                     href="/"
                   >
                     Home
@@ -31,7 +32,7 @@ const Footer: React.FC = () => {
                 </li>
                 <li>
                   <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
+                    className="text-black hover:text-primary transition-colors duration-300"
                     href="/products"
                   >
                     Products
@@ -39,18 +40,18 @@ const Footer: React.FC = () => {
                 </li>
                 <li>
                   <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
-                    href="/"
+                    className="text-black hover:text-primary transition-colors duration-300"
+                    href="/store"
                   >
-                    Contact Us
+                    Shops
                   </a>
                 </li>
                 <li>
                   <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
-                    href="/"
+                    className="text-black hover:text-primary transition-colors duration-300"
+                    href="/contact"
                   >
-                    About Us
+                    Contact Us
                   </a>
                 </li>
               </ul>
@@ -58,30 +59,22 @@ const Footer: React.FC = () => {
 
             {/* Column 3: Services */}
             <div>
-              <h2 className=" text-lg mb-4 text-[#0f136d]">Services</h2>
+              <h2 className=" text-lg mb-4 text-black">Authentication</h2>
               <ul className="space-y-2">
                 <li>
                   <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
-                    href="/"
+                    className="text-black hover:text-primary transition-colors duration-300"
+                    href="/login"
                   >
-                    Products
+                    Login
                   </a>
                 </li>
                 <li>
                   <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
-                    href="/"
+                    className="text-black hover:text-primary transition-colors duration-300"
+                    href="/signup"
                   >
-                    Customer Support
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="text-[#0f136d] hover:text-white transition-colors duration-300"
-                    href="/"
-                  >
-                    FAQs
+                    Signup
                   </a>
                 </li>
               </ul>
@@ -89,16 +82,16 @@ const Footer: React.FC = () => {
 
             {/* Column 4: Contact Info */}
             <div>
-              <h2 className=" text-lg mb-4 text-[#0f136d]">Contact Info</h2>
-              <p className="text-[#0f136d] leading-relaxed">
-                123 Main Street, City, Country
+              <h2 className=" text-lg mb-4 text-black">Contact Info</h2>
+              <p className="text-black leading-relaxed">
+                Alam Market, 2nd Floor, Dhaka
               </p>
-              <p className="text-[#0f136d] mt-2">Phone: +123 456 789</p>
-              <p className="text-[#0f136d] mt-2">Email: info@example.com</p>
+              <p className="text-black mt-2">Phone: +88012345678</p>
+              <p className="text-black mt-2">Email: info@gmail.com</p>
             </div>
           </div>
 
-          <div className="container mx-auto text-center text-[#0f136d] mt-4 ">
+          <div className="container mx-auto text-center text-black mt-4 ">
             &copy; 2025 Electromert All rights reserved.
           </div>
         </div>

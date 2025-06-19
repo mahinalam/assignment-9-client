@@ -5,81 +5,92 @@ import Link from "next/link";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Select, SelectItem } from "@nextui-org/react";
 
 import GTForm from "@/app/components/form/GTForm";
 import GTInput from "@/app/components/form/GTInput";
 import Container from "@/app/components/sharred/Container";
-import { useSignupMutation } from "@/app/redux/features/auth/authApi";
-import GTSelect from "@/app/components/form/GTSelect";
+import {
+  useSignUpCustomerMutation,
+  useSignUpVendorMutation,
+} from "@/app/redux/features/auth/authApi";
+import GTTextArea from "@/app/components/form/GTTestArea";
+import { verifyToken } from "@/app/utils/verifyToken";
+import { setUser } from "@/app/redux/features/auth/authSlice";
 
 const SignupPage = () => {
-  const { theme } = useTheme();
-
-  // const [login] = useLoginMutation();
   const dispatch = useDispatch();
   const router = useRouter();
-  //   const { setIsLoading: userLoading } = useUser();
+  const [value, setValue] = useState("");
+  const [signupVendor] = useSignUpVendorMutation();
+  const [signUpCustomer] = useSignUpCustomerMutation();
 
-  // const searchParams = useSearchParams();
-  // const redirect = searchParams.get("redirect");
-
-  const [signupUser, result] = useSignupMutation();
-
-  // console.log(redirect);
-  //   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
-
-  // const onSubmit: SubmitHandler<FieldValues> = (data) => {
-  //   console.log(data);
-  //   const res = loginUser(data).unwrap();
-  //   console.log("from login", res);
-
-  //   // const user = verifyToken((res as any).data?.token);
-  //   // console.log("user", user);
-  // };
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data, methods: any) => {
     console.log(data);
     try {
-      console.log(data);
+      console.log({ ...data, role: value });
+      if (value === "VENDOR") {
+        const vendorData = {
+          user: {
+            email: data.email,
+            password: data.password,
+          },
+          vendor: {
+            name: data.name,
+          },
+          shop: {
+            name: data.shop_name,
+            address: data.shop_address,
+            description: data.shop_description,
+          },
+        };
+        const res = await signupVendor(vendorData).unwrap();
+        console.log("res", res);
+        const user = verifyToken((res as any).data?.accessToken);
+
+        dispatch(setUser({ user: user, token: res.data.accessToken }));
+        toast.success("Registration successful!");
+        router.push("/");
+      } else {
+        const customerData = {
+          user: {
+            email: data.email,
+            password: data.password,
+          },
+          customer: {
+            name: data.name,
+          },
+        };
+
+        const res = await signUpCustomer(customerData).unwrap();
+        const user = verifyToken((res as any).data?.accessToken);
+
+        dispatch(setUser({ user: user, token: res.data.accessToken }));
+        toast.success("Registration successful!");
+        router.push("/");
+      }
 
       // Wait for the loginUser Promise to resolve
-      const res = await signupUser(data).unwrap();
+      // const res = await signupUser(data).unwrap();
 
-      console.log("res", res);
+      // console.log("res", res);
 
-      if (res?.success) {
-        router.push("/login");
-      }
-      // Assuming `verifyToken` is a function to decode or verify the token
-      // const user = verifyToken((res as any).data?.accessToken);
-
-      // dispatch(setUser({ user: user, token: res.data.accessToken }));
-      // alert("Logged in");
-
-      // console.log("user", user);
+      // if (res?.success) {
+      //   router.push("/login");
+      // }
     } catch (error: any) {
-      toast.error(error.message);
-      console.error("Login failed:", error);
+      toast.error(error?.data?.message);
+      console.log("Login failed:", error);
     }
   };
 
-  // console.log("login result", result);
-  //   useEffect(() => {
-  //     if (!isPending && isSuccess) {
-  //       if (redirect) {
-  //         router.push(redirect);
-  //       } else {
-  //         router.push("/");
-  //       }
-  //     }
-  //   }, [isPending, isSuccess]);
-
   const options = [
     {
-      key: "USER",
-      label: "USER",
+      key: "CUSTOMER",
+      label: "CUSTOMER",
     },
     {
       key: "VENDOR",
@@ -90,7 +101,7 @@ const SignupPage = () => {
   return (
     <Container>
       <div className="flex items-center justify-center md:mt-[200px] mt-16">
-        <div className="md:w-[33%] mx-auto border p-5 bg-white">
+        <div className="md:w-[40%] mx-auto border p-5 bg-white">
           <div>
             <p className="text-center text-[18px] font-bold">Signup</p>
           </div>
@@ -105,19 +116,44 @@ const SignupPage = () => {
               <GTInput label="Password" name="password" type="password" />
             </div>
             <div className="py-3">
-              <GTSelect
+              <Select
+                className="min-w-full sm:min-w-[225px]"
+                // id={id}
                 label="Role"
                 name="role"
-                options={options}
-                type="text"
-              />
-            </div>
-            <div className="py-3">
+                onChange={(e) => setValue(e.target.value)}
+              >
+                {options.map((option) => (
+                  <SelectItem key={option.key}>{option.label}</SelectItem>
+                ))}
+              </Select>
+            </div>{" "}
+            {value === "VENDOR" && (
+              <>
+                <div>
+                  <p className="text-center font-medium text-sm">Shop Info</p>
+                </div>
+                <div className="py-3">
+                  <GTInput label="Name" name="shop_name" type="text" />
+                </div>
+                <div className="py-3">
+                  <GTInput label="Address" name="shop_address" type="text" />
+                </div>
+                <div className="py-3">
+                  <GTTextArea
+                    label="Description"
+                    name="shop_description"
+                    type="text"
+                  />
+                </div>
+              </>
+            )}
+            {/* <div className="py-3">
               <GTInput label="Phone Number" name="phoneNumber" type="text" />
             </div>
             <div className="py-3">
               <GTInput label="Address" name="address" type="text" />
-            </div>
+            </div> */}
             <Button
               className="my-3 w-full rounded-md bg-primary  font-semibold text-white"
               size="lg"

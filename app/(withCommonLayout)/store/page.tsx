@@ -17,14 +17,12 @@ const StorePage = () => {
     return <Loader />;
   }
 
-  console.log("shopdata", shopData);
-
   return (
     <Container>
       <div className="md:mt-44 mt-20 bg-white">
         <div className="flex justify-center">
           <div className="text-center md:w-1/2 w-full">
-            <p className="md:text-3xl text-xl font-medium">Our Shops</p>
+            <p className="lg:text-3xl text-xl font-bold">Our Shops</p>
             <p className="text-slate-500 md:mt-4 mt-1 md:text-[16px] text-sm">
               Discover our curated collection of tech shops offering the latest
               gadgets, accessories, and more.

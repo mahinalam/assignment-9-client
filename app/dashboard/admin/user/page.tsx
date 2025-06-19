@@ -11,22 +11,21 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
+import moment from "moment";
+import { toast } from "sonner";
+import { LuUser } from "react-icons/lu";
+
+import UsersLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { IUser, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import moment from "moment";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
-import { useDeleteReviewMutation } from "@/app/redux/features/review/reviewApi";
-import { toast } from "sonner";
 import {
   useDeleteUserMutation,
   useGetAllUsersQuery,
 } from "@/app/redux/features/user/userApi";
-import { LuUser } from "react-icons/lu";
 import EmptyState from "@/app/components/dashboard/EmptyState";
-import UsersLoading from "./Loading";
 
 const AllUsers = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -48,6 +47,7 @@ const AllUsers = () => {
     useGetAllUsersQuery(params);
 
   const [deleteUser] = useDeleteUserMutation();
+
   console.log(" allUsers", allUsers);
 
   //   console.log("order history from admin", allOrders);
@@ -66,6 +66,7 @@ const AllUsers = () => {
   // pagination handler
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -77,6 +78,7 @@ const AllUsers = () => {
   const handleDeleteUser = async () => {
     if (deleteModalId) {
       const { data } = await deleteUser(deleteModalId);
+
       if (data?.success) {
         toast.success("User deleted successfully.");
       } else {
@@ -91,16 +93,19 @@ const AllUsers = () => {
   };
 
   console.log("delete modal id", deleteModalId);
+
   return (
     <div className="">
+      <SidebarButton
+        isOpen={isOpen}
+        role="admin"
+        setIsOpen={setIsOpen}
+        title={"All Users"}
+        className={"mb-5"}
+        hasLeftButton={false}
+      />
       {allUsers?.data?.data?.length > 0 ? (
         <>
-          <SidebarButton
-            title={"Users"}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            role="admin"
-          />
           <Table aria-label="Example static collection table">
             <TableHeader>
               <TableColumn>PROFILE</TableColumn>
@@ -118,9 +123,9 @@ const AllUsers = () => {
                         {user?.profilePhoto ? (
                           // TODO: fixed customerProfilePhoto pronoun
                           <img
-                            src={user.profilePhoto}
                             alt=""
                             className="size-[40px]"
+                            src={user.profilePhoto}
                           />
                         ) : (
                           <LuUser size={40} />
@@ -138,10 +143,10 @@ const AllUsers = () => {
                     {moment(user?.createdAt).format("HH:mm:ss")}
                   </TableCell>
                   <TableCell>
-                    <Tooltip content="Delete user" color="danger">
+                    <Tooltip color="danger" content="Delete user">
                       <span
-                        onClick={() => handleDeleteModalOpen(user?.id)}
                         className="text-lg text-danger cursor-pointer active:opacity-50"
+                        onClick={() => handleDeleteModalOpen(user?.id)}
                       >
                         <DeleteIcon />
                       </span>
@@ -153,27 +158,27 @@ const AllUsers = () => {
           </Table>
           <div className="flex  justify-center mt-8">
             <Pagination
+              showControls
               page={page}
               total={totalPages}
               onChange={handlePageChange}
-              showControls
             />
           </div>
         </>
       ) : (
         <>
           <EmptyState
-            message="Users found empty!"
-            label="Go Home"
             address="/"
+            label="Go Home"
+            message="Users found empty!"
           />
         </>
       )}
       <DeleteModal
         handleDeleteProduct={handleDeleteUser}
         isOpen={isDeleteModalOpen}
-        onOpenChange={onDeleteModalChange}
         title="User"
+        onOpenChange={onDeleteModalChange}
       />
     </div>
   );

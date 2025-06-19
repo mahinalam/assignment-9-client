@@ -16,6 +16,7 @@ const ScrollToTopButton = () => {
     };
 
     window.addEventListener("scroll", toggleVisibility);
+
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
@@ -28,11 +29,11 @@ const ScrollToTopButton = () => {
 
   return (
     <button
-      onClick={scrollToTop}
+      aria-label="Scroll to top"
       className={`fixed bottom-4 right-4 px-3 py-2 rounded-lg bg-primary text-white text-xl shadow-lg transition-opacity duration-300 ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
-      aria-label="Scroll to top"
+      onClick={scrollToTop}
     >
       ↑
     </button>

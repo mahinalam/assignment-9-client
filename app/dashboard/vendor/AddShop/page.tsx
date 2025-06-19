@@ -11,7 +11,6 @@ import { useCreateShopMutation } from "@/app/redux/features/shop/shopApi";
 import GTTextArea from "@/app/components/form/GTTestArea";
 import GTInput from "@/app/components/form/GTInput";
 import GTForm from "@/app/components/form/GTForm";
-import { AiOutlineProduct } from "react-icons/ai";
 
 const AddShop = () => {
   const router = useRouter();

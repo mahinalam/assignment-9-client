@@ -31,7 +31,6 @@ const AddShop = () => {
         };
 
         // }
-        console.log("user", userData);
         formData.append("data", JSON.stringify(userData));
         formData.append("logoImage", logoImage as File);
 
@@ -42,9 +41,7 @@ const AddShop = () => {
           router.push("/dashboard/AddProducts");
         }
       }
-    } catch (err: any) {
-      console.log(err.message);
-    }
+    } catch (err: any) {}
   };
 
   return (
@@ -70,11 +67,6 @@ const AddShop = () => {
                 />
               </div>
               <div className="py-3">
-                {/* <input
-                  name="logo"
-                  type="file"
-                  onChange={(e) => setLogoImage(e.target.files![0])}
-                /> */}
                 <div className="min-w-fit flex-1 mt-12">
                   <label
                     className="flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-default-200  shadow-sm transition-all duration-100 hover:border-default-400"

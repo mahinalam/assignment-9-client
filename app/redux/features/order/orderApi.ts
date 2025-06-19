@@ -1,12 +1,11 @@
-import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
+
+import { TQueryParam } from "@/types";
 
 const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createOrder: builder.mutation({
       query: (orderInfo) => {
-        console.log("order info from api", orderInfo);
-
         return {
           url: "/order",
           method: "POST",
@@ -70,6 +69,7 @@ const orderApi = baseApi.injectEndpoints({
             params.append(item.name, item.value as string);
           });
         }
+
         return {
           url: "/order/user-order-history",
           method: "GET",

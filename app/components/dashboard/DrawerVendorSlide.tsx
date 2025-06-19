@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { useState } from "react";
-import SidebarComponent from "./SidebarComponent";
 import { LuUserRoundPen } from "react-icons/lu";
 import { VscListOrdered } from "react-icons/vsc";
-import { RiSettings2Line } from "react-icons/ri";
+import { RiDashboardLine } from "react-icons/ri";
+import SidebarComponent from "./SidebarComponent";
+import { AiOutlineProduct } from "react-icons/ai";
+import { GoCodeReview } from "react-icons/go";
+import { usePathname } from "next/navigation";
 
 export default function DrawerVendorSlide({
   isOpen,
@@ -12,40 +14,16 @@ export default function DrawerVendorSlide({
   isOpen: boolean;
   setIsOpen: any;
 }) {
+  const pathname = usePathname();
   return (
     <>
-      {/* Trigger button */}
-      {/* <button className="bg-blue-600 text-white px-4 py-2 rounded-md">
-        Open Drawer
-      </button> */}
-      {/* <button
-        onClick={() => setIsOpen(true)}
-        className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-athens-gray-100 bg-white text-h-black shadow-none outline-0 hover:bg-athens-gray-50 focus:outline-0 active:bg-white size-9 rounded-md lg:hidden"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          className="lucide lucide-panel-left"
-        >
-          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
-          <path d="M9 3v18"></path>
-        </svg>
-      </button> */}
-
       {/* Overlay */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-40 z-40 transition-opacity duration-300 ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setIsOpen(false)}
-      ></div>
+      />
 
       {/* Drawer */}
       <div
@@ -57,8 +35,8 @@ export default function DrawerVendorSlide({
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-lg font-semibold">Menu</h2>
           <button
-            onClick={() => setIsOpen(false)}
             className="text-gray-500 text-xl"
+            onClick={() => setIsOpen(false)}
           >
             &times;
           </button>
@@ -66,19 +44,51 @@ export default function DrawerVendorSlide({
 
         {/* Drawer Body */}
         <div className="p-4 space-y-4">
+          <Link href="/dashboard/vendor/Overview">
+            <SidebarComponent
+              icon={<RiDashboardLine />}
+              link="/dashboard/vendor/Overview"
+              pathname={pathname}
+              title="Overview"
+            />
+          </Link>
           <Link
-            href="/dashboard/vendor/profile"
             className="hover:bg-gray-500 bg-red-500"
+            href="/dashboard/vendor/profile"
           >
-            <SidebarComponent icon={<LuUserRoundPen />} title="Dashboard" />
+            <SidebarComponent
+              icon={<LuUserRoundPen />}
+              link="/dashboard/vendor/profile"
+              pathname={pathname}
+              title="Profile"
+            />
           </Link>
-          <Link href="/dashboard/user/orders">
+          <Link href="/dashboard/vendor/AllProducts">
             {" "}
-            <SidebarComponent icon={<VscListOrdered />} title="Orders" />
+            <SidebarComponent
+              icon={<AiOutlineProduct />}
+              link="/dashboard/vendor/AllProducts"
+              pathname={pathname}
+              title="Products"
+            />
           </Link>
-          <Link href="/dashboard/user/settings">
+          <Link href="/dashboard/vendor/OrderHistory">
             {" "}
-            <SidebarComponent icon={<RiSettings2Line />} title="Settings" />
+            <SidebarComponent
+              icon={<VscListOrdered />}
+              link="/dashboard/vendor/OrderHistory"
+              pathname={pathname}
+              title="Orders"
+            />
+          </Link>
+          <Link href="/dashboard/vendor/Reviews">
+            {" "}
+            <SidebarComponent
+              icon={<GoCodeReview />}
+              link="/dashboard/vendor/Reviews"
+              pathname={pathname}
+              title="Reviews"
+            />
           </Link>
         </div>
       </div>

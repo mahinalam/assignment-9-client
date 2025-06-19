@@ -1,13 +1,7 @@
-import { Button } from "@nextui-org/button";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from "@nextui-org/react";
+import { Modal, ModalBody, ModalContent } from "@nextui-org/react";
 import Rate from "rc-rate";
 import React from "react";
+
 import ReviewCartForSmallScreen from "../ProductDetails/ReviewCartForSmallScreen";
 
 const ReviewModal = ({
@@ -22,6 +16,7 @@ const ReviewModal = ({
   reviews: any;
 }) => {
   console.log("reviews from modal", reviewsData);
+
   return (
     <>
       <Modal isOpen={isOpen} size="full" onOpenChange={onOpenChange}>

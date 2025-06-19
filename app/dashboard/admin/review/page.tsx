@@ -11,21 +11,19 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
+import { toast } from "sonner";
+
+import ReviewsLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-
 import { TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import { LuUser } from "react-icons/lu";
 import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
 import {
   useDeleteReviewMutation,
   useGetAllReviewsQuery,
 } from "@/app/redux/features/review/reviewApi";
-import { toast } from "sonner";
 import EmptyState from "@/app/components/dashboard/EmptyState";
-import ReviewsLoading from "./Loading";
 
 const AllReviews = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -47,6 +45,7 @@ const AllReviews = () => {
     useGetAllReviewsQuery(params);
 
   const [deleteReview] = useDeleteReviewMutation();
+
   console.log("all allReviews", allReviews);
 
   //   console.log("order history from admin", allOrders);
@@ -65,6 +64,7 @@ const AllReviews = () => {
   // pagination handler
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -76,6 +76,7 @@ const AllReviews = () => {
   const handleDeleteReview = async () => {
     if (deleteModalId) {
       const { data } = await deleteReview(deleteModalId);
+
       if (data?.success) {
         toast.success("Review deleted successfully.");
       } else {
@@ -91,17 +92,19 @@ const AllReviews = () => {
   };
 
   console.log("all reviews", allReviews);
+
   return (
     <>
+      <SidebarButton
+        isOpen={isOpen}
+        role="admin"
+        setIsOpen={setIsOpen}
+        title={"All Reviews"}
+        className={"mb-5"}
+        hasLeftButton={false}
+      />
       {allReviews?.data?.data?.length > 0 ? (
         <>
-          {" "}
-          <SidebarButton
-            title={"Reviews"}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            role="admin"
-          />
           <Table aria-label="Example static collection table">
             <TableHeader>
               <TableColumn>PRODUCT</TableColumn>
@@ -117,9 +120,9 @@ const AllReviews = () => {
                     <div className="flex  gap-2">
                       <div>
                         <img
-                          src={review?.product?.images?.[0]}
                           alt=""
                           className="size-[40px]"
+                          src={review?.product?.images?.[0]}
                         />
                       </div>
                       <div>
@@ -135,9 +138,9 @@ const AllReviews = () => {
                         {review?.customer?.profilePhoto ? (
                           // TODO: fixed customerProfilePhoto pronoun
                           <img
-                            src={review?.customer?.profilePhoto}
                             alt=""
                             className="size-[40px]"
+                            src={review?.customer?.profilePhoto}
                           />
                         ) : (
                           <CgProfile size={40} />
@@ -152,10 +155,10 @@ const AllReviews = () => {
                   </TableCell>
                   <TableCell>{review.rating}</TableCell>
                   <TableCell>
-                    <Tooltip content="Delete review" color="danger">
+                    <Tooltip color="danger" content="Delete review">
                       <span
-                        onClick={() => handleDeleteModalOpen(review?.id)}
                         className="text-lg text-danger cursor-pointer active:opacity-50"
+                        onClick={() => handleDeleteModalOpen(review?.id)}
                       >
                         <DeleteIcon />
                       </span>
@@ -167,23 +170,23 @@ const AllReviews = () => {
           </Table>
           <div className="flex  justify-center mt-8">
             <Pagination
+              showControls
               page={page}
               total={totalPages}
               onChange={handlePageChange}
-              showControls
             />
           </div>
         </>
       ) : (
         <>
-          <EmptyState message="No reviews yet!" label="Go Home" />
+          <EmptyState label="Go Home" message="No reviews yet!" />
         </>
       )}
       <DeleteModal
         handleDeleteProduct={handleDeleteReview}
         isOpen={isDeleteModalOpen}
-        onOpenChange={onDeleteModalChange}
         title="Review"
+        onOpenChange={onDeleteModalChange}
       />
     </>
   );

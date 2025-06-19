@@ -9,8 +9,6 @@ const BillingCard = () => {
 
   const { data: currentUserInfo, isLoading } = useGetSingleUserQuery(userId);
 
-  console.log("currentUserInfo", currentUserInfo);
-
   if (isLoading) {
     return;
   }

@@ -30,11 +30,11 @@ export default function GTSelect({
     <Select
       {...register(name)}
       className="min-w-full sm:min-w-[225px]"
+      defaultSelectedKeys={[defaultSelectedKeys as any]}
       id={id}
       isDisabled={disabled}
       label={label}
       variant={variant}
-      defaultSelectedKeys={[defaultSelectedKeys as any]}
     >
       {options.map((option) => (
         <SelectItem key={option.key}>{option.label}</SelectItem>

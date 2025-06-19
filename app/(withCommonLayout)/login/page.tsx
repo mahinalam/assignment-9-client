@@ -7,6 +7,7 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import GTForm from "@/app/components/form/GTForm";
 import GTInput from "@/app/components/form/GTInput";
@@ -14,7 +15,6 @@ import Container from "@/app/components/sharred/Container";
 import { verifyToken } from "@/app/utils/verifyToken";
 import { setUser } from "@/app/redux/features/auth/authSlice";
 import { useLoginMutation } from "@/app/redux/features/auth/authApi";
-import { useState } from "react";
 
 const LoginPage = () => {
   // const [login] = useLoginMutation();
@@ -65,11 +65,12 @@ const LoginPage = () => {
   };
 
   console.log("user deffault", userLoginDefaultValue);
+
   return (
     <>
       <Container>
         <div className="flex items-center justify-center md:mt-[200px] mt-16">
-          <div className="md:w-[33%] mx-auto border p-5 bg-white">
+          <div className="md:w-[40%] mx-auto border p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Login</p>
               <div className="flex gap-2">

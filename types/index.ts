@@ -164,9 +164,11 @@ export interface IReview {
   rating: number;
   images: string[];
   productId: string;
+  customerId: string;
   userId: string;
   isDeleted: boolean;
   createdAt: string;
+  customer: any;
 }
 
 export type TQueryParam = {

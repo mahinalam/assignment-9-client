@@ -1,22 +1,13 @@
-import {
-  Skeleton,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
+import { Skeleton } from "@nextui-org/react";
 import React from "react";
 
 const ProductsLoading = () => {
-  const rows = Array(5).fill(null); // simulate 5 skeleton rows
+  const rows = Array(5).fill(null);
+
   return (
     <div className="mt-6 space-y-4">
       <div className="flex justify-between items-center">
         <Skeleton className="w-32 h-8 rounded-lg" />{" "}
-        {/* Page title or header button */}
-        {/* <Skeleton className="w-24 h-8 rounded-lg" /> */}
       </div>
 
       {/* Table Header */}

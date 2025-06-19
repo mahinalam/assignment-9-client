@@ -34,7 +34,6 @@ const ProfilePage = () => {
     return <Loader />;
   }
 
-  console.log("current user", currentUserInfo);
   const onSubmit = async (data: any) => {
     // check if the new and confirm password matched
 
@@ -45,20 +44,19 @@ const ProfilePage = () => {
         ...data,
       };
 
-      console.log("updatedProfileInfo", updatedProfileInfo);
       const formData = new FormData();
 
       formData.append("data", JSON.stringify(updatedProfileInfo));
 
       formData.append("profilePhoto", imageFile as File);
-      console.log("form data", formData);
+
       const res = await updateProfile(formData).unwrap();
 
       if (res?.success) {
         toast.success("Profile updated successfully!");
       }
     } catch (err: any) {
-      console.log(err.message);
+      toast.error(err.message);
     }
   };
 

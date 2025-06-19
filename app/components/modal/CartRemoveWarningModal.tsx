@@ -13,6 +13,10 @@ export default function CartRemoveWarningModal({
   isOpen,
   onOpenChange,
   handleRemoveCart,
+  title,
+  subTitle,
+  btn1,
+  btn2,
 }: any) {
   //   console.log(data);
   return (
@@ -22,12 +26,10 @@ export default function CartRemoveWarningModal({
           {(onClose) => (
             <>
               <ModalHeader>
-                <p className="text-[#212121]">Remove from Cart</p>
+                <p className="text-[#212121]">{title}</p>
               </ModalHeader>
               <ModalBody>
-                <p className="text-[#212121]">
-                  Item(s) will be removed from order
-                </p>
+                <p className="text-[#212121]">{subTitle}</p>
                 <ModalFooter>
                   <Button
                     color="default"
@@ -36,7 +38,7 @@ export default function CartRemoveWarningModal({
                     variant="bordered"
                     onPress={() => onClose()}
                   >
-                    CANCEL
+                    {btn2}
                   </Button>
                   <Button
                     className="bg-[#2abbe8]"
@@ -46,7 +48,7 @@ export default function CartRemoveWarningModal({
                     type="submit"
                     onClick={() => handleRemoveCart()}
                   >
-                    REMOVE
+                    {btn1}
                   </Button>
                 </ModalFooter>
               </ModalBody>

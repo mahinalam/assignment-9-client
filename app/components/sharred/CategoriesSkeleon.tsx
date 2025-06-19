@@ -1,5 +1,4 @@
 import React from "react";
-import Container from "./Container";
 import { Card, Skeleton } from "@nextui-org/react";
 
 const CategoriesSkeleton = () => {

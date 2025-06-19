@@ -18,6 +18,13 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import { Button } from "@nextui-org/button";
+import { IoFlashOutline } from "react-icons/io5";
+import { MdOutlineFeaturedPlayList } from "react-icons/md";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { toast } from "sonner";
+
+import AllProductsLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import {
@@ -28,22 +35,11 @@ import {
   useUpdateProductStatusMutation,
 } from "@/app/redux/features/product/productApi";
 import { IProduct, TQueryParam } from "@/types";
-import Loader from "@/app/components/sharred/Loader";
 import { RootState } from "@/app/redux/store";
 import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
-import EmptyState from "@/app/components/dashboard/EmptyState";
 import CreateProductModal from "@/app/components/modal/CreateProductModal";
-import { GoPlus } from "react-icons/go";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import { Button } from "@nextui-org/button";
-import { IoFlashOutline } from "react-icons/io5";
-import { MdOutlineFeaturedPlayList } from "react-icons/md";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { toast } from "sonner";
 import RemoveOrChangeProductStatusModal from "@/app/components/modal/RemoveModal";
-import LoadingSkeleton from "./Loading";
-import CategoryLoading from "@/app/components/dashboard/CategoryLoading";
-import AllProductsLoading from "./Loading";
 
 const AllProducts = () => {
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
@@ -108,12 +104,21 @@ const AllProducts = () => {
   const [flashProductsPage, setFlashProductsPage] = useState(1);
   const [featuredProductsPage, setAllFeaturedProductsPage] = useState(1);
 
-  const { data: allProducts, isLoading } =
-    useGetAllProductsQuery(allProductParams);
-  const { data: allFeaturedProducts, isLoading: isAllFeaturedProductLoading } =
-    useGetAllFeaturedProductsQuery(featuredProductsParams);
-  const { data: allFlashProducts, isLoading: isAllFlashProductLoading } =
-    useGetAllFlashProductsQuery(flashProductsParams);
+  const {
+    data: allProducts,
+    isLoading,
+    isFetching: allProductsFetching,
+  } = useGetAllProductsQuery(allProductParams);
+  const {
+    data: allFeaturedProducts,
+    isLoading: isAllFeaturedProductLoading,
+    isFetching: featuredProductsFetching,
+  } = useGetAllFeaturedProductsQuery(featuredProductsParams);
+  const {
+    data: allFlashProducts,
+    isLoading: isAllFlashProductLoading,
+    isFetching: flashProductsFetching,
+  } = useGetAllFlashProductsQuery(flashProductsParams);
 
   const [deleteProduct] = useDeleteProductMutation();
   const [updateProductStatus] = useUpdateProductStatusMutation();
@@ -138,7 +143,14 @@ const AllProducts = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   // console.log(user);
-  if (isLoading || isAllFlashProductLoading || isAllFeaturedProductLoading) {
+  if (
+    isLoading ||
+    isAllFlashProductLoading ||
+    isAllFeaturedProductLoading ||
+    featuredProductsFetching ||
+    flashProductsFetching ||
+    allProductsFetching
+  ) {
     return (
       <>
         <AllProductsLoading />
@@ -164,6 +176,7 @@ const AllProducts = () => {
   // pagination handler for all products
   const handleAllProductsPageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -174,6 +187,7 @@ const AllProducts = () => {
   // pagination handler for flash products
   const handleAllFlashProductsPageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -184,6 +198,7 @@ const AllProducts = () => {
   // pagination handler for featured products
   const handleAllFeaturedProductsPageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
@@ -196,6 +211,7 @@ const AllProducts = () => {
     try {
       if (deleteModalId) {
         const res = await deleteProduct(deleteModalId);
+
         if (res?.data?.success) {
           toast.success("Product deleted successfully.");
           setDeleteModalId("");
@@ -220,6 +236,7 @@ const AllProducts = () => {
           id: removeFlashProductId,
           status: { isFlashed: false },
         });
+
         if (res?.data?.success) {
           toast.success("Product removed successfully.");
           setRemoveFlashProductId("");
@@ -248,6 +265,7 @@ const AllProducts = () => {
           id: removeFeaturedProductId,
           status: { isFeatured: false },
         });
+
         if (res?.data?.success) {
           toast.success("Product removed successfully.");
           setRemoveFeaturtedProductId("");
@@ -279,6 +297,7 @@ const AllProducts = () => {
           id: makeFlashOrFeaturedProduct?.id,
           status: updatedProductStatus,
         });
+
         if (res?.data?.success) {
           toast.success("Product marked successfully.");
           setMakeFlashOrFeaturedProduct({ id: "", status: "" });
@@ -300,11 +319,12 @@ const AllProducts = () => {
     <>
       <>
         <SidebarButton
-          title={"Featured Products"}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          role="admin"
           className="mt-8"
+          isOpen={isOpen}
+          role="admin"
+          setIsOpen={setIsOpen}
+          title={"Featured Products"}
+          hasLeftButton={false}
         />
         <Table aria-label="Example static collection table" className="mt-4">
           <TableHeader>
@@ -351,17 +371,17 @@ const AllProducts = () => {
                         >
                           <span className="flex items-center gap-1">
                             <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
                               className="size-6"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={1.5}
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
+                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                               />
                             </svg>
                             <span>Remove</span>
@@ -386,14 +406,22 @@ const AllProducts = () => {
         </Table>
         <div className="flex  justify-center mt-8">
           <Pagination
+            showControls
             page={featuredProductsPage}
             total={totalFeaturedProductsPages}
             onChange={handleAllFeaturedProductsPageChange}
-            showControls
           />
         </div>
       </>
       <>
+        <SidebarButton
+          className="mt-8"
+          isOpen={isOpen}
+          role="admin"
+          setIsOpen={setIsOpen}
+          title={"Flash Products"}
+          hasLeftButton={false}
+        />
         <Table aria-label="Example static collection table" className="mt-4">
           <TableHeader>
             <TableColumn>PRODUCT</TableColumn>
@@ -444,17 +472,17 @@ const AllProducts = () => {
                           >
                             <span className="flex items-center gap-1">
                               <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
                                 className="size-6"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={1.5}
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
+                                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                                 />
                               </svg>
                               <span>Remove</span>
@@ -480,20 +508,21 @@ const AllProducts = () => {
         </Table>
         <div className="flex  justify-center mt-8">
           <Pagination
+            showControls
             page={flashProductsPage}
             total={totalFlashProductsPages}
             onChange={handleAllFlashProductsPageChange}
-            showControls
           />
         </div>
       </>
       <>
         <SidebarButton
-          title={"All Products"}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          role="admin"
           className="mt-4"
+          isOpen={isOpen}
+          role="admin"
+          setIsOpen={setIsOpen}
+          title={"All Products"}
+          hasLeftButton={false}
         />
 
         <Table aria-label="Example static collection table" className="mt-4">
@@ -556,13 +585,13 @@ const AllProducts = () => {
                             </span>
                           </DropdownItem>
                           <DropdownItem
+                            className=""
                             onClick={() =>
                               makeFlashOrFeaturedProductModalOpen(
                                 item.id,
                                 "featured"
                               )
                             }
-                            className=""
                           >
                             {/* feature btn */}
                             <span className="flex items-center gap-2">
@@ -592,10 +621,10 @@ const AllProducts = () => {
         </Table>
         <div className="flex  justify-center mt-8">
           <Pagination
+            showControls
             page={allProductPage}
             total={totalProductPages}
             onChange={handleAllProductsPageChange}
-            showControls
           />
         </div>
       </>
@@ -606,31 +635,27 @@ const AllProducts = () => {
       />
       {/* delete product modal */}
       <DeleteModal
-        title="Product"
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
+        title="Delete Product"
+        subTitle="Are you sure want to delete this product?"
         onOpenChange={onDeleteModalChange}
       />
       <RemoveOrChangeProductStatusModal
-        title="Remove Product"
         description="Are you sure want to remove this product?"
         hanldeRemoveProduct={handleRemoveFlashProduct}
         isOpen={isRemoveFlashProductOpen}
+        title="Remove Product"
         onOpenChange={onRemoveFlashProductOpenChange}
       />
       <RemoveOrChangeProductStatusModal
-        title="Remove Product"
         description="Are you sure want to remove this product?"
         hanldeRemoveProduct={handleRemoveFeaturedProduct}
         isOpen={isRemoveFeaturedProductOpen}
+        title="Remove Product"
         onOpenChange={onRemoveFeaturedProductOpenChange}
       />
       <RemoveOrChangeProductStatusModal
-        title={
-          makeFlashOrFeaturedProduct?.status === "flash"
-            ? "Mark as Flash"
-            : "Mark as Featured"
-        }
         description={
           makeFlashOrFeaturedProduct?.status === "flash"
             ? "Are you sure want to mark this product as flash?"
@@ -638,6 +663,11 @@ const AllProducts = () => {
         }
         hanldeRemoveProduct={handleMakeFlashOrSaleProduct}
         isOpen={isMakeFlashOrFeaturedProductOpen}
+        title={
+          makeFlashOrFeaturedProduct?.status === "flash"
+            ? "Mark as Flash"
+            : "Mark as Featured"
+        }
         onOpenChange={makeFlashOrFeaturedProductOnOpenChange}
       />
     </>

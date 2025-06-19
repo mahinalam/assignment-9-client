@@ -17,33 +17,27 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { toast } from "sonner";
+import { BiDotsVerticalRounded } from "react-icons/bi";
+import { AiTwotoneEdit } from "react-icons/ai";
+import { HiOutlineDuplicate } from "react-icons/hi";
+
+import ProductsLoading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { useGetUsersOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import {
   useCreateProductMutation,
   useDeleteProductMutation,
   useUpdateProductMutation,
 } from "@/app/redux/features/product/productApi";
 import { RootState } from "@/app/redux/store";
-import { IOrder, IProduct, TQueryParam } from "@/types";
+import { IProduct, TQueryParam } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import { useGetVendorShopQuery } from "@/app/redux/features/shop/shopApi";
-import Loader from "@/app/components/sharred/Loader";
-import { DeleteIcon } from "@/app/components/dashboard/EditDeleteButton";
-import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
-import { LiaEdit } from "react-icons/lia";
-import { Tooltip } from "@nextui-org/tooltip";
-import { EditIcon } from "@/app/components/dashboard/EditDeleteButton";
 import CreateProductModal from "@/app/components/modal/CreateProductModal";
-import { CgProfile } from "react-icons/cg";
-import { toast } from "sonner";
-import { BiDotsVerticalRounded } from "react-icons/bi";
-import { AiTwotoneEdit } from "react-icons/ai";
-import { HiOutlineDuplicate } from "react-icons/hi";
 import EditProductModal from "@/app/components/modal/EditProductModal";
-import { image } from "@nextui-org/theme";
-import ProductsLoading from "./Loading";
+import EmptyState from "@/app/components/dashboard/EmptyState";
 
 const VendorProducts = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>([
@@ -79,14 +73,12 @@ const VendorProducts = () => {
     isLoading: vendorShopProductsLoading,
     isFetching,
   } = useGetVendorShopQuery(params);
-  console.log("vendor shop roduycts", vendorShopProducts);
 
   const [deleteProduct] = useDeleteProductMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [createProduct] = useCreateProductMutation();
 
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
-  const [isEditDeleteSecOpen, setIsDeleteEditSecOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editProductData, setEditProductData] = useState<any>(undefined);
   const [editProductImages, setEditProductImages] = useState<any>([]);
@@ -99,6 +91,7 @@ const VendorProducts = () => {
   useEffect(() => {
     if (editProductData?.images?.length > 0) {
       const updatedImages: any = [];
+
       editProductData?.images?.map((image: string) =>
         updatedImages.push(image)
       );
@@ -114,29 +107,29 @@ const VendorProducts = () => {
 
   const shop = vendorShopProducts?.data?.data?.vendor?.shop;
 
+  console.log("shop", shop);
+
   const totalProducts = vendorShopProducts?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalProducts / 5);
   // pagination handler
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
+
     queryParams.push(
       { name: "page", value: page },
       { name: "limit", value: 5 }
     );
     setParams(queryParams);
   };
-
-  console.log({ editProductData });
-  //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
       const res = await deleteProduct(deleteModalId);
+
       if (res?.data?.success) {
         toast.success("Product deleted successfully.");
       } else {
         toast.error("Failed to delete product.");
       }
-      console.log("res from vendor product", res);
       onDeleteModalChange(); //   }
     }
   };
@@ -149,10 +142,9 @@ const VendorProducts = () => {
     onCreateProductModalOpen();
   };
 
-  // console.log("edit product data", editProductData);
   // edit modal
   const handleEditProductModalOpen = (productData: any) => {
-    console.log("product frtom fn", productData);
+    console.log("product data", productData);
     setEditProductData(productData);
 
     onEditProductModalOpen();
@@ -160,12 +152,11 @@ const VendorProducts = () => {
 
   // delete selected image for edit
   const handleDeleteNewProductImages = (imageToRemove: File) => {
-    console.log("image to remove", imageToRemove);
     if (imageFiles.length > 0) {
       const updatedImage = imageFiles?.filter(
         (image: File) => image.name !== imageToRemove.name
       );
-      console.log({ updatedImage });
+
       setImageFiles(updatedImage);
     }
   };
@@ -178,14 +169,12 @@ const VendorProducts = () => {
       if (editProductData) {
         const formData = new FormData();
 
-        // if (ownerId) {
         const productData = {
           id: editProductData.id,
           ...data,
         };
-        console.log("imageFiles", imageFiles);
 
-        // }
+        console.log("update", productData);
 
         formData.append("data", JSON.stringify(productData));
         if (imageFiles.length > 0) {
@@ -201,21 +190,17 @@ const VendorProducts = () => {
           toast.success("Product updfated successfully!");
           setUpdateProductLoadingName("Update product...");
           onEditProductModalOpenChange();
-          // router.push("/dashboard/AddProducts");
         }
       }
     } catch (err: any) {
       setEditProductLoading(false);
-      console.log(err.message);
       onEditProductModalOpenChange();
       setUpdateProductLoadingName("Update product...");
     }
   };
-
-  console.log("create image files", createImageFiles);
+  console.log("vendo", vendorShopProducts);
   // delete selected image for create
   const handleDeleteCreateProducts = (imageToRemove: File) => {
-    console.log("image to remove", imageToRemove);
     if (createImageFiles.length > 0) {
       const updatedImage = createImageFiles?.filter(
         (image: File) => image.name !== imageToRemove.name
@@ -237,8 +222,7 @@ const VendorProducts = () => {
         ...data,
         shopId: shop?.id,
       };
-      console.log("image files", createImageFiles);
-
+      console.log("product", productData);
       // }
 
       formData.append("data", JSON.stringify(productData));
@@ -259,146 +243,153 @@ const VendorProducts = () => {
       }
     } catch (err: any) {
       setEditProductLoading(false);
-      console.log(err.message);
       onCreateProductModalChange();
       setCreateProductLoadingName("Create product...");
     }
   };
 
+  const handleAddProduct = () => {
+    onCreateProductModalOpen();
+  };
+  console.log({ shop });
+  // TODO: fix update
   return (
     <>
       <SidebarButton
-        title={"Products"}
         isOpen={isOpen}
-        setIsOpen={setIsOpen}
         role="vendor"
+        setIsOpen={setIsOpen}
+        title={"All Products"}
+        hasLeftButton={false}
         hasRightButton={true}
         handleCreateProductMNodalOpen={handleCreateProductMNodalOpen}
       />
+      {shop?.product?.length > 0 ? (
+        <>
+          {" "}
+          <Table aria-label="Example static collection table" className="mt-4">
+            <TableHeader>
+              <TableColumn>PRODUCT</TableColumn>
+              <TableColumn>SHOP NAME</TableColumn>
+              <TableColumn>PRICE </TableColumn>
+              <TableColumn>STOCK</TableColumn>
+              <TableColumn>DISCOUNT</TableColumn>
+              <TableColumn>ACTION</TableColumn>
+            </TableHeader>
+            <TableBody>
+              {!vendorShopProductsLoading &&
+                shop?.product?.length > 0 &&
+                shop?.product?.map(
+                  (item: IProduct & { brand: Record<string, any> }) => (
+                    <TableRow key={item?.id}>
+                      {/* <TableCell>{item?.name.slice(0, 15)}...</TableCell> */}
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <div>
+                            <img
+                              alt=""
+                              className="size-12"
+                              src={item?.images[0]}
+                            />
+                          </div>
+                          <div>
+                            <p>{item?.name.slice(0, 15)}...</p>
+                            <p className="text-[#737682]">
+                              {item.category.name}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{shop?.name}</TableCell>
+                      <TableCell>{item?.price} ৳</TableCell>
+                      <TableCell>{item?.stock}</TableCell>
+                      <TableCell>{item?.discount} ৳</TableCell>
+                      <TableCell>
+                        <Dropdown placement="bottom-end">
+                          <DropdownTrigger>
+                            <Button isIconOnly size="sm" variant="light">
+                              <BiDotsVerticalRounded size={20} />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Product Actions">
+                            <DropdownItem
+                              onClick={() => handleEditProductModalOpen(item)}
+                            >
+                              {/* flash button */}
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  <AiTwotoneEdit size={20} />
+                                </span>
+                                <span>Edit</span>
+                              </span>
+                            </DropdownItem>
 
-      <Table aria-label="Example static collection table" className="mt-4">
-        <TableHeader>
-          <TableColumn>PRODUCT</TableColumn>
-          <TableColumn>SHOP NAME</TableColumn>
-          <TableColumn>PRICE </TableColumn>
-          <TableColumn>STOCK</TableColumn>
-          <TableColumn>DISCOUNT</TableColumn>
-          <TableColumn>ACTION</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {!vendorShopProductsLoading &&
-            shop?.product?.length > 0 &&
-            shop?.product?.map(
-              (item: IProduct & { brand: Record<string, any> }) => (
-                <TableRow key={item?.id}>
-                  {/* <TableCell>{item?.name.slice(0, 15)}...</TableCell> */}
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <div>
-                        <img alt="" className="size-12" src={item?.images[0]} />
-                      </div>
-                      <div>
-                        <p>{item?.name.slice(0, 15)}...</p>
-                        <p className="text-[#737682]">{item.category.name}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{shop?.name}</TableCell>
-                  <TableCell>{item?.price} ৳</TableCell>
-                  <TableCell>{item?.stock}</TableCell>
-                  <TableCell>{item?.discount} ৳</TableCell>
-                  <TableCell>
-                    <Dropdown placement="bottom-end">
-                      <DropdownTrigger>
-                        <Button isIconOnly size="sm" variant="light">
-                          <BiDotsVerticalRounded size={20} />
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu aria-label="Product Actions">
-                        <DropdownItem
-                          onClick={() => handleEditProductModalOpen(item)}
-                        >
-                          {/* flash button */}
-                          <span className="flex items-center gap-1">
-                            <span>
-                              <AiTwotoneEdit size={20} />
-                            </span>
-                            <span>Edit</span>
-                          </span>
-                        </DropdownItem>
-                        <DropdownItem
-                          // onClick={() =>
-                          //   makeFlashOrFeaturedProductModalOpen(
-                          //     item.id,
-                          //     "featured"
-                          //   )
-                          // }
-                          className=""
-                        >
-                          {/* feature btn */}
-                          <span className="flex items-center gap-1">
-                            <span>
-                              <HiOutlineDuplicate size={20} />
-                            </span>
-                            <span>Duplicate</span>
-                          </span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleDeleteModalOpen(item.id)}
-                        >
-                          <span className="flex items-center gap-1">
-                            <span>
-                              <RiDeleteBin5Line size={20} />
-                            </span>
-                            <span>Delete</span>
-                          </span>
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  </TableCell>
-                </TableRow>
-              )
-            )}
-        </TableBody>
-      </Table>
-      <div className="flex  justify-center mt-8">
-        <Pagination
-          page={page}
-          total={totalPages}
-          onChange={handlePageChange}
-          showControls
-        />
-      </div>
+                            <DropdownItem
+                              onClick={() => handleDeleteModalOpen(item.id)}
+                            >
+                              <span className="flex items-center gap-1">
+                                <span>
+                                  <RiDeleteBin5Line size={20} />
+                                </span>
+                                <span>Delete</span>
+                              </span>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
+            </TableBody>
+          </Table>
+          <div className="flex  justify-center mt-8">
+            <Pagination
+              showControls
+              page={page}
+              total={totalPages}
+              onChange={handlePageChange}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <EmptyState
+            onClick={handleAddProduct}
+            label="Add Product"
+            message="Products found empty."
+            // address="/"
+          />
+        </>
+      )}
       <DeleteModal
-        title="Product"
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
+        title="Delete Product"
+        subTitle="Are you sure want to delete this product?"
         onOpenChange={onDeleteModalChange}
       />
       <CreateProductModal
-        handleCreateProduct={handleCreateProduct}
-        isOpen={isCreateProductModalOpen}
-        onOpenChange={onCreateProductModalChange}
         createImageFiles={createImageFiles}
-        setCreateProductImageFiles={setCreateImageFiles}
-        handleDeleteCreateProducts={handleDeleteCreateProducts}
         createProductLoading={createProductLoading}
         createProductLoadingName={createProductLoadingName}
+        handleCreateProduct={handleCreateProduct}
+        handleDeleteCreateProducts={handleDeleteCreateProducts}
+        isOpen={isCreateProductModalOpen}
+        setCreateProductImageFiles={setCreateImageFiles}
+        onOpenChange={onCreateProductModalChange}
       />
       <EditProductModal
-        handleUpdateProduct={handleUpdateProduct}
         editProductImages={editProductImages}
-        // handleDeleteProduct={handleDeleteProduct}
-        isOpen={isEditProductModalOpen}
-        onOpenChange={onEditProductModalOpenChange}
-        productData={editProductData}
+        editProductLoading={editProductLoading}
+        handleDeleteNewProductImages={handleDeleteNewProductImages}
+        handleUpdateProduct={handleUpdateProduct}
         imageFiles={imageFiles}
+        isOpen={isEditProductModalOpen}
+        productData={editProductData}
         setImageFiles={setImageFiles}
         updateProductLoadingName={updateProductLoadingName}
-        handleDeleteNewProductImages={handleDeleteNewProductImages}
-        editProductLoading={editProductLoading}
+        onOpenChange={onEditProductModalOpenChange}
       />
-      {/* <EditDeleteButton /> */}
     </>
   );
 };

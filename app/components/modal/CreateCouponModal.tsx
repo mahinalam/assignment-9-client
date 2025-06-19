@@ -55,20 +55,13 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
-  RadioGroup,
-  Radio,
   DateInput,
 } from "@nextui-org/react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 
 import GTInput from "../form/GTInput";
 import GTForm from "../form/GTForm";
-
-import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
-import { RootState } from "@/app/redux/store";
 
 export default function CreateCouponModal({
   isOpen,
@@ -81,6 +74,7 @@ export default function CreateCouponModal({
   const [paymentValue, setPaymentValue] = useState("");
 
   console.log("loading name", couponLoadingName);
+
   return (
     <>
       <Modal isOpen={isOpen} size="2xl" onOpenChange={onOpenChange}>

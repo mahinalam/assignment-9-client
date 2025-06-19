@@ -12,12 +12,12 @@ import {
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { GoPlus } from "react-icons/go";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
 import { RootState } from "@/app/redux/store";
 import { useGetAllCouponsQuery } from "@/app/redux/features/coupon/couponApi";
-import { GoPlus } from "react-icons/go";
 
 const CouponPage = () => {
   const {
@@ -99,7 +99,7 @@ const CouponPage = () => {
                   </Button>
                 </TableCell>
               </TableRow>
-            )
+            ),
             // ))
           )}
         </TableBody>

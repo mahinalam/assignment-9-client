@@ -115,7 +115,7 @@ import { Progress } from "@nextui-org/react";
 const ReviewProgress = ({ reviewData, productName }: any) => {
   const totalRatings = reviewData.reviewCounts.reduce(
     (sum: number, countObj: { _count: number }) => sum + countObj._count,
-    0
+    0,
   );
 
   const calculatePercentage = (count: number) =>
@@ -151,7 +151,7 @@ const ReviewProgress = ({ reviewData, productName }: any) => {
           {[5, 4, 3, 2, 1].map((star) => {
             const count =
               reviewData.reviewCounts.find(
-                (r: { rating: number; _count: number }) => r.rating === star
+                (r: { rating: number; _count: number }) => r.rating === star,
               )?._count || 0;
             const percentage = calculatePercentage(count);
 

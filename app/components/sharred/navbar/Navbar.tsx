@@ -36,19 +36,28 @@ const Navbar = ({
   const user = useSelector((state: RootState) => state.auth.user);
   const userRole = user?.role;
 
+  console.log("user role", userRole);
+
   const { data: currentUserInfo, isLoading: curentUserInfoLoading } =
     useGetSingleUserQuery(user?.userId, { skip: !user?.userId });
 
   const dispatch = useDispatch();
 
   const pathname = usePathname();
-
+  console.log({ query });
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (query.trim()) {
-      router.push(`/products?search=${query}`);
-      setSmallSearchIcon(false);
-    }
+    const form = e.target;
+    const searchValue = (form as any).search.value;
+    router.push(`/products?search=${searchValue}`);
+  };
+
+  const handleSearchForSmall = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.target;
+    const searchValue = (form as any).search.value;
+    router.push(`/products?search=${searchValue}`);
+    setSmallSearchIcon(false);
   };
 
   const handleLogout = () => {
@@ -63,10 +72,6 @@ const Navbar = ({
     setIsOpen(false);
     router.push(link);
   };
-
-  const customerRole =
-    userRole?.toLowerCase() === "CUSTOMER" && "/dashboard/user/Overview";
-  //  <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
 
   return (
     <div
@@ -88,18 +93,18 @@ const Navbar = ({
               onSubmit={handleSearch}
             >
               <Input
-                className="w-full"
+                className="w-full  text-black"
                 placeholder="Search in Electromert"
                 radius="none"
                 size="lg"
                 type="text"
-                onChange={(e) => setQuery(e.target.value)}
+                name="search"
               />
               <Button
                 className="bg-pink-200 border-0.5 border-pink-200"
                 radius="none"
-                type="submit"
                 size="lg"
+                type="submit"
               >
                 <svg
                   className="size-6 text-primary font-bold"
@@ -231,10 +236,22 @@ const Navbar = ({
                 <p>Products</p>
               </Link>
               <Link
+                className={` ${pathname === "/flash" ? "text-black" : ""}`}
+                href="/flash"
+              >
+                <p>Flash</p>
+              </Link>
+              <Link
                 className={` ${pathname === "/store" ? "text-black" : ""}`}
                 href="/store"
               >
                 <p>Shops</p>
+              </Link>
+              <Link
+                className={` ${pathname === "/compare" ? "text-black" : ""}`}
+                href="/compare"
+              >
+                <p>Compare</p>
               </Link>
               <Link
                 className={` ${pathname === "/contact" ? "text-black" : ""}`}
@@ -242,13 +259,6 @@ const Navbar = ({
               >
                 <p>Contact</p>
               </Link>
-              {user && (
-                <Link
-                  href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/Overview`}
-                >
-                  <p> Dashboard</p>
-                </Link>
-              )}
             </div>
             <div className="flex items-center gap-2">
               {/* <button>Become a Seller</button> */}
@@ -313,6 +323,12 @@ const Navbar = ({
                           >
                             Profile
                           </Link>
+                          <Link
+                            className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
+                            href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/Overview`}
+                          >
+                            Dashboard
+                          </Link>
                           <span
                             className=" text-red-500  py-2 hover:bg-neutral-100 transition font-semibold"
                             onClick={handleLogout}
@@ -334,27 +350,27 @@ const Navbar = ({
           <div className="lg:hidden md:text-base text-sm absolute top-14 left-0 right-0 bg-white text-black shadow-md rounded-md p-4">
             {/* <Link href="/"> */}
             <p
-              onClick={() => handleNavigateForSmallDevice("/")}
               className="py-2 border-b-1 hover:text-primary"
+              onClick={() => handleNavigateForSmallDevice("/")}
             >
               Home
             </p>
             {/* </Link> */}
             <p
-              onClick={() => handleNavigateForSmallDevice("/products")}
               className="py-2 border-b-1"
+              onClick={() => handleNavigateForSmallDevice("/products")}
             >
               Products
             </p>
             <p
-              onClick={() => handleNavigateForSmallDevice("/store")}
               className="py-2 border-b-1"
+              onClick={() => handleNavigateForSmallDevice("/store")}
             >
               Shops
             </p>
             <p
-              onClick={() => handleNavigateForSmallDevice("/contact")}
               className="py-2 border-b-1"
+              onClick={() => handleNavigateForSmallDevice("/contact")}
             >
               Contact
             </p>
@@ -370,21 +386,23 @@ const Navbar = ({
           {smallSearchIcon && (
             <form
               className=" flex items-center fixed top-[62px]  w-full"
-              onSubmit={handleSearch}
+              onSubmit={handleSearchForSmall}
             >
+              {/* search button for small sc */}
               <Input
                 className="w-full !bg-white"
                 placeholder="Search in Electromert"
                 radius="none"
                 size="md"
                 type="text"
-                onChange={(e) => setQuery(e.target.value)}
+                name="search"
+                // onChange={(e) => setQuery(e.target.value)}
               />
               <Button
                 className="bg-white"
                 radius="none"
-                type="submit"
                 size="md"
+                type="submit"
               >
                 <svg
                   className="size-6 text-primary font-bold"
@@ -429,20 +447,20 @@ const Navbar = ({
             <section className="w-1/3 sm:hidden block">
               <Link href="/">Electromert</Link>
             </section>
-            {/* <div className="hidden sm:block md:hidden lg:hidden xl:hidden 2xl:hidden "> */}
+            {/* 
             <Input
               className="w-full hidden sm:block lg:hidden xl:hidden 2xl:hidden "
               placeholder="Search in Electromert"
               radius="none"
               size="lg"
               type="text"
-              onChange={(e) => setQuery(e.target.value)}
-            />
+              // onChange={(e) => setQuery(e.target.value)}
+            /> */}
             <Button
               className="bg-pink-200 border-0.5 border-pink-200 hidden sm:block  lg:hidden xl:hidden 2xl:hidden "
               radius="none"
-              type="submit"
               size="lg"
+              type="submit"
             >
               <svg
                 className="size-6 text-primary font-bold"
@@ -459,32 +477,31 @@ const Navbar = ({
                 />
               </svg>
             </Button>
-            {/* </div> */}
             {/* cart & search icon */}
             <section className="w-1/3">
               <div className="flex items-center justify-end gap-2">
                 {/* search icon */}
                 <svg
-                  onClick={() => setSmallSearchIcon((val) => !val)}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
                   className={
                     smallSearchIcon
                       ? "text-slate-300 size-6 block sm:hidden"
                       : "size-6 block sm:hidden"
                   }
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  onClick={() => setSmallSearchIcon((val) => !val)}
                 >
                   <path
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                   />
                 </svg>
                 {/* cart icon*/}
-                <Link href="/cart" className="mt-2 md:pr-5">
+                <Link className="mt-2 md:pr-5" href="/cart">
                   <Badge
                     className="bg-white text-primary text-xs font-bold"
                     content={user ? cartData?.data?.totalQuantity || 0 : 0}

@@ -16,6 +16,20 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+    signUpVendor: builder.mutation({
+      query: (userInfo: Record<string, unknown>) => ({
+        url: "/user/vendor",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
+    signUpCustomer: builder.mutation({
+      query: (userInfo: Record<string, unknown>) => ({
+        url: "/user/customer",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
     getMe: builder.query({
       query: () => ({
         url: "/auth/me",
@@ -25,4 +39,10 @@ const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useSignupMutation, useGetMeQuery } = authApi;
+export const {
+  useLoginMutation,
+  useSignupMutation,
+  useGetMeQuery,
+  useSignUpVendorMutation,
+  useSignUpCustomerMutation,
+} = authApi;

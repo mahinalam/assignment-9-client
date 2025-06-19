@@ -1,5 +1,6 @@
-import { TQueryParam } from "@/types";
 import { baseApi } from "../../api/baseApi";
+
+import { TQueryParam } from "@/types";
 
 const shopApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -58,7 +59,6 @@ const shopApi = baseApi.injectEndpoints({
     }),
     unFollowShop: builder.mutation({
       query: (shopId: string) => {
-        console.log("shop id", shopId);
         return {
           url: `/shop/user/unfollow-shop/${shopId}`,
           method: "DELETE",

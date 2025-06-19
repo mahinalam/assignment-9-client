@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   TableHeader,
   Table,
@@ -12,6 +11,7 @@ import {
 
 const StoresLoading = () => {
   const skeletonRows = new Array(5).fill(0); // for 5 rows
+
   return (
     <Table aria-label="Loading shop table">
       <TableHeader>

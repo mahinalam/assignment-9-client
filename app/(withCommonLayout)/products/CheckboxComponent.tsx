@@ -11,8 +11,6 @@ const CheckboxComponent = ({
   id: number;
   handleChecked: any;
 }) => {
-  console.log("from"), title;
-
   return (
     <div>
       <Checkbox size="sm" onClick={() => handleChecked(id)}>

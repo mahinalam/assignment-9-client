@@ -1,10 +1,16 @@
 import Link from "next/link";
-import SidebarComponent from "./SidebarComponent";
 import { LuUserRoundPen } from "react-icons/lu";
 import { VscListOrdered } from "react-icons/vsc";
-import { RiSettings2Line } from "react-icons/ri";
+import {
+  RiDashboardLine,
+  RiSettings2Line,
+  RiShoppingBag4Line,
+} from "react-icons/ri";
 import { MdLogout } from "react-icons/md";
 import { usePathname } from "next/navigation";
+
+import SidebarComponent from "./SidebarComponent";
+import { AiTwotoneHeart } from "react-icons/ai";
 
 export default function DrawerUserSlide({
   isOpen,
@@ -22,7 +28,7 @@ export default function DrawerUserSlide({
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setIsOpen(false)}
-      ></div>
+      />
 
       {/* Drawer */}
       <div
@@ -34,8 +40,8 @@ export default function DrawerUserSlide({
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-lg font-semibold">Menu</h2>
           <button
-            onClick={() => setIsOpen(false)}
             className="text-gray-500 text-xl"
+            onClick={() => setIsOpen(false)}
           >
             &times;
           </button>
@@ -43,40 +49,91 @@ export default function DrawerUserSlide({
 
         {/* Drawer Body */}
         <div className="p-4 space-y-4">
-          <Link
-            href="/dashboard/user/profile"
+          {/* <Link
             className="hover:bg-gray-500 bg-red-500"
+            href="/dashboard/user/profile"
           >
             <SidebarComponent
+              icon={<LuUserRoundPen />}
               link="/dashboard/user/profile"
               pathname={pathname}
-              icon={<LuUserRoundPen />}
               title="Profile"
             />
           </Link>
           <Link href="/dashboard/user/MyOrder">
             <SidebarComponent
+              icon={<VscListOrdered />}
               link="/dashboard/user/MyOrder"
               pathname={pathname}
-              icon={<VscListOrdered />}
               title="Orders"
             />
           </Link>
           <Link href="/dashboard/user/settings">
             <SidebarComponent
+              icon={<RiSettings2Line />}
               link="/dashboard/user/settings"
               pathname={pathname}
-              icon={<RiSettings2Line />}
               title="Settings"
+            />
+          </Link> */}
+          <Link href="/dashboard/user/Overview">
+            <SidebarComponent
+              icon={<RiDashboardLine />}
+              link="/dashboard/user/Overview"
+              pathname={pathname}
+              title="Overview"
+            />
+          </Link>
+          <Link href="/dashboard/user/profile">
+            <SidebarComponent
+              icon={<LuUserRoundPen />}
+              link="/dashboard/user/profile"
+              pathname={pathname}
+              title="Profile"
+            />
+          </Link>
+          <Link href="/dashboard/user/wishlist">
+            <SidebarComponent
+              icon={<AiTwotoneHeart />}
+              link="/dashboard/user/wishlist"
+              pathname={pathname}
+              title="Wishlist"
+            />
+          </Link>
+
+          <Link href="/dashboard/user/MyOrder">
+            {" "}
+            <SidebarComponent
+              icon={<VscListOrdered />}
+              link="/dashboard/user/MyOrder"
+              pathname={pathname}
+              title="Orders"
+            />
+          </Link>
+          <Link href="/dashboard/user/MyReviews">
+            {" "}
+            <SidebarComponent
+              icon={<VscListOrdered />}
+              link="/dashboard/user/MyReviews"
+              pathname={pathname}
+              title="Reviews"
+            />
+          </Link>
+          <Link href="/dashboard/user/FollowedShops">
+            <SidebarComponent
+              icon={<RiShoppingBag4Line />}
+              link="/dashboard/user/FollowedShops"
+              pathname={pathname}
+              title="Following Shops"
             />
           </Link>
 
           <div className="!mt-0">
             <SidebarComponent
+              icon={<MdLogout />}
+              isLogout={true}
               link="/"
               pathname={pathname}
-              isLogout={true}
-              icon={<MdLogout />}
               title="Logout"
             />
           </div>

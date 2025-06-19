@@ -2,34 +2,24 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 import StoreBanner from "../StoreBanner";
 
-import ProductCart from "@/app/components/sharred/ProductCard";
-// import { useGetAllVendorProductsQuery } from "@/app/redux/api/baseApi";
-import { IProduct, TQueryParam } from "@/types";
+import { IProduct } from "@/types";
 import { useGetAllVendorProductsQuery } from "@/app/redux/features/product/productApi";
 import Loader from "@/app/components/sharred/Loader";
-import { RootState } from "@/app/redux/store";
 import {
   useCheckIsFollowingQuery,
   useFollowShopMutation,
   useUnFollowShopMutation,
 } from "@/app/redux/features/shop/shopApi";
 import Container from "@/app/components/sharred/Container";
-import NotFound from "@/app/components/sharred/NotFound";
 import FlashSaleCard from "@/app/components/sharred/FlashSaleCard";
 
 const StorePage = ({ params }: { params: { shopId: string } }) => {
-  // const [vendorProductParams, setVendorProductParams] = useState<
-  //   TQueryParam[] | undefined
-  // >([{ name: "shopId", value: params.shopId }]);
   const { data: allProducts, isLoading: vendorProductLoading } =
     useGetAllVendorProductsQuery(params?.shopId);
-
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
 
   const [followShop, { isLoading: followLoading }] = useFollowShopMutation();
   const [unFollowShop, { isLoading: unFollowLoading }] =
@@ -40,8 +30,7 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
   const { data: isFollowing } = useCheckIsFollowingQuery(params.shopId, {
     skip: !params.shopId,
   });
-  console.log("unFollow loading", unFollowLoading);
-  console.log("follow loading", followLoading);
+
   if (vendorProductLoading) {
     return <Loader />;
   }
@@ -59,7 +48,6 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
   //TODO: implement search in store section
 
   const handleFollowShop = async () => {
-    console.log("follow clicked");
     const followShopData = {
       shopId: params.shopId,
     };
@@ -90,12 +78,12 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
       <div className="md:mt-[96px] mt-[62px] lg:mt-[160px] ">
         <div className=" bg-white">
           <StoreBanner
-            handleFollowShop={handleFollowShop}
-            isFollower={isFollowing?.data?.success}
-            storeData={storeData}
-            setStoreValue={setStoreValue}
-            hanldeUnfollowShop={handleUnfollowShop}
             followLoading={followLoading}
+            handleFollowShop={handleFollowShop}
+            hanldeUnfollowShop={handleUnfollowShop}
+            isFollower={isFollowing?.data?.success}
+            setStoreValue={setStoreValue}
+            storeData={storeData}
             unFollowLoading={unFollowLoading}
           />
         </div>
@@ -115,13 +103,6 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
             ))}
           </div>
         </div>
-
-        {/* {allProducts?.data?.product?.map((product: IProduct) => (
-            <Link key={product.id} href={`/products/${product.id}`}>
-              {" "}
-              <ProductCart product={product} />
-            </Link>
-          ))} */}
       </div>
     </Container>
   );

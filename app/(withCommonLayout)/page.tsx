@@ -5,6 +5,7 @@ import React from "react";
 import CarouselPage from "../components/home/CarouselComponent";
 import NewsLetter from "../components/home/NewsLetter";
 import CouponCode from "../components/home/CouponCode/CouponCode";
+import FeaturedProducts from "../components/home/Featured/FeaturedProduct";
 
 import Categories from "@/app/components/home/Categories/Categories";
 import FlashSale from "@/app/components/home/FlashSale/FlashSale";
@@ -18,7 +19,8 @@ const Home = () => {
       </div>
       <FlashSale />
       <Categories />
-      {/* <CouponCode /> */}
+      <FeaturedProducts />
+      <CouponCode />
       <JustForYou />
       <NewsLetter />
     </div>

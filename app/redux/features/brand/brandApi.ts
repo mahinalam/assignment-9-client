@@ -4,8 +4,6 @@ const brandApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createBrand: builder.mutation({
       query: (brandInfo) => {
-        console.log("order info from api", brandInfo);
-
         return {
           url: "/brand",
           method: "POST",

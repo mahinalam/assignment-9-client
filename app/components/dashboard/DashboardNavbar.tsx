@@ -8,15 +8,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
+import Container from "../sharred/Container";
+
 import { RootState } from "@/app/redux/store";
 import { logout } from "@/app/redux/features/auth/authSlice";
 import { useGetAllCategoriesQuery } from "@/app/redux/features/category/categoryApi";
 import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
-import Container from "../sharred/Container";
 
 const DashboardNabar = () => {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
   const [query, setQuery] = useState("");
   const [smallSearchIcon, setSmallSearchIcon] = useState(false);
@@ -87,8 +87,8 @@ const DashboardNabar = () => {
               <Button
                 className="bg-pink-200 border-0.5 border-pink-200"
                 radius="none"
-                type="submit"
                 size="lg"
+                type="submit"
               >
                 <svg
                   className="size-6 text-primary font-bold"
@@ -163,27 +163,27 @@ const DashboardNabar = () => {
           <div className="lg:hidden md:text-base text-sm absolute top-14 left-0 right-0 bg-white text-black shadow-md rounded-md p-4">
             {/* <Link href="/"> */}
             <p
-              onClick={() => handleNavigateForSmallDevice("/")}
               className="py-2 border-b-1 hover:text-primary"
+              onClick={() => handleNavigateForSmallDevice("/")}
             >
               Home
             </p>
             {/* </Link> */}
             <p
-              onClick={() => handleNavigateForSmallDevice("/products")}
               className="py-2 border-b-1"
+              onClick={() => handleNavigateForSmallDevice("/products")}
             >
               Products
             </p>
             <p
-              onClick={() => handleNavigateForSmallDevice("/store")}
               className="py-2 border-b-1"
+              onClick={() => handleNavigateForSmallDevice("/store")}
             >
               Shops
             </p>
             <p
-              onClick={() => handleNavigateForSmallDevice("/contact")}
               className="py-2 border-b-1"
+              onClick={() => handleNavigateForSmallDevice("/contact")}
             >
               Contact
             </p>
@@ -212,8 +212,8 @@ const DashboardNabar = () => {
               <Button
                 className="bg-white"
                 radius="none"
-                type="submit"
                 size="md"
+                type="submit"
               >
                 <svg
                   className="size-6 text-primary font-bold"
@@ -270,8 +270,8 @@ const DashboardNabar = () => {
             <Button
               className="bg-pink-200 border-0.5 border-pink-200 hidden sm:block  lg:hidden xl:hidden 2xl:hidden "
               radius="none"
-              type="submit"
               size="lg"
+              type="submit"
             >
               <svg
                 className="size-6 text-primary font-bold"
@@ -294,26 +294,26 @@ const DashboardNabar = () => {
               <div className="flex items-center justify-end gap-2">
                 {/* search icon */}
                 <svg
-                  onClick={() => setSmallSearchIcon((val) => !val)}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
                   className={
                     smallSearchIcon
                       ? "text-slate-300 size-6 block sm:hidden"
                       : "size-6 block sm:hidden"
                   }
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  onClick={() => setSmallSearchIcon((val) => !val)}
                 >
                   <path
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                   />
                 </svg>
                 {/* cart icon*/}
-                <Link href="/cart" className="mt-2 md:pr-5">
+                <Link className="mt-2 md:pr-5" href="/cart">
                   <Badge
                     className="bg-white text-primary text-xs font-bold"
                     content={user ? cartData?.data?.totalQuantity || 0 : 0}

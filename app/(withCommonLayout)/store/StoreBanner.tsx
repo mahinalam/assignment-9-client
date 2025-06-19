@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { IoSearchOutline } from "react-icons/io5";
-import { TQueryParam } from "@/types";
 
 const StoreBanner = ({
   isFollower,
@@ -17,8 +15,6 @@ const StoreBanner = ({
 }: any) => {
   const { follower, id, logo, name, description, createdAt } = storeData;
 
-  // console.log("storedata", storeData);
-  console.log("is follower", isFollower);
   const [value, setValue] = useState("");
 
   return (
@@ -30,7 +26,7 @@ const StoreBanner = ({
             <div className="relative ">
               {" "}
               {/* Adjust width/height based on screen size */}
-              <img src={logo} alt="Logo" className="lg:size-20 size-16" />
+              <img alt="Logo" className="lg:size-20 size-16" src={logo} />
             </div>
           </section>
           {/* title section */}
@@ -71,46 +67,37 @@ const StoreBanner = ({
           <div className="text-end lg:text-start ">
             {isFollower ? (
               <Button
+                className="text-white bg-primary mt-4 border-primary border-1 hover:bg-primary"
                 disabled={unFollowLoading}
                 size="sm"
-                className="text-white bg-primary mt-4 border-primary border-1 hover:bg-primary"
                 onClick={() => hanldeUnfollowShop()}
               >
                 Unfollow
               </Button>
             ) : (
               <Button
-                size="sm"
                 className="text-white bg-primary mt-4 border-primary border-1 hover:bg-primary"
-                onClick={() => handleFollowShop()}
                 disabled={followLoading}
+                size="sm"
+                onClick={() => handleFollowShop()}
               >
                 Follow
               </Button>
             )}
           </div>
         </div>
-        {/* <section>
-          <Button
-            className="text-[#2abbe8] bg-white border-[#2abbe8] border-1 hover:bg-[#2abbe8] hover:text-white"
-            onClick={() => handleFollowShop()}
-          >
-            {!isFollower ? "Follow" : "Following"}
-          </Button>
-        </section> */}
-
         {/* search section */}
         <section className="lg:block hidden ">
           <Input
-            variant="bordered"
-            size="md"
-            placeholder="Search in store"
             className="focus:border-transparent"
             endContent={
               <button type="button">
                 <IoSearchOutline size={20} />
               </button>
             }
+            placeholder="Search in store"
+            size="md"
+            variant="bordered"
           />
         </section>
       </div>

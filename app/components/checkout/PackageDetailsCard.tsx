@@ -3,8 +3,6 @@
 import React from "react";
 
 const PackageDetailsCard = ({ item }: { item: any }) => {
-  console.log("item", item);
-
   const { price, oldPrice, description, images, quantity } = item;
 
   return (

@@ -1,6 +1,6 @@
-import Container from "../components/sharred/Container";
 import Footer from "../components/sharred/Footer";
 import Navbar from "../components/sharred/navbar/Navbar";
+
 // import "./layout.css";
 import ScrollToTopButton from "./ScrollToTopBtn";
 // import { Navbar } from "../components/sharred/Navbar";

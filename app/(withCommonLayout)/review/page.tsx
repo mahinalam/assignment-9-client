@@ -1,104 +1,9 @@
-// "use client";
-// import React, { useState } from "react";
-// import { Input, Textarea, Button } from "@nextui-org/react";
-// import Rate from "rc-rate";
-
-// const ReviewPage = () => {
-//   const [reviewData, setReviewData] = useState({
-//     name: "",
-//     email: "",
-//     rating: 0,
-//     comment: "",
-//   });
-
-//   const handleInputChange = (
-//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-//   ) => {
-//     const { name, value } = e.target;
-//     setReviewData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleRatingChange = (value: number) => {
-//     setReviewData((prev) => ({ ...prev, rating: value }));
-//   };
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     console.log("Review Submitted:", reviewData);
-//     alert("Review submitted successfully!");
-//     // You can send the data to your API here
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-//       <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
-//         <h1 className="text-2xl font-semibold text-gray-800 text-center mb-4">
-//           Submit Your Review
-//         </h1>
-//         <form onSubmit={handleSubmit} className="space-y-4">
-//           {/* Name Input */}
-//           <Input
-//             label="Name"
-//             placeholder="Enter your name"
-//             name="name"
-//             value={reviewData.name}
-//             onChange={handleInputChange}
-//             required
-//           />
-
-//           {/* Email Input */}
-//           <Input
-//             label="Email"
-//             placeholder="Enter your email"
-//             name="email"
-//             type="email"
-//             value={reviewData.email}
-//             onChange={handleInputChange}
-//             required
-//           />
-
-//           {/* Rating */}
-//           <div className="flex items-center justify-between">
-//             <label className="text-gray-700 font-medium">Rating:</label>
-//             <Rate
-//               value={reviewData.rating}
-//               onChange={(value) => handleRatingChange(value)}
-//               allowClear
-//             />
-//           </div>
-
-//           {/* Comment Textarea */}
-//           <Textarea
-//             label="Comment"
-//             placeholder="Write your review here..."
-//             name="comment"
-//             value={reviewData.comment}
-//             onChange={handleInputChange}
-//             minRows={4}
-//             required
-//           />
-
-//           {/* Submit Button */}
-//           <Button
-//             type="submit"
-//             className="w-full bg-blue-600 text-white hover:bg-blue-700"
-//           >
-//             Submit Review
-//           </Button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ReviewPage;
-
 "use client";
 
 import React, { ChangeEvent, useState } from "react";
 import { Input, Textarea, Button } from "@nextui-org/react";
 import Rate from "rc-rate";
-import "rc-rate/assets/index.css"; // Import rc-rate styles
+import "rc-rate/assets/index.css";
 
 const ReviewPage = () => {
   const [review, setReview] = useState(0);
@@ -126,11 +31,8 @@ const ReviewPage = () => {
     setReview(() => value);
   };
 
-  console.log("review", review);
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    // console.log("Review Submitted:", reviewData);
 
     const updatedReview = {
       comment: e.target.comment.value,
@@ -138,12 +40,9 @@ const ReviewPage = () => {
 
     const formData = new FormData();
 
-    // formData.append("data", JSON.stringify(productData));
     for (let image of imageFiles) {
       formData.append("itemImages", image);
     }
-
-    // console.log("formdata", reviewData);
   };
 
   return (
@@ -158,10 +57,8 @@ const ReviewPage = () => {
             <Input
               fullWidth
               required
-              name="name"
-              // value={review}
-              // onChange={handleInputChange}
               label="Name"
+              name="name"
               placeholder="Enter your name"
             />
           </div>
@@ -172,11 +69,9 @@ const ReviewPage = () => {
               fullWidth
               required
               label="Email"
-              type="email"
-              // value={reviewData.email}
-              // onChange={handleInputChange}
               name="email"
               placeholder="Enter your email"
+              type="email"
             />
           </div>
 
@@ -197,11 +92,9 @@ const ReviewPage = () => {
             <Textarea
               fullWidth
               required
-              name="comment"
-              // value={reviewData.comment}
-              // onChange={handleInputChange}
               label="Comment"
               minRows={4}
+              name="comment"
               placeholder="Write your review here..."
             />
           </div>

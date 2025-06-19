@@ -37,6 +37,7 @@ const UsersOrderHistory = () => {
 
   console.log("usersOrderHistory", usersOrderHistory);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   if (userOrderHistoryLoading) {
     return <div>Loading...</div>;
@@ -55,8 +56,13 @@ const UsersOrderHistory = () => {
 
   return (
     <>
-      <div>
-        <SidebarButton />
+      <div className="mb-5">
+        <SidebarButton
+          isOpen={isOpen}
+          role="user"
+          setIsOpen={setIsOpen}
+          title={"My Wishlist"}
+        />
       </div>
       <Table aria-label="Example static collection table">
         <TableHeader>
@@ -69,20 +75,22 @@ const UsersOrderHistory = () => {
         </TableHeader>
 
         <TableBody>
-          {usersOrderHistory?.data?.data?.map((order: IOrder) => (
-            <TableRow key={order.id}>
-              <TableCell>{order.transactionId}</TableCell>
-              <TableCell>{order.paymentStatus}</TableCell>
-              <TableCell>{order.customerShippingAddress}</TableCell>
-              <TableCell>{order.orderItems.length}</TableCell>
-              <TableCell>{order.totalPrice}</TableCell>
-              <TableCell>
-                <Button onClick={() => handleDeleteModalOpen(order.id)}>
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {usersOrderHistory?.data?.data?.map((order: IOrder) => {
+            order.orderItem?.map((orderItem) => (
+              <TableRow key={order.id}>
+                <TableCell>{order.transactionId}</TableCell>
+                <TableCell>{order.paymentStatus}</TableCell>
+                <TableCell>{order.shippingAddress}</TableCell>
+                <TableCell>{order.orderItem.length}</TableCell>
+                <TableCell>{order.totalPrice}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handleDeleteModalOpen(order.id)}>
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ));
+          })}
         </TableBody>
       </Table>
       <DeleteModal

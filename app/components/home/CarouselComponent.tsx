@@ -1,5 +1,6 @@
 import React from "react";
 import { Carousel } from "antd";
+
 import Container from "../sharred/Container";
 
 const CarouselPage: React.FC = () => (
