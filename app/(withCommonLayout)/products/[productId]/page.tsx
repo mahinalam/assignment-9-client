@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import Description from "./Description";
 import Reviews from "./Reviews";
+import ProductDetailsLoading from "./Loading";
 
 import ProductDetailsCard from "@/app/components/ProductDetails/ProductDetailsCard";
 import Container from "@/app/components/sharred/Container";
@@ -26,15 +26,12 @@ const Page = ({ params }: { params: { productId: string } }) => {
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
   const router = useRouter();
 
-  const {
-    data: productData,
-    isLoading: productLoading,
-    isSuccess,
-  } = useGetSingleProductQuery(params?.productId);
+  const { data: productData, isLoading: productLoading } =
+    useGetSingleProductQuery(params?.productId);
 
-  const { data: productsData, isLoading } = useGetAllProductsQuery(
+  const { data: productsData } = useGetAllProductsQuery(
     [{ name: "categoryId", value: productData?.data?.categoryId }],
-    { skip: !productData?.data?.categoryId }
+    { skip: !productData?.data?.categoryId },
   );
 
   const [activeTab, setActiveTan] = useState("description");
@@ -61,26 +58,23 @@ const Page = ({ params }: { params: { productId: string } }) => {
     compareLoading ||
     wishlistProductLoading
   ) {
-    return <p>Loading...</p>;
+    return <ProductDetailsLoading />;
   }
 
   const relatedProducts = productsData?.data?.data?.filter(
-    (item) => item.id !== productData?.data?.id
+    (item: any) => item.id !== productData?.data?.id,
   );
-  console.log("d", relatedProducts);
 
   const compareProductIds = compareProducts?.data?.map(
-    (item) => item.product.id
+    (item: any) => item.product.id,
   );
 
   const wishlistProductsIds = wishlistProducts?.data?.data?.map(
-    (wishlist) => wishlist?.product.id
+    (wishlist: any) => wishlist?.product.id,
   );
 
   const isInCompare = compareProductIds?.includes(params.productId);
   const isInWishlist = wishlistProductsIds?.includes(params.productId);
-
-  console.log("reviewsData", reviewsData);
 
   const handleAddToCart = async () => {
     if (!userId) {
@@ -108,13 +102,14 @@ const Page = ({ params }: { params: { productId: string } }) => {
   return (
     <Container>
       <div className="bg-white lg:p-8">
-        <div className="md:mt-[170px]  mt-10 md:p-5  md:pl-3">
+        <div className="lg:mt-[170px]  mt-10 md:p-5  md:pl-3">
           <ProductDetailsCard
             handleAddToCart={handleAddToCart}
             isInCompare={isInCompare}
             isInWishlist={isInWishlist}
             product={productData?.data}
             quantity={quantity}
+            reviews={reviewsData?.data?.data}
             setQuantity={setQuantity}
           />
         </div>
@@ -149,6 +144,7 @@ const Page = ({ params }: { params: { productId: string } }) => {
         {activeTab === "reviews" && (
           <Reviews
             productId={productData?.data?.id}
+            productName={productData?.data?.name}
             reviewsData={reviewsData?.data?.data}
             shopId={productData?.data?.shopId}
           />
@@ -158,14 +154,14 @@ const Page = ({ params }: { params: { productId: string } }) => {
         <div className="lg:pt-10 pt-8">
           <p className="font-bold">Related Products</p>
           <div className="grid  sm:grid-cols-4 lg:grid-cols-4 grid-cols-2 xl:grid-cols-5 mt-2 gap-4">
-            {relatedProducts?.slice(0, 5).map((flashSaleProduct: any) => (
-              <Link
-                key={flashSaleProduct.id}
-                href={`/products/${flashSaleProduct.id}`}
-              >
-                <FlashSaleCard product={flashSaleProduct} />
-              </Link>
-            ))}
+            {relatedProducts
+              ?.slice(0, 5)
+              .map((flashSaleProduct: any) => (
+                <FlashSaleCard
+                  key={flashSaleProduct.id}
+                  product={flashSaleProduct}
+                />
+              ))}
           </div>
         </div>
       </div>

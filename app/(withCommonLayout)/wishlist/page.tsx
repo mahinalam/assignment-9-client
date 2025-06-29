@@ -51,24 +51,12 @@ const Wishlist = () => {
   const { data: usersWishlistsData, isLoading: usersWishlistLoading } =
     useGetUsersWishlistQuery(params);
 
-  console.log("users wishlist", usersWishlistsData);
-  console.log("currentUserInfo", currentUserInfo);
-  //   const { data: userProductReviews, isLoading: userProductReviewLoading } =
-  //     useGetUserProductReviewQuery(userId as string);
-
   const [deleteWishlist] = useDeleteWishlistMutation();
-
-  console.log("usersWishlistsData", usersWishlistsData);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (usersWishlistLoading) {
     return <Loader />;
   }
-
-  //   if (userProductReviewLoading) {
-  //     return <div>Loading...</div>;
-  //   }
-  //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
       const res = await deleteWishlist(deleteModalId);
@@ -83,7 +71,6 @@ const Wishlist = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };
@@ -92,7 +79,6 @@ const Wishlist = () => {
   const totalPages = Math.ceil(totalWishlists / 5);
 
   const handlePageChange = (page: number) => {
-    console.log("page value", page);
     const queryParams: TQueryParam[] = [];
 
     queryParams.push(
@@ -129,7 +115,6 @@ const Wishlist = () => {
                     <TableBody>
                       {usersWishlistsData?.data?.data?.wishlistItem?.map(
                         (wishlist: any) => (
-                          // review.map((review: IReview) => (
                           <TableRow key={wishlist.id}>
                             <TableCell>
                               <div className="flex gap-2 items-center">
@@ -175,7 +160,6 @@ const Wishlist = () => {
                             </TableCell>
                           </TableRow>
                         ),
-                        // ))
                       )}
                     </TableBody>
                   </Table>

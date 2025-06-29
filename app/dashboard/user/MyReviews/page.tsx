@@ -60,7 +60,7 @@ const ProductReviews = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -89,9 +89,9 @@ const ProductReviews = () => {
     <>
       <SidebarButton
         isOpen={isOpen}
-        role="user"
         setIsOpen={setIsOpen}
         title="My Reviews"
+        userRole="user"
       />
       {userReviews?.data?.data?.length > 0 ? (
         <>

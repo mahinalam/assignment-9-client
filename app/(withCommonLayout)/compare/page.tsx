@@ -3,19 +3,19 @@
 import React from "react";
 
 import CompareCart from "./CompareCart";
+import CompareCartLoading from "./Loading";
 
 import Container from "@/app/components/sharred/Container";
 import { useGetUsersCompareProductsQuery } from "@/app/redux/features/compare/compareApi";
 import EmptyState from "@/app/components/dashboard/EmptyState";
 
-const page = () => {
+const ComparePage = () => {
   const { data: compareProducts, isLoading } =
     useGetUsersCompareProductsQuery(undefined);
 
   if (isLoading) {
-    return <p>Loading</p>;
+    return <CompareCartLoading />;
   }
-  console.log("products", compareProducts);
 
   return (
     <div className="bg-white">
@@ -57,4 +57,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ComparePage;

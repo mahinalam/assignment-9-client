@@ -65,7 +65,7 @@ const ProductReviews = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -76,7 +76,6 @@ const ProductReviews = () => {
       if (deleteModalId) {
         const res = await deleteReview(deleteModalId);
 
-        console.log("res", res);
         if (res?.data?.success) {
           toast.success("Review deleted successfully!");
         }
@@ -93,13 +92,23 @@ const ProductReviews = () => {
 
   return (
     <>
+      <div className="mb-5">
+        {" "}
+        <SidebarButton
+          hasLeftButton={false}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          title={"Product Reviews"}
+          userRole="vendor"
+        />
+      </div>
       {vendorProductsReviews?.data?.data?.length > 0 ? (
         <>
           {" "}
           <Table aria-label="Example static collection table">
             <TableHeader>
               <TableColumn>PRODUCT</TableColumn>
-              <TableColumn>User</TableColumn>
+              <TableColumn>USER</TableColumn>
               <TableColumn>RATING </TableColumn>
               <TableColumn>ACTION</TableColumn>
             </TableHeader>
@@ -116,8 +125,8 @@ const ProductReviews = () => {
                       <p className="mr-12 lg:mr-0">{review.product?.name}</p>
                     </div>
                   </TableCell>
-                  <TableCell>{review?.customer.email}</TableCell>
-                  <TableCell>{review.rating}</TableCell>
+                  <TableCell>{review?.email}</TableCell>
+                  <TableCell>{review?.rating}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-4">
                       <Tooltip color="danger" content="Delete review">
@@ -147,9 +156,9 @@ const ProductReviews = () => {
         <>
           {" "}
           <EmptyState
+            address="/"
             label="Go Home"
             message="Reviews found empty!"
-            address="/"
           />
         </>
       )}
@@ -157,9 +166,9 @@ const ProductReviews = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
+        subTitle="Are you sure want to delete this review?"
         title="Delete Review"
         onOpenChange={onDeleteModalChange}
-        subTitle="Are you sure want to delete this review?"
       />
     </>
   );

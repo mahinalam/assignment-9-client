@@ -12,6 +12,7 @@ import {
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { FiUser } from "react-icons/fi";
 
 import ReviewsLoading from "./Loading";
 
@@ -46,8 +47,6 @@ const AllReviews = () => {
 
   const [deleteReview] = useDeleteReviewMutation();
 
-  console.log("all allReviews", allReviews);
-
   //   console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
@@ -67,7 +66,7 @@ const AllReviews = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -91,17 +90,15 @@ const AllReviews = () => {
     onDeleteModalOpen();
   };
 
-  console.log("all reviews", allReviews);
-
   return (
     <>
       <SidebarButton
-        isOpen={isOpen}
-        role="admin"
-        setIsOpen={setIsOpen}
-        title={"All Reviews"}
         className={"mb-5"}
         hasLeftButton={false}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"All Reviews"}
+        userRole="admin"
       />
       {allReviews?.data?.data?.length > 0 ? (
         <>
@@ -143,7 +140,7 @@ const AllReviews = () => {
                             src={review?.customer?.profilePhoto}
                           />
                         ) : (
-                          <CgProfile size={40} />
+                          <FiUser size={40} />
                         )}
                       </div>
                       <div>
@@ -185,7 +182,8 @@ const AllReviews = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteReview}
         isOpen={isDeleteModalOpen}
-        title="Review"
+        subTitle="Are you sure want to delete this review?"
+        title="Delete review"
         onOpenChange={onDeleteModalChange}
       />
     </>

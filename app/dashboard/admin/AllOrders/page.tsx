@@ -10,7 +10,6 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { LuUser } from "react-icons/lu";
 import moment from "moment";
 
@@ -19,25 +18,19 @@ import OrdersLoading from "./Loading";
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { useGetAllOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import { useDeleteProductMutation } from "@/app/redux/features/product/productApi";
-import { RootState } from "@/app/redux/store";
 import { IOrder, TQueryParam } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import EmptyState from "@/app/components/dashboard/EmptyState";
 
 const ProductReviews = () => {
-  const {
-    isOpen: isDeleteModalOpen,
-    onOpen: onDeleteModalOpen,
-    onOpenChange: onDeleteModalChange,
-  } = useDisclosure();
+  const { isOpen: isDeleteModalOpen, onOpenChange: onDeleteModalChange } =
+    useDisclosure();
 
   const [params, setParams] = useState<TQueryParam[] | undefined>([
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
   const [page, setPage] = useState(1);
-
-  const vendorId = useSelector((state: RootState) => state.auth.user?.userId);
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: allOrders, isLoading: allOrdersLoading } =
@@ -78,11 +71,11 @@ const ProductReviews = () => {
     <>
       <SidebarButton
         className="mt-8"
+        hasLeftButton={false}
         isOpen={isOpen}
-        role="admin"
         setIsOpen={setIsOpen}
         title={"All Orders"}
-        hasLeftButton={false}
+        userRole="admin"
       />
       {allOrders?.data?.data?.length > 0 ? (
         <>
@@ -122,7 +115,7 @@ const ProductReviews = () => {
                   </TableCell>
                   <TableCell>{order?.totalPrice}</TableCell>
                   <TableCell>{order?.transactionId}</TableCell>
-                  <TableCell>{order?.shippingAddress}</TableCell>
+                  <TableCell>{order?.customerShippingAddress}</TableCell>
                   <TableCell>{order?.orderItem?.length}</TableCell>
                   <TableCell>
                     {moment(order?.createdAt).format("DD MMM YYYY")}~
@@ -155,6 +148,8 @@ const ProductReviews = () => {
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteModalChange}
+        title="Delete Order"
+        subTitle="Are you sure want to delete this order?"
       />
     </>
   );

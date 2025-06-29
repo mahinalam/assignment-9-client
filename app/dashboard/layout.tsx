@@ -3,6 +3,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+
 import { RootState } from "../redux/store";
 import AdminSidebar from "../components/dashboard/admin/AdminSidebar";
 import UserSidebar from "../components/dashboard/UserSidebar";
@@ -10,16 +11,15 @@ import VendorSidebar from "../components/dashboard/VendorSidebar";
 import Navbar from "../components/sharred/navbar/Navbar";
 import { useGetSingleUserQuery } from "../redux/features/user/userApi";
 import DashboardContainer from "../components/dashboard/DashboardContainer";
+
 import DashboardNavbar from "./DashboardNavbar";
 
-const layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   const user = useSelector((state: RootState) => state.auth.user);
   const userRole = user?.role;
-  const { data: currentUserInfo, isLoading: currentUserLoading } =
-    useGetSingleUserQuery(user?.userId);
-
+  const { data: currentUserInfo } = useGetSingleUserQuery(user?.userId);
   const router = useRouter();
 
   if (!user) {
@@ -46,10 +46,10 @@ const layout = ({ children }: { children: ReactNode }) => {
   };
 
   const renderNavbar = () => {
-    if (userRole === "ADMIN" || "VENDOR") {
+    if (userRole === "ADMIN" || userRole === "VENDOR") {
       return <DashboardNavbar currentUserInfo={currentUserInfo} />;
     } else {
-      <Navbar isHaveNavSection={false} />;
+      return <Navbar isHaveNavSection={false} />;
     }
   };
 
@@ -58,7 +58,7 @@ const layout = ({ children }: { children: ReactNode }) => {
       <div className=" ">
         {renderNavbar()}
         <DashboardContainer>
-          <div className="lg:grid lg:grid-cols-12 lg:pt-8 pt-5">
+          <div className="lg:grid lg:grid-cols-12 lg:pt-32 pt-20">
             <div className="lg:col-span-3 lg:mr-6 bg-white">
               {renderSidebar()}
             </div>
@@ -70,4 +70,4 @@ const layout = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default layout;
+export default Layout;

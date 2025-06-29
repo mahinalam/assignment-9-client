@@ -3,27 +3,22 @@
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 // import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import GTForm from "@/app/components/form/GTForm";
 import GTInput from "@/app/components/form/GTInput";
-import Container from "@/app/components/sharred/Container";
 import { verifyToken } from "@/app/utils/verifyToken";
 import { setUser } from "@/app/redux/features/auth/authSlice";
 import { useLoginMutation } from "@/app/redux/features/auth/authApi";
+import loginValidationSchema from "@/app/schemas/login.schema";
 
 const LoginPage = () => {
-  // const [login] = useLoginMutation();
   const dispatch = useDispatch();
   const router = useRouter();
-  //   const { setIsLoading: userLoading } = useUser();
-
-  // const searchParams = useSearchParams();
-  // const redirect = searchParams.get("redirect");
 
   const [loginUser, result] = useLoginMutation();
   const [userLoginDefaultValue, setUserLoginDefaultValue] = useState<
@@ -34,18 +29,9 @@ const LoginPage = () => {
     | undefined
   >(undefined);
 
-  //   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+  const onSubmit: any = async (data: any) => {
+    const id = toast.loading("Logging in...");
 
-  // const onSubmit: SubmitHandler<FieldValues> = (data) => {
-  //   console.log(data);
-  //   const res = loginUser(data).unwrap();
-  //   console.log("from login", res);
-
-  //   // const user = verifyToken((res as any).data?.token);
-  //   // console.log("user", user);
-  // };
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log("login data", data);
     try {
       // Wait for the loginUser Promise to resolve
       const res = await loginUser(data).unwrap();
@@ -54,52 +40,47 @@ const LoginPage = () => {
       const user = verifyToken((res as any).data?.accessToken);
 
       dispatch(setUser({ user: user, token: res.data.accessToken }));
-      toast.success("Logged in.");
+      toast.success("Logged in", { id });
       router.push("/");
-
-      console.log("user", user);
     } catch (err: any) {
-      console.log("from login", err);
-      throw new Error(err.message);
+      toast.error("Something went wrong!", { id });
     }
   };
 
-  console.log("user deffault", userLoginDefaultValue);
+  const handleCredentailsLogin = async (data: {
+    email: string;
+    password: string;
+  }) => {
+    const id = toast.loading("Logging in...");
+
+    try {
+      // Wait for the loginUser Promise to resolve
+      const res = await loginUser(data).unwrap();
+
+      // Assuming `verifyToken` is a function to decode or verify the token
+      const user = verifyToken((res as any).data?.accessToken);
+
+      dispatch(setUser({ user: user, token: res.data.accessToken }));
+      toast.success("Logged in", { id });
+      router.push("/");
+    } catch (err: any) {
+      toast.error("Something went wrong!", { id });
+    }
+  };
 
   return (
     <>
-      <Container>
-        <div className="flex items-center justify-center md:mt-[200px] mt-16">
-          <div className="md:w-[40%] mx-auto border p-5 bg-white">
+      <div className=" flex justify-center items-center h-[100vh]">
+        <div className="flex items-center justify-center ">
+          <div className="  border p-5 bg-white">
             <div>
               <p className="text-center text-[18px] font-bold">Login</p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 my-4">
                 <button
-                  className="bg-primary"
+                  // type="submit"
+                  className="bg-primary p-2 text-white rounded-lg text-sm"
                   onClick={() =>
-                    setUserLoginDefaultValue({
-                      email: "customer@gmail.com",
-                      password: "123456",
-                    })
-                  }
-                >
-                  Vendor Credentials
-                </button>
-                <button
-                  className="bg-primary"
-                  onClick={() =>
-                    setUserLoginDefaultValue({
-                      email: "customer@gmail.com",
-                      password: "123456",
-                    })
-                  }
-                >
-                  Admin Credentials
-                </button>
-                <button
-                  className="bg-primary"
-                  onClick={() =>
-                    setUserLoginDefaultValue({
+                    handleCredentailsLogin({
                       email: "customer@gmail.com",
                       password: "123456",
                     })
@@ -107,9 +88,34 @@ const LoginPage = () => {
                 >
                   Customer Credentials
                 </button>
+                <button
+                  className="bg-primary p-2 text-white rounded-lg text-sm"
+                  onClick={() =>
+                    handleCredentailsLogin({
+                      email: "vendor@gmail.com",
+                      password: "123456",
+                    })
+                  }
+                >
+                  Vendor Credentials
+                </button>
+                <button
+                  className="bg-primary p-2 text-white rounded-lg text-sm"
+                  onClick={() =>
+                    handleCredentailsLogin({
+                      email: "mahin@gmail.com",
+                      password: "123456",
+                    })
+                  }
+                >
+                  Admin Credentials
+                </button>
               </div>
             </div>
-            <GTForm onSubmit={onSubmit}>
+            <GTForm
+              resolver={zodResolver(loginValidationSchema)}
+              onSubmit={onSubmit}
+            >
               <div className="py-3">
                 <GTInput
                   defaultValue={
@@ -148,7 +154,7 @@ const LoginPage = () => {
             </GTForm>
           </div>
         </div>
-      </Container>
+      </div>
     </>
   );
 };

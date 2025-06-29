@@ -13,8 +13,8 @@ import {
 import React, { useState } from "react";
 import moment from "moment";
 import { toast } from "sonner";
-import { LuUser } from "react-icons/lu";
 import { MdBlock } from "react-icons/md";
+import { PiShoppingBagOpenDuotone } from "react-icons/pi";
 
 import StoresLoading from "./Loading";
 
@@ -25,7 +25,6 @@ import {
   useBlockShopMutation,
   useGetAllShopsQuery,
 } from "@/app/redux/features/shop/shopApi";
-
 import "./Store.css";
 import EmptyState from "@/app/components/dashboard/EmptyState";
 
@@ -66,7 +65,7 @@ const AllShops = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -91,12 +90,12 @@ const AllShops = () => {
   return (
     <>
       <SidebarButton
+        className="mb-5"
+        hasLeftButton={false}
         isOpen={isOpen}
-        role="admin"
         setIsOpen={setIsOpen}
         title={"Vendor Shops"}
-        hasLeftButton={false}
-        className="mb-5"
+        userRole="admin"
       />
       {allShops?.data?.data?.length > 0 ? (
         <>
@@ -125,16 +124,16 @@ const AllShops = () => {
                         {shop?.logo ? (
                           <img alt="" className="size-[40px]" src={shop.logo} />
                         ) : (
-                          <LuUser size={40} />
+                          <PiShoppingBagOpenDuotone size={40} />
                         )}
                       </div>
                       <div>
                         <p>{shop?.name}</p>
-                        <p>{shop?.vendor?.email}</p>
+                        <p>{(shop as any)?.vendor?.email}</p>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{shop?.vendor?.name}</TableCell>
+                  <TableCell>{(shop as any)?.vendor?.name}</TableCell>
                   <TableCell>{"ACTIVE"}</TableCell>
                   <TableCell>
                     {moment(shop?.createdAt).format("DD MMM YYYY")}~
@@ -175,7 +174,8 @@ const AllShops = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteUser}
         isOpen={isDeleteModalOpen}
-        title="Store"
+        subTitle="Are you sure want to delete this shop?"
+        title="Delete shop"
         onOpenChange={onDeleteModalChange}
       />
     </>

@@ -20,14 +20,13 @@ const ContactUs = () => {
     try {
       const res = await sendMessage(data);
 
-      console.log("res", res);
       if (res.data.success) {
         setSendMessageLoading(false);
         toast.success("Message sent successfully!");
         setSendMessageLoading(false);
         methods.reset();
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.error("Failed to send message!");
       setSendMessageLoading(false);
     }
@@ -39,10 +38,10 @@ const ContactUs = () => {
         <div className="text-center mb-1 border-b-[1px] border-b-[#E5E7EB] lg:pb-8 pb-5">
           <h1 className="lg:text-3xl text-2xl  mb-2 font-bold">Contact Us</h1>
           <p className="text-[#475569] lg:text-base text-sm lg:mt-4 mt-2">
-            We’re here for you. Whether you have a question about our services,
-            feedback you'd like to offer, ab— we’d love to hear from you. Our
-            team is committed to responding promptly and making sure your voice
-            is heard.
+            We&apos;re here for you. Whether you have a question about our
+            services, feedback you&apos;d like to offer — we&apos;d love to hear
+            from you. Our team is committed to responding promptly and making
+            sure your voice is heard.
           </p>
         </div>
 
@@ -52,9 +51,9 @@ const ContactUs = () => {
             <p className="text-xl  font-bold mb-0 ">Our Stores</p>
             <p className="text-[#475569] text-sm mt-2">
               Your ultimate destination for quality products and exceptional
-              service. Whether you're shopping for essentials or treating
-              yourself to something special, we've got you covered. Explore our
-              carefully curated collection and enjoy a seamless shopping
+              service. Whether you&apos;re shopping for essentials or treating
+              yourself to something special, we&apos;ve got you covered. Explore
+              our carefully curated collection and enjoy a seamless shopping
               experience from start to finish.
             </p>
             <div className="flex gap-4 mt-6">
@@ -94,7 +93,7 @@ const ContactUs = () => {
           <div className="lg:mt-0 mt-10">
             <p className="text-[#475569] text-sm pb-2 lg:pb-3">
               Have a question, suggestion, or just want to say hello? Fill out
-              the form below and we’ll get back to you as soon as possible.
+              the form below and we&apos;ll get back to you as soon as possible.
             </p>
             <GTForm onSubmit={handleSendMessage}>
               <div className="space-y-3">

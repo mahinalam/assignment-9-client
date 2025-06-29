@@ -19,7 +19,7 @@ const FeaturedProducts = () => {
       <>
         <Container>
           <div className="block sm:hidden">
-            <Title title="Flash Sale" />
+            <Title title="Featured Products" />
             <div className="grid grid-cols-3 gap-4 ">
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
@@ -31,20 +31,19 @@ const FeaturedProducts = () => {
         {/* for small and lg loading */}
         <Container>
           <div className="hidden sm:block  xl:hidden ">
-            <Title title="Flash Sale" />
+            <Title title="Featured Products" />
             <div className="grid   grid-cols-4 gap-2 ">
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
-              {/* <SkeletonComponent /> */}
             </div>
           </div>
         </Container>
         {/* for xl and lg loading */}
         <Container>
           <div className="hidden   xl:block ">
-            <Title title="Flash Sale" />
+            <Title title="Featured Products" />
             <div className="grid   grid-cols-5 gap-4 ">
               <SkeletonComponent />
               <SkeletonComponent />
@@ -68,8 +67,8 @@ const FeaturedProducts = () => {
             <Title title="Featured Products" />
           </div>
           <section className="bg-white">
-            <div className="hidden md:block bg-white">
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
+            <div className=" bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
                 {/* <div className="grid  grid-cols-2"> */}
                 {featuredProducts?.data?.data?.map(
                   (flashSaleProduct: IProduct) => (
@@ -77,7 +76,7 @@ const FeaturedProducts = () => {
                       key={flashSaleProduct.id}
                       product={flashSaleProduct}
                     />
-                  ),
+                  )
                 )}
               </div>
             </div>

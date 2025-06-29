@@ -9,6 +9,7 @@ import { Input } from "@nextui-org/input";
 import { toast } from "sonner";
 
 import CartPage from "./components/CartPage";
+import CartPageLoading from "./loading";
 
 import CheckoutModal from "@/app/components/modal/CheckoutModal";
 import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
@@ -33,13 +34,14 @@ const AllCart = () => {
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
   const userEmail = useSelector((state: RootState) => state.auth.user?.email);
 
-  const { data: cart, isLoading: cartLoading } = useGetCartQuantityQuery(null);
-  const { data: newsLetterData, isLoading: newsLetterLoading } =
-    useGetNewsLetterQuery(undefined);
+  const {
+    data: cart,
+    isLoading: cartLoading,
+    isFetching,
+  } = useGetCartQuantityQuery(null);
+  const { data: newsLetterData } = useGetNewsLetterQuery(undefined);
 
-  console.log("newsLetterData", newsLetterData);
-
-  const [createOrder, { isSuccess, isLoading }] = useCreateOrderMutation();
+  const [createOrder, { isSuccess }] = useCreateOrderMutation();
   const [createOrderLoading, setCreateOrderLoading] = useState(false);
   const [couponValue, setCouponValue] = useState("");
   const [isValidCoupon, setIsValidCoupon] = useState<{
@@ -51,14 +53,13 @@ const AllCart = () => {
   });
   const [applyCouponCode] = useApplyCouponCodeMutation();
 
-  if (newsLetterLoading) {
-    return <p>Loading...</p>;
+  if (cartLoading || isFetching) {
+    return <CartPageLoading />;
   }
 
   if (!userId) {
     router.push("/login");
   }
-  console.log("is valid coupon", isValidCoupon);
 
   const isSubscriptionUser = newsLetterData?.data?.email === userEmail;
 
@@ -78,7 +79,6 @@ const AllCart = () => {
     try {
       const orderResponse: any = await createOrder(orderPayload).unwrap();
 
-      console.log("order response", orderResponse);
       if (orderResponse?.success) {
         setCreateOrderLoading(false);
         window.location.href = orderResponse?.data?.payment_url;
@@ -95,8 +95,6 @@ const AllCart = () => {
     if (couponValue.trim()) {
       try {
         const res = await applyCouponCode({ couponCode: couponValue }).unwrap();
-
-        console.log("res", res);
 
         if (res?.success) {
           setIsValidCoupon({ value: true, discount: res.data.discount });
@@ -124,17 +122,11 @@ const AllCart = () => {
       {cart?.data?.cartItems?.length > 0 ? (
         <>
           {" "}
-          <div className=" grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-3 min-h-[60vh] lg:mt-[170px] md:mt-[96px] mt-[62px]">
+          <div className=" grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-3  pt-[100px] min-h-[70vh] sm:pt-[120px] lg:pt-48">
             <div className="lg:col-span-8">
               {cart?.data?.cartItems.length > 0 ? (
                 cart?.data?.cartItems.map((cartItem: any, index: number) => (
-                  <CartPage
-                    // onCartRemoveWarningModalOpen={onCartRemoveWarningModalOpen}
-                    key={index}
-                    cartData={cartItem}
-                    // isChecked={selectedItems.includes(cartItem?.product?.id)
-                    // handleRemoveCart={handleRemoveCart}
-                  />
+                  <CartPage key={index} cartData={cartItem} />
                 ))
               ) : (
                 <p>Your cart is empty.</p>

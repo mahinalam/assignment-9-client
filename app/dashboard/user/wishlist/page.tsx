@@ -19,6 +19,8 @@ import { BiDotsVerticalRounded } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "sonner";
 
+import Loading from "./Loading";
+
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import {
   useDeleteWishlistMutation,
@@ -27,7 +29,6 @@ import {
 import { TQueryParam } from "@/types";
 import EmptyState from "@/app/components/dashboard/EmptyState";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import Loading from "./Loading";
 
 const Wishlists = () => {
   const {
@@ -81,7 +82,7 @@ const Wishlists = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -90,10 +91,11 @@ const Wishlists = () => {
     <>
       <div className="mb-5">
         <SidebarButton
+          hasLeftButton={true}
           isOpen={isOpen}
-          role="user"
           setIsOpen={setIsOpen}
           title={"My Wishlist"}
+          userRole="user"
         />
       </div>
       {usersWishlistsData?.data?.data?.wishlistItem?.length > 0 ? (
@@ -151,7 +153,7 @@ const Wishlists = () => {
                       </Dropdown>
                     </TableCell>
                   </TableRow>
-                )
+                ),
               )}
             </TableBody>
           </Table>

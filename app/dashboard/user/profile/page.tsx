@@ -7,20 +7,19 @@ import { Select, SelectItem } from "@nextui-org/react";
 import { toast } from "sonner";
 
 import ProfileInput from "./ProfileInput";
+import Loading from "./Loading";
 
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import Loader from "@/app/components/sharred/Loader";
 import { RootState } from "@/app/redux/store";
 import {
   useGetSingleUserQuery,
   useUpdateMyProfileMutation,
 } from "@/app/redux/features/user/userApi";
-import Loading from "./Loading";
 
 const UserProfile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const { data: userInfo, isLoading: userDataLoading } = useGetSingleUserQuery(
-    user?.userId
+    user?.userId,
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isEditProfileOpen, setEditProfileOpen] = useState(false);
@@ -30,7 +29,6 @@ const UserProfile = () => {
   const [updatedProfileData, setUpdatedProfileData] = useState({
     ...userInfo?.data,
   });
-
   const [updateProfile] = useUpdateMyProfileMutation();
 
   useEffect(() => {
@@ -79,9 +77,9 @@ const UserProfile = () => {
       <div className="mb-5">
         <SidebarButton
           isOpen={isOpen}
-          role="user"
           setIsOpen={setIsOpen}
           title={"My Profile"}
+          userRole="user"
         />
       </div>
       {/* image section */}
@@ -99,7 +97,7 @@ const UserProfile = () => {
       <div>
         <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
           <ProfileInput
-            defaultValue={userInfo?.data?.name}
+            defaultValue={userInfo?.data?.customer?.name}
             id="name"
             isEditProfileOpen={isEditProfileOpen}
             name="name"
@@ -121,7 +119,7 @@ const UserProfile = () => {
         </div>
         <div className="grid md:grid-cols-2 grid-cols-1 gap-6 mt-6 md:mt-0">
           <ProfileInput
-            defaultValue={userInfo?.data?.phoneNumber}
+            defaultValue={userInfo?.data?.customer?.phoneNumber}
             id="phoneNumber"
             isEditProfileOpen={isEditProfileOpen}
             name="phoneNumber"
@@ -131,7 +129,7 @@ const UserProfile = () => {
             updatedProfileData={updatedProfileData}
           />
           <ProfileInput
-            defaultValue={userInfo?.data?.address}
+            defaultValue={userInfo?.data?.customer?.address}
             id="address"
             isEditProfileOpen={isEditProfileOpen}
             name="address"
@@ -145,13 +143,17 @@ const UserProfile = () => {
           {" "}
           <div className="grid md:grid-cols-2 grid-cols-1 gap-6 md:mt-0 mt-6">
             <div>
-              <label className="font-medium text-sm " htmlFor="">
+              <label className="font-medium text-sm " htmlFor="select">
                 Select Gender
               </label>
               <Select
+                className="mt-2"
                 defaultSelectedKeys={
-                  userInfo?.data?.gender ? [userInfo?.data?.gender] : undefined
+                  userInfo?.data?.customer?.gender
+                    ? [userInfo?.data?.customer?.gender]
+                    : undefined
                 }
+                id="select"
                 isDisabled={!isEditProfileOpen}
                 onChange={(e) =>
                   setUpdatedProfileData({
@@ -159,8 +161,6 @@ const UserProfile = () => {
                     gender: e.target.value,
                   })
                 }
-                className="mt-2"
-                // label="Select Gender"
               >
                 {genderOption.map((animal) => (
                   <SelectItem
@@ -179,6 +179,7 @@ const UserProfile = () => {
                 Upload Profile
               </p>
               <label
+                aria-label="Upload Your Files"
                 className={`flex ${isEditProfileOpen ? "cursor-pointer hover:bg-athens-gray-50/10" : "cursor-not-allowed"} items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all`}
                 htmlFor="image"
               >

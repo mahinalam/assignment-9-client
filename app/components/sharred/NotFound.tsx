@@ -7,8 +7,6 @@ const NotFound = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("search");
 
-  console.log("query", query);
-
   return (
     <div className=" w-full h-full">
       {/* title section */}
@@ -23,7 +21,7 @@ const NotFound = () => {
         <div className="text-center w-full flex flex-col justify-between items-center">
           <h3 className="text-2xl text-title">Search No Result</h3>
           <p className="text-[#757575] mt-[10px] mb-7">
-            We're sorry. We cannot find any matches for your search term.
+            We&apos;re sorry. We cannot find any matches for your search term.
           </p>
 
           <IoSearchOutline className="text-[#757575]" size={90} />
@@ -36,7 +34,9 @@ const NotFound = () => {
           <div>
             <IoSearchOutline className="text-[#757575]" size={70} />
           </div>
-          <p className="mt-6 text-lg font-bold text-center">We're sorry.</p>
+          <p className="mt-6 text-lg font-bold text-center">
+            We&apos;re sorry.
+          </p>
           <p className="text-[13px] text-center">
             We cannot find any matches for your search term.
           </p>

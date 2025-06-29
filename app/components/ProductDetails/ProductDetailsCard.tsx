@@ -14,6 +14,7 @@ const ProductDetailsCard = ({
   handleAddToCart,
   isInCompare,
   isInWishlist,
+  reviews,
 }: any) => {
   const { id, name, images, price, category, shop, shortDescription } = product;
 
@@ -23,10 +24,17 @@ const ProductDetailsCard = ({
     <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-10 gap-4">
       {/*  image section */}
       <div>
-        <img alt="" className="h-[500px]" src={miniImageSrc} />
-        <div className="flex lg:size-[60px] size-[50px] mt-5 lg:mt-5 gap-4 cursor-pointer transition ease-in-out">
-          {images.map((image) => (
-            <img src={image} onMouseEnter={() => setMiniImageSrc(image)} />
+        <div className="flex justify-center items-center lg:block">
+          <img alt={name} className="h-[500px]" src={miniImageSrc} />
+        </div>
+        <div className="flex lg:size-[60px] size-[50px] mt-5 lg:mt-5 lg:gap-4 gap-2 cursor-pointer transition ease-in-out">
+          {images.map((image: any, index: number) => (
+            <img
+              key={index}
+              alt={name}
+              src={image}
+              onMouseEnter={() => setMiniImageSrc(image)}
+            />
           ))}
         </div>
       </div>
@@ -40,13 +48,20 @@ const ProductDetailsCard = ({
           <div className="flex justify-between items-center lg:border-b-1 lg:pb-0 ">
             <div className="flex items-center ">
               <Rate
+                disabled
                 allowHalf={false}
                 className=""
                 count={5}
                 style={{ color: "#E21B70" }}
-                value={5}
+                value={
+                  reviews?.aggregateRating?._avg?.rating
+                    ? reviews?.aggregateRating?._avg?.rating
+                    : 0
+                }
               />
-              <p className="lg:ml-1 text-[#475569] lg:text-[13px]">3</p>
+              <p className="lg:ml-1 text-[#475569] lg:text-[13px]">
+                {reviews?.result?.length || 0}
+              </p>
             </div>
             <div>
               <button className="lg:font-medium font-semibold  text-[12px] lg:text-sm text-green-600">

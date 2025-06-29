@@ -7,7 +7,7 @@ import {
   ModalBody,
   Button,
 } from "@nextui-org/react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import GTInput from "../form/GTInput";
 import GTForm from "../form/GTForm";
@@ -24,18 +24,13 @@ export default function CreateCategoryModal({
   imageFile,
   setImageFile,
 }: any) {
-  const [paymentValue, setPaymentValue] = useState("");
-
-  console.log("image file", imageFile);
-
-  console.log("loading name", categoryLoadingName);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
       <Modal isOpen={isOpen} size="2xl" onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1 text-center">
                 Create Category
@@ -51,6 +46,7 @@ export default function CreateCategoryModal({
                         Upload Image
                       </p>
                       <label
+                        aria-label="Upload your files"
                         className={`flex cursor-pointer items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all`}
                         htmlFor="image"
                       >

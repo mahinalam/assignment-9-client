@@ -4,8 +4,12 @@ import React, { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+
 import ProfileInput from "../../user/profile/ProfileInput";
+
 import Button from "./Button";
+import Loading from "./Loading";
+
 import {
   useGetSingleUserQuery,
   useUpdateMyProfileMutation,
@@ -17,13 +21,10 @@ import {
   useGetVendorShopQuery,
   useUpdateShopMutation,
 } from "@/app/redux/features/shop/shopApi";
-import Loading from "./Loading";
 
 const VendorProfilePage = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const { data: userInfo, isLoading: userDataLoading } = useGetSingleUserQuery(
-    user?.userId
-  );
+  const { data: userInfo } = useGetSingleUserQuery(user?.userId);
   const [updatedProfileData, setUpdatedProfileData] = useState({
     ...userInfo?.data,
   });
@@ -96,7 +97,7 @@ const VendorProfilePage = () => {
     }
   };
 
-  const shopInfo = vendorShopProducts?.data?.vendor?.shop;
+  const shopInfo = vendorShopProducts?.data?.data?.vendor?.shop;
 
   // fn for update shop info
   const hanldeUpdateShopInfo = async () => {
@@ -118,6 +119,7 @@ const VendorProfilePage = () => {
       if (res?.success) {
         toast.success("Shop updated successfully!", { id: toastId });
         setIsEditShopButtonOpen(false);
+        setShopImage(undefined);
       }
     } catch (err: any) {
       toast.error("Failed to update shop", { id: toastId });
@@ -126,6 +128,15 @@ const VendorProfilePage = () => {
 
   return (
     <div className="pt-8">
+      <div className="mb-5">
+        <SidebarButton
+          hasLeftButton={false}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          title={"My Profile"}
+          userRole="vendor"
+        />
+      </div>
       <section className="flex justify-between">
         <div>
           {/* image */}
@@ -214,7 +225,7 @@ const VendorProfilePage = () => {
                 {" "}
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-6 md:mt-0 mt-6">
                   <div>
-                    <label className="font-medium text-sm " htmlFor="">
+                    <label className="font-medium text-sm " htmlFor="select">
                       Select Gender
                     </label>
                     <Select
@@ -224,6 +235,7 @@ const VendorProfilePage = () => {
                           ? [userInfo?.data?.vendor?.gender]
                           : undefined
                       }
+                      id="select"
                       isDisabled={!isEditProfileOpen}
                       onChange={(e) =>
                         setUpdatedProfileData({
@@ -248,6 +260,7 @@ const VendorProfilePage = () => {
                       Upload Profile
                     </p>
                     <label
+                      aria-label="Upload Your Files"
                       className={`flex ${isEditProfileOpen ? "cursor-pointer hover:bg-athens-gray-50/10" : "cursor-not-allowed"} items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all`}
                       htmlFor="image"
                     >

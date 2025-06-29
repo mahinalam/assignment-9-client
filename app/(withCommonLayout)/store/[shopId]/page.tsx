@@ -1,14 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
 import StoreBanner from "../StoreBanner";
 
+import StorePageLoading from "./Loading";
+
 import { IProduct } from "@/types";
 import { useGetAllVendorProductsQuery } from "@/app/redux/features/product/productApi";
-import Loader from "@/app/components/sharred/Loader";
 import {
   useCheckIsFollowingQuery,
   useFollowShopMutation,
@@ -32,9 +32,8 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
   });
 
   if (vendorProductLoading) {
-    return <Loader />;
+    return <StorePageLoading />;
   }
-
   const storeProductData = allProducts?.data;
   const storeData = {
     id: storeProductData?.id,
@@ -94,12 +93,10 @@ const StorePage = ({ params }: { params: { shopId: string } }) => {
           <div className="grid  sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
             {/* <div className="grid  grid-cols-2"> */}
             {allProducts?.data?.product?.map((flashSaleProduct: IProduct) => (
-              <Link
-                key={flashSaleProduct.id}
-                href={`/products/${flashSaleProduct.id}`}
-              >
-                <FlashSaleCard product={flashSaleProduct} />
-              </Link>
+              <FlashSaleCard
+                key={flashSaleProduct?.id}
+                product={flashSaleProduct}
+              />
             ))}
           </div>
         </div>

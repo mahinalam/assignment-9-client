@@ -26,14 +26,10 @@ const UsersOrderHistory = () => {
   } = useDisclosure();
 
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
-
-  console.log("vendor", userId);
   const { data: usersOrderHistory, isLoading: userOrderHistoryLoading } =
     useGetUsersOrderHistoryQuery(userId as string);
 
   const [deleteProduct] = useDeleteProductMutation();
-
-  console.log("usersOrderHistory", usersOrderHistory);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (userOrderHistoryLoading) {
@@ -70,7 +66,7 @@ const UsersOrderHistory = () => {
               <TableCell>{order.transactionId}</TableCell>
               <TableCell>{order.paymentStatus}</TableCell>
               <TableCell>{order.customerShippingAddress}</TableCell>
-              <TableCell>{order.orderItems.length}</TableCell>
+              <TableCell>{order.orderItem.length}</TableCell>
               <TableCell>{order.totalPrice}</TableCell>
               <TableCell>
                 <Button onClick={() => handleDeleteModalOpen(order.id)}>
@@ -85,6 +81,8 @@ const UsersOrderHistory = () => {
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteModalChange}
+        title="Delete Order"
+        subTitle="Are you sure want to delete this order?"
       />
     </>
   );

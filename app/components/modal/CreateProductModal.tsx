@@ -9,7 +9,6 @@ import GTTextArea from "../form/GTTestArea";
 
 import { useGetAllCategoriesQuery } from "@/app/redux/features/category/categoryApi";
 import { ICategory } from "@/types";
-import { useState } from "react";
 
 export default function CreateProductModal({
   isOpen,
@@ -20,7 +19,7 @@ export default function CreateProductModal({
   handleCreateProduct,
   createProductLoading,
   createProductLoadingName,
-}) {
+}: any) {
   const { data: categoriesData, isLoading: categoriesDataLoading } =
     useGetAllCategoriesQuery(null);
 
@@ -32,20 +31,24 @@ export default function CreateProductModal({
     (item: ICategory) => ({
       key: item.id,
       label: item.name,
-    })
+    }),
   );
 
-  //   console.log(data);
   return (
     <>
       <Modal
         className="w-full"
         isOpen={isOpen}
         size="3xl"
-        onOpenChange={onOpenChange}
+        onOpenChange={(isOpen) => {
+          onOpenChange(isOpen);
+          if (!isOpen) {
+            setCreateProductImageFiles([]);
+          }
+        }}
       >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalBody>
                 <div className="w-full">
@@ -61,8 +64,8 @@ export default function CreateProductModal({
                           <div className="py-3 flex gap-2">
                             <GTInput
                               label="Product Name"
-                              type="text"
                               name="name"
+                              type="text"
                             />
                             <GTInput
                               label="Product Price"
@@ -95,8 +98,8 @@ export default function CreateProductModal({
                             <GTTextArea
                               label="Short description"
                               name="shortDescription"
-                              type="text"
                               rows={3}
+                              type="text"
                             />
                           </div>
                           <div className="py-3">
@@ -112,6 +115,7 @@ export default function CreateProductModal({
                               Upload Image
                             </p>
                             <label
+                              aria-label="Upload Your Files"
                               className={`flex cursor-pointer items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all`}
                               htmlFor="image"
                             >
@@ -142,7 +146,6 @@ export default function CreateProductModal({
                               </div>
                             </label>
                             <input
-                              //   disabled={!isEditProfileOpen}
                               className="w-full  hidden mt-1 lg:mb-8 rounded-md border border-input bg-transparent py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm  h-12 items-center px-4 text-athens-gray-950 outline-none !ring-0 focus:ring-0"
                               id="image"
                               name="image"
@@ -155,54 +158,22 @@ export default function CreateProductModal({
                                     (prevImages: File[]) => [
                                       ...prevImages,
                                       file,
-                                    ]
+                                    ],
                                   );
                                 }
                               }}
                             />
 
                             {createImageFiles?.length > 0 &&
-                              createImageFiles.map((imageFile: File) => (
-                                <div className="mb-2 relative flex items-center gap-2 rounded-md border border-athens-gray-200 bg-white p-3">
-                                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-athens-gray-100">
-                                    <svg
-                                      className="lucide lucide-image size-4 text-athens-gray-800"
-                                      fill="none"
-                                      height="24"
-                                      stroke="currentColor"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      viewBox="0 0 24 24"
-                                      width="24"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <rect
-                                        height="18"
-                                        rx="2"
-                                        ry="2"
-                                        width="18"
-                                        x="3"
-                                        y="3"
-                                      />
-                                      <circle cx="9" cy="9" r="2" />
-                                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                    </svg>
-                                  </div>
-                                  <div>
-                                    <h6 className="!text-sm">
-                                      {imageFile?.name}
-                                    </h6>
-                                    <p className="!text-xs !text-athens-gray-500">{`${imageFile ? Number(imageFile?.size) / 1000 : 0.0} KB`}</p>
-                                  </div>
-                                  <div className="absolute inset-y-0 right-3 flex items-center">
-                                    <button
-                                      onClick={() =>
-                                        handleDeleteCreateProducts(imageFile)
-                                      }
-                                    >
+                              createImageFiles.map(
+                                (imageFile: File, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="mb-2 relative flex items-center gap-2 rounded-md border border-athens-gray-200 bg-white p-3"
+                                  >
+                                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-athens-gray-100">
                                       <svg
-                                        className="lucide lucide-trash2 size-4 text-athens-gray-500 transition-all hover:text-athens-gray-800"
+                                        className="lucide lucide-image size-4 text-athens-gray-800"
                                         fill="none"
                                         height="24"
                                         stroke="currentColor"
@@ -213,16 +184,64 @@ export default function CreateProductModal({
                                         width="24"
                                         xmlns="http://www.w3.org/2000/svg"
                                       >
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                        <line x1="14" x2="14" y1="11" y2="17" />
+                                        <rect
+                                          height="18"
+                                          rx="2"
+                                          ry="2"
+                                          width="18"
+                                          x="3"
+                                          y="3"
+                                        />
+                                        <circle cx="9" cy="9" r="2" />
+                                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                                       </svg>
-                                    </button>
+                                    </div>
+                                    <div>
+                                      <h6 className="!text-sm">
+                                        {imageFile?.name}
+                                      </h6>
+                                      <p className="!text-xs !text-athens-gray-500">{`${imageFile ? Number(imageFile?.size) / 1000 : 0.0} KB`}</p>
+                                    </div>
+                                    <div className="absolute inset-y-0 right-3 flex items-center">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleDeleteCreateProducts(imageFile)
+                                        }
+                                      >
+                                        <svg
+                                          className="lucide lucide-trash2 size-4 text-athens-gray-500 transition-all hover:text-athens-gray-800"
+                                          fill="none"
+                                          height="24"
+                                          stroke="currentColor"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path d="M3 6h18" />
+                                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                          <line
+                                            x1="10"
+                                            x2="10"
+                                            y1="11"
+                                            y2="17"
+                                          />
+                                          <line
+                                            x1="14"
+                                            x2="14"
+                                            y1="11"
+                                            y2="17"
+                                          />
+                                        </svg>
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ),
+                              )}
                             {createImageFiles.length < 3 && (
                               <p className="text-red-600 text-sm">
                                 [NB] Please upload at least 3 product images to

@@ -10,12 +10,12 @@ import {
   TableRow,
 } from "@nextui-org/react";
 
-import Loader from "@/app/components/sharred/Loader";
+import Loading from "./Loading";
+
 import { useGetUserStatsQuery } from "@/app/redux/features/user/userApi";
 import { useGetUsersOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import { IOrder, TQueryParam } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import Loading from "./Loading";
 
 const UserOverViewPage = () => {
   const { data: userStatsInfo, isLoading: userStatsLoading } =
@@ -29,7 +29,6 @@ const UserOverViewPage = () => {
     useGetUsersOrderHistoryQuery(params);
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("stats", userStatsInfo);
   if (userStatsLoading || userOrdersLoading) {
     return <Loading />;
   }
@@ -41,7 +40,7 @@ const UserOverViewPage = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -58,9 +57,9 @@ const UserOverViewPage = () => {
       <div className="mb-5">
         <SidebarButton
           isOpen={isOpen}
-          role="user"
           setIsOpen={setIsOpen}
           title={"Overview"}
+          userRole="user"
         />
       </div>
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 md:gap-4 gap-3">
@@ -193,7 +192,7 @@ const UserOverViewPage = () => {
                   <TableCell>{order?.orderItem.length}</TableCell>
                   <TableCell>{order?.totalPrice}</TableCell>
                 </TableRow>
-              ))
+              )),
             )}
           </TableBody>
         </Table>

@@ -67,12 +67,11 @@ const AllCoupons = () => {
   const totalPages = Math.ceil(totalCoupons / 5);
 
   const handlePageChange = (page: number) => {
-    console.log("page value", page);
     const queryParams: TQueryParam[] = [];
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -110,19 +109,14 @@ const AllCoupons = () => {
       setCouponLoading(false);
       onCouponModalOpenChange();
       toast.error("Coupon already exists");
-      console.log(err.message);
     }
   };
-
-  // console.log(vendorOrderHistory);
   const handleDeleteCoupon = async () => {
     try {
       if (deleteModalId) {
         const res = await deleteCoupon(deleteModalId).unwrap();
 
-        console.log("res", res);
-        onDeleteModalChange(); //   }
-        console.log("from deltew", deleteModalId);
+        onDeleteModalChange();
         if ((res as any)?.success) {
           toast.success("Coupon deleted successfull.");
         }
@@ -132,7 +126,6 @@ const AllCoupons = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    // console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };
@@ -140,12 +133,12 @@ const AllCoupons = () => {
   return (
     <>
       <SidebarButton
-        isOpen={isOpen}
-        role="admin"
-        setIsOpen={setIsOpen}
-        title={"Coupons"}
         className={"mb-5"}
         hasLeftButton={false}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"Coupons"}
+        userRole="admin"
       />
       {allCoupons?.data?.data?.length > 0 ? (
         <>
@@ -217,7 +210,8 @@ const AllCoupons = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteCoupon}
         isOpen={isDeleteModalOpen}
-        title="Coupon"
+        subTitle="Are you sure want to delete this coupon?"
+        title="Delete coupon"
         onOpenChange={onDeleteModalChange}
       />
       <CreateCouponModal

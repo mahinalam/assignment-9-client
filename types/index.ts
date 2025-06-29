@@ -106,7 +106,7 @@ export interface IOrder {
   id: string;
   status: OrderStatus;
   totalPrice: number;
-  shippingAddress: string;
+  customerShippingAddress: string;
   customerEmail: string;
   customerName: string;
   transactionId: string;

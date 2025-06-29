@@ -2,12 +2,16 @@ import "rc-rate/assets/index.css";
 import Rate from "rc-rate";
 import "./index.css";
 
-export default function RatingProgress({ totalReview, avgReview }: any) {
+export default function RatingProgress({
+  totalReview,
+  avgReview,
+  productName,
+}: any) {
   return (
     <div className="space-y-4 lg:mt-8 mt-6 border-border border-b-1 lg:pb-8">
       <div>
         <p className="font-bold lg:text-xl text-medium">
-          {totalReview} reviews for mahin
+          {totalReview} reviews for {productName}
         </p>
       </div>
 

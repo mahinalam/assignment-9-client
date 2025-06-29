@@ -7,11 +7,12 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@nextui-org/button";
+
 import RateComponent from "./Rate";
 import ProductsLoading from "./ProductsLoading";
+
 import {
   useGetAllCategoriesQuery,
   useGetSingleCategoryQuery,
@@ -53,7 +54,7 @@ const Products = () => {
   useEffect(() => {
     if (value) {
       const updatedQueryParams = queryParams.filter(
-        (param) => param.name !== "searchTerm"
+        (param) => param.name !== "searchTerm",
       );
 
       updatedQueryParams.push({ name: "searchTerm", value });
@@ -61,7 +62,7 @@ const Products = () => {
     }
     if (categoryValue) {
       const updatedQueryParams = queryParams.filter(
-        (param) => param.name !== "categoryId"
+        (param) => param.name !== "categoryId",
       );
 
       updatedQueryParams.push({ name: "categoryId", value: categoryValue });
@@ -76,7 +77,7 @@ const Products = () => {
   const handleSortInput = (value: string) => {
     // Clear any existing "sortOrder" or "sortBy" in queryParams
     const updatedQueryParams = queryParams.filter(
-      (param) => param.name !== "sortOrder" && param.name !== "sortBy"
+      (param) => param.name !== "sortOrder" && param.name !== "sortBy",
     );
 
     if (value) {
@@ -101,11 +102,10 @@ const Products = () => {
   };
 
   const handleRatingFunctionality = (ratingValue: any) => {
-    console.log("value", ratingValue);
     if (ratingValue) {
       setSelecdRatingValue(ratingValue);
       const updatedQueryParams = queryParams.filter(
-        (param) => param.name !== "rating"
+        (param) => param.name !== "rating",
       );
 
       updatedQueryParams.push({ name: "rating", value: ratingValue });
@@ -120,7 +120,7 @@ const Products = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     const updatedQueryParams = queryParams.filter(
-      (param) => param.name !== "page"
+      (param) => param.name !== "page",
     );
 
     updatedQueryParams.push({ name: "page", value: page });
@@ -156,7 +156,7 @@ const Products = () => {
   const handleTabCategory = (categoryId: string) => {
     setTabValue(categoryId);
     const updatedQueryParams = queryParams.filter(
-      (param) => param.name !== "categoryId"
+      (param) => param.name !== "categoryId",
     );
 
     updatedQueryParams.push({ name: "categoryId", value: categoryId });
@@ -167,7 +167,7 @@ const Products = () => {
     setIsCheckBoxSelected(stock);
 
     const updatedQueryParams = queryParams.filter(
-      (param) => param.name !== "stock"
+      (param) => param.name !== "stock",
     );
 
     updatedQueryParams.push({ name: "stock", value: stock });
@@ -221,7 +221,7 @@ const Products = () => {
             {/* stock section */}
             <section className="mt-2">
               <p className="text-[14px] text-[#121212]">Stock</p>
-              <div className="flex items-center justify-around mt-1">
+              <div className="flex items-center gap-10  mt-1">
                 <div className="flex gap-1 items-center">
                   <Checkbox
                     className="p-0"
@@ -240,16 +240,6 @@ const Products = () => {
                     onClick={() => hanldeCheck("in_stock")}
                   />
                   In Stock
-                </div>
-
-                <div className="flex text-sm gap-1 items-center">
-                  <Checkbox
-                    className="p-0"
-                    isSelected={isCheckBoxSelected === "out_of_stock"}
-                    size="sm"
-                    onClick={() => hanldeCheck("out_of_stock")}
-                  />
-                  Out of stock
                 </div>
               </div>
             </section>
@@ -280,7 +270,7 @@ const Products = () => {
                   </div>
                   <div>
                     <Button
-                      className="bg-[#2abbe8] text-white hover:text-white hover:bg-primary m-0"
+                      className="bg-secondary text-black  m-0"
                       radius="none"
                       size="sm"
                       onClick={handlePriceFunctionality}
@@ -347,11 +337,11 @@ const Products = () => {
           </div>
           {productsData?.data?.data?.length > 0 ? (
             <div className="grid  md:grid-cols-4 grid-cols-2 sm:grid-cols-3 gap-4 lg:w-[75%]">
-              {productsData?.data?.data?.map((item: IProduct) => (
-                <Link key={item.id} href={`/products/${item.id}`}>
-                  <FlashSaleCard product={item} />
-                </Link>
-              ))}
+              {productsData?.data?.data
+                ?.slice(0, 8)
+                .map((item: IProduct) => (
+                  <FlashSaleCard key={item.id} product={item} />
+                ))}
             </div>
           ) : (
             <div className="lg:mt-10  w-full min-h-[60vh]">
@@ -359,15 +349,13 @@ const Products = () => {
             </div>
           )}
         </div>
-        <div className="md:block hidden">
-          <div className=" mt-8 flex justify-end">
-            <Pagination
-              showControls
-              initialPage={currentPage as number}
-              total={totalPages} // You should have this in your API response
-              onChange={handlePageChange}
-            />
-          </div>
+        <div className="lg:w-[75%] w-full lg:ml-auto mt-8 flex justify-center">
+          <Pagination
+            showControls
+            initialPage={currentPage as number}
+            total={totalPages} // You should have this in your API response
+            onChange={handlePageChange}
+          />
         </div>
       </div>
     </div>

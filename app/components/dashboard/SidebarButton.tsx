@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+
 import DrawerUserSlide from "./DrawerForUser";
 import DrawerVendorSlide from "./DrawerVendorSlide";
 import DrawerAdminSlide from "./DrawerAdminSlide";
@@ -9,7 +10,7 @@ const SidebarButton = ({
   isOpen,
   setIsOpen,
   title,
-  role,
+  userRole,
   hasRightButton = false,
   handleCreateProductMNodalOpen,
   className = "",
@@ -18,7 +19,7 @@ const SidebarButton = ({
   isOpen: boolean;
   setIsOpen: any;
   title: string;
-  role: string;
+  userRole: string;
   hasRightButton?: boolean;
   handleCreateProductMNodalOpen?: any;
   className?: any;
@@ -26,18 +27,19 @@ const SidebarButton = ({
 }) => {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {role === "admin" && (
+      {userRole === "admin" && (
         <DrawerAdminSlide isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
-      {role === "vendor" && (
+      {userRole === "vendor" && (
         <DrawerVendorSlide isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
-      {role === "user" && (
+      {userRole === "user" && (
         <DrawerUserSlide isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
+
       {hasLeftButton && (
         <button
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-athens-gray-100 bg-white text-h-black shadow-none outline-0 hover:bg-athens-gray-50 focus:outline-0 active:bg-white size-9 rounded-md lg:hidden"
+          className="inline-flex  items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-athens-gray-100 bg-white text-h-black shadow-none outline-0 hover:bg-athens-gray-50 focus:outline-0 active:bg-white size-9 rounded-md lg:hidden"
           onClick={() => setIsOpen(true)}
         >
           <svg
@@ -58,7 +60,7 @@ const SidebarButton = ({
         </button>
       )}
       <div className="flex justify-between w-full">
-        <h3 className="lg:text-[22px] text-xl font-bold w-full">{title}</h3>
+        <h3 className="lg:text-[22px]  text-xl font-bold w-full">{title}</h3>
         {hasRightButton && (
           <div className="text-right w-full">
             <button

@@ -16,7 +16,6 @@ import { useSelector } from "react-redux";
 import GTInput from "../form/GTInput";
 import GTForm from "../form/GTForm";
 
-import { useGetCartQuantityQuery } from "@/app/redux/features/cart/cartApi";
 import { RootState } from "@/app/redux/store";
 
 export default function CheckoutModal({
@@ -27,12 +26,7 @@ export default function CheckoutModal({
   loading,
 }: any) {
   const [paymentValue, setPaymentValue] = useState("");
-
-  const { data: cartQuantity, isLoading: cartQuantityLoading } =
-    useGetCartQuantityQuery(null);
   const userEmail = useSelector((state: RootState) => state.auth.user?.email);
-
-  console.log("cartQuantity", cartQuantity);
   const onSubmit = (data: any) => {
     const payload = {
       customerName: data.name,

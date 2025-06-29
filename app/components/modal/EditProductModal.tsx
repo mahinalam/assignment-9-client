@@ -41,19 +41,15 @@ export default function EditProductModal({
   if (categoriesDataLoading) {
     return;
   }
-  console.log({ productData });
-
-  console.log("product data", productData);
-  console.log("editProductImages from modal", editProductImages);
   const categoriesOption = categoriesData?.data?.data?.map(
     (item: ICategory) => ({
       key: item.id,
       label: item.name,
-    })
+    }),
   );
 
   const defaultSelectedCategory = categoriesOption.find(
-    (category: any) => category.key === productData?.category?.id
+    (category: any) => category.key === productData?.category?.id,
   );
 
   // fn for truncate image name
@@ -72,7 +68,7 @@ export default function EditProductModal({
         onOpenChange={onOpenChange}
       >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalBody>
                 <div className="w-full">
@@ -117,8 +113,8 @@ export default function EditProductModal({
                               defaultValue={productData?.shortDescription}
                               label="Short description"
                               name="shortDescription"
-                              type="text"
                               rows={3}
+                              type="text"
                             />
                           </div>
                           <div className="py-3">
@@ -143,75 +139,49 @@ export default function EditProductModal({
                               Previous images
                             </p>
                             <div>
-                              {editProductImages?.map((image: any) => (
-                                <div className="relative mb-2 flex items-center gap-2 rounded-md border border-athens-gray-200 bg-white p-3">
-                                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-athens-gray-100">
-                                    <svg
-                                      className="lucide lucide-image size-4 text-athens-gray-800"
-                                      fill="none"
-                                      height="24"
-                                      stroke="currentColor"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      viewBox="0 0 24 24"
-                                      width="24"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <rect
-                                        height="18"
-                                        rx="2"
-                                        ry="2"
-                                        width="18"
-                                        x="3"
-                                        y="3"
-                                      />
-                                      <circle cx="9" cy="9" r="2" />
-                                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                    </svg>
-                                  </div>
-                                  <div>
-                                    <h6 className="!text-sm">{image?.name}</h6>
-                                    <p className="!text-xs !text-athens-gray-500">
-                                      {truncateFileName(image)}
-                                    </p>
-                                  </div>
-                                  <div className="absolute inset-y-0 right-3 flex items-center">
-                                    {/* <button
-                                      onClick={() => handleDeleteImages(image)}
-                                    >
+                              {editProductImages?.map(
+                                (image: any, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="relative mb-2 flex items-center gap-2 rounded-md border border-athens-gray-200 bg-white p-3"
+                                  >
+                                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-athens-gray-100">
                                       <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
+                                        className="lucide lucide-image size-4 text-athens-gray-800"
                                         fill="none"
+                                        height="24"
                                         stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        className="lucide lucide-trash2 size-4 text-athens-gray-500 transition-all hover:text-athens-gray-800"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                        xmlns="http://www.w3.org/2000/svg"
                                       >
-                                        <path d="M3 6h18"></path>
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                        <line
-                                          x1="10"
-                                          x2="10"
-                                          y1="11"
-                                          y2="17"
-                                        ></line>
-                                        <line
-                                          x1="14"
-                                          x2="14"
-                                          y1="11"
-                                          y2="17"
-                                        ></line>
+                                        <rect
+                                          height="18"
+                                          rx="2"
+                                          ry="2"
+                                          width="18"
+                                          x="3"
+                                          y="3"
+                                        />
+                                        <circle cx="9" cy="9" r="2" />
+                                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                                       </svg>
-                                    </button> */}
+                                    </div>
+                                    <div>
+                                      <h6 className="!text-sm">
+                                        {image?.name}
+                                      </h6>
+                                      <p className="!text-xs !text-athens-gray-500">
+                                        {truncateFileName(image)}
+                                      </p>
+                                    </div>
+                                    <div className="absolute inset-y-0 right-3 flex items-center" />
                                   </div>
-                                </div>
-                              ))}
+                                ),
+                              )}
                             </div>
                           </div>
 
@@ -220,6 +190,7 @@ export default function EditProductModal({
                               Upload Image
                             </p>
                             <label
+                              aria-label="Upload Your Files"
                               className={`flex cursor-pointer items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all`}
                               htmlFor="image"
                             >
@@ -250,7 +221,6 @@ export default function EditProductModal({
                               </div>
                             </label>
                             <input
-                              //   disabled={!isEditProfileOpen}
                               className="w-full  hidden mt-1 lg:mb-8 rounded-md border border-input bg-transparent py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm  h-12 items-center px-4 text-athens-gray-950 outline-none !ring-0 focus:ring-0"
                               id="image"
                               name="image"
@@ -269,47 +239,15 @@ export default function EditProductModal({
                             />
 
                             {imageFiles?.length > 0 &&
-                              imageFiles.map((imageFile: File) => (
-                                <div className="mb-2 relative flex items-center gap-2 rounded-md border border-athens-gray-200 bg-white p-3">
-                                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-athens-gray-100">
-                                    <svg
-                                      className="lucide lucide-image size-4 text-athens-gray-800"
-                                      fill="none"
-                                      height="24"
-                                      stroke="currentColor"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      viewBox="0 0 24 24"
-                                      width="24"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <rect
-                                        height="18"
-                                        rx="2"
-                                        ry="2"
-                                        width="18"
-                                        x="3"
-                                        y="3"
-                                      />
-                                      <circle cx="9" cy="9" r="2" />
-                                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                    </svg>
-                                  </div>
-                                  <div>
-                                    <h6 className="!text-sm">
-                                      {imageFile?.name}
-                                    </h6>
-                                    <p className="!text-xs !text-athens-gray-500">{`${imageFile ? Number(imageFile?.size) / 1000 : 0.0} KB`}</p>
-                                  </div>
-                                  <div className="absolute inset-y-0 right-3 flex items-center">
-                                    <button
-                                      onClick={() =>
-                                        handleDeleteNewProductImages(imageFile)
-                                      }
-                                    >
+                              imageFiles.map(
+                                (imageFile: File, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="mb-2 relative flex items-center gap-2 rounded-md border border-athens-gray-200 bg-white p-3"
+                                  >
+                                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-athens-gray-100">
                                       <svg
-                                        className="lucide lucide-trash2 size-4 text-athens-gray-500 transition-all hover:text-athens-gray-800"
+                                        className="lucide lucide-image size-4 text-athens-gray-800"
                                         fill="none"
                                         height="24"
                                         stroke="currentColor"
@@ -320,16 +258,65 @@ export default function EditProductModal({
                                         width="24"
                                         xmlns="http://www.w3.org/2000/svg"
                                       >
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                        <line x1="14" x2="14" y1="11" y2="17" />
+                                        <rect
+                                          height="18"
+                                          rx="2"
+                                          ry="2"
+                                          width="18"
+                                          x="3"
+                                          y="3"
+                                        />
+                                        <circle cx="9" cy="9" r="2" />
+                                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                                       </svg>
-                                    </button>
+                                    </div>
+                                    <div>
+                                      <h6 className="!text-sm">
+                                        {imageFile?.name}
+                                      </h6>
+                                      <p className="!text-xs !text-athens-gray-500">{`${imageFile ? Number(imageFile?.size) / 1000 : 0.0} KB`}</p>
+                                    </div>
+                                    <div className="absolute inset-y-0 right-3 flex items-center">
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteNewProductImages(
+                                            imageFile,
+                                          )
+                                        }
+                                      >
+                                        <svg
+                                          className="lucide lucide-trash2 size-4 text-athens-gray-500 transition-all hover:text-athens-gray-800"
+                                          fill="none"
+                                          height="24"
+                                          stroke="currentColor"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path d="M3 6h18" />
+                                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                          <line
+                                            x1="10"
+                                            x2="10"
+                                            y1="11"
+                                            y2="17"
+                                          />
+                                          <line
+                                            x1="14"
+                                            x2="14"
+                                            y1="11"
+                                            y2="17"
+                                          />
+                                        </svg>
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ),
+                              )}
                           </div>
 
                           <Button

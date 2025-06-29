@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import React, { useState } from "react";
+import moment from "moment";
 
 import OrdersLoading from "./Loading";
 
@@ -38,30 +39,30 @@ const UsersOrderHistory = () => {
   } = useDisclosure();
 
   const [isOpen, setIsOpen] = useState(false);
-  const { data: usersOrderHistory, isLoading: userOrderHistoryLoading } =
-    useGetUsersOrderHistoryQuery(params);
+  const {
+    data: usersOrderHistory,
+    isLoading: userOrderHistoryLoading,
+    isFetching,
+  } = useGetUsersOrderHistoryQuery(params);
 
   const totalOrders = usersOrderHistory?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalOrders / 5);
   const [deleteOrder] = useDeleteUsersOrderMutation();
-
-  console.log("usersOrderHistory", usersOrderHistory);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   const [page, setPage] = useState(1);
 
   const handlePageChange = (page: number) => {
-    console.log("page value", page);
     const queryParams: TQueryParam[] = [];
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
 
-  if (userOrderHistoryLoading) {
+  if (userOrderHistoryLoading || isFetching) {
     return <OrdersLoading />;
   }
   const handleDeleteProduct = () => {
@@ -80,9 +81,9 @@ const UsersOrderHistory = () => {
       <SidebarButton
         className="mb-4"
         isOpen={isOpen}
-        role="user"
         setIsOpen={setIsOpen}
         title={"My Orders"}
+        userRole="user"
       />
       {usersOrderHistory?.data?.data?.length > 0 ? (
         <>
@@ -91,7 +92,7 @@ const UsersOrderHistory = () => {
             <TableHeader>
               <TableColumn>TRANSACTION ID</TableColumn>
               <TableColumn>PAYMENT STATUS </TableColumn>
-              <TableColumn>SHIPPING ADDRESS</TableColumn>
+              <TableColumn>ORDER DATE</TableColumn>
               <TableColumn>ORDER ITEMS</TableColumn>
               <TableColumn>TOTAL PRICE</TableColumn>
               <TableColumn>ACTION</TableColumn>
@@ -103,7 +104,9 @@ const UsersOrderHistory = () => {
                   <TableRow key={order.id}>
                     <TableCell>{order.transactionId}</TableCell>
                     <TableCell>{order.paymentStatus}</TableCell>
-                    <TableCell>{order.shippingAddress}</TableCell>
+                    <TableCell>
+                      {moment(order.createdAt).format("DD MMM YYYY")}
+                    </TableCell>
                     <TableCell>{order.orderItem.length}</TableCell>
                     <TableCell>{order.totalPrice}</TableCell>
                     <TableCell>

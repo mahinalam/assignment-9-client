@@ -5,8 +5,6 @@ import { ICategory } from "@/types";
 const CategoryCard = ({ category }: { category: ICategory }) => {
   const { id, imageUrl, name } = category;
 
-  console.log("image ur", imageUrl);
-
   return (
     <div className="lg:p-0 flex flex-col justify-center items-center  rounded-lg bg-white hover:shadow- transition-all duration-300 ease-in-out">
       <div className="size-[150px] ">

@@ -11,22 +11,23 @@ import {
 } from "@nextui-org/react";
 import React, { useState } from "react";
 
+import Loading from "./Loading";
+
 import { useGetVendorOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import { useGetVendorStatsQuery } from "@/app/redux/features/user/userApi";
 import { IOrder, TQueryParam } from "@/types";
-import Loading from "./Loading";
+import SidebarButton from "@/app/components/dashboard/SidebarButton";
 
 const VendorOverviewPage = () => {
   const { data: vendorStats, isLoading: vendorStatsLoading } =
     useGetVendorStatsQuery(undefined);
-
-  console.log("vendorStats", vendorStats);
 
   const [params, setParams] = useState<TQueryParam[] | undefined>([
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
   const [page, setPage] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     data: vendorOrderHistory,
@@ -37,7 +38,7 @@ const VendorOverviewPage = () => {
   const totalOrders = vendorOrderHistory?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalOrders / 5);
 
-  if (vendorStatsLoading || vendorOrderHistoryLoading) {
+  if (vendorStatsLoading || vendorOrderHistoryLoading || isFetching) {
     return <Loading />;
   }
 
@@ -53,13 +54,21 @@ const VendorOverviewPage = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
 
   return (
     <div>
+      <SidebarButton
+        className="mb-5"
+        hasLeftButton={false}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"Overview"}
+        userRole="vendor"
+      />
       <div className="grid lg:grid-cols-3 grid-cols-1 gap-4">
         <div className="flex items-center justify-between bg-[#DBEAFE] font-bold px-3 py-5 gap-4 rounded-xl">
           <section>
@@ -190,7 +199,7 @@ const VendorOverviewPage = () => {
                   <TableCell>{order?.orderItem.length}</TableCell>
                   <TableCell>{order?.totalPrice}</TableCell>
                 </TableRow>
-              ))
+              )),
             )}
           </TableBody>
         </Table>

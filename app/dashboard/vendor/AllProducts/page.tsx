@@ -16,12 +16,10 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "sonner";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { AiTwotoneEdit } from "react-icons/ai";
-import { HiOutlineDuplicate } from "react-icons/hi";
 
 import ProductsLoading from "./Loading";
 
@@ -31,7 +29,6 @@ import {
   useDeleteProductMutation,
   useUpdateProductMutation,
 } from "@/app/redux/features/product/productApi";
-import { RootState } from "@/app/redux/store";
 import { IProduct, TQueryParam } from "@/types";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import { useGetVendorShopQuery } from "@/app/redux/features/shop/shopApi";
@@ -63,7 +60,6 @@ const VendorProducts = () => {
     onOpenChange: onEditProductModalOpenChange,
   } = useDisclosure();
 
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [updateProductLoadingName, setUpdateProductLoadingName] =
     useState("Update product");
@@ -93,7 +89,7 @@ const VendorProducts = () => {
       const updatedImages: any = [];
 
       editProductData?.images?.map((image: string) =>
-        updatedImages.push(image)
+        updatedImages.push(image),
       );
       setEditProductImages(updatedImages);
     } else {
@@ -106,9 +102,6 @@ const VendorProducts = () => {
   }
 
   const shop = vendorShopProducts?.data?.data?.vendor?.shop;
-
-  console.log("shop", shop);
-
   const totalProducts = vendorShopProducts?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalProducts / 5);
   // pagination handler
@@ -117,7 +110,7 @@ const VendorProducts = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -144,7 +137,6 @@ const VendorProducts = () => {
 
   // edit modal
   const handleEditProductModalOpen = (productData: any) => {
-    console.log("product data", productData);
     setEditProductData(productData);
 
     onEditProductModalOpen();
@@ -154,7 +146,7 @@ const VendorProducts = () => {
   const handleDeleteNewProductImages = (imageToRemove: File) => {
     if (imageFiles.length > 0) {
       const updatedImage = imageFiles?.filter(
-        (image: File) => image.name !== imageToRemove.name
+        (image: File) => image.name !== imageToRemove.name,
       );
 
       setImageFiles(updatedImage);
@@ -174,12 +166,10 @@ const VendorProducts = () => {
           ...data,
         };
 
-        console.log("update", productData);
-
         formData.append("data", JSON.stringify(productData));
         if (imageFiles.length > 0) {
           imageFiles.forEach((image) =>
-            formData.append("itemImages", image as File)
+            formData.append("itemImages", image as File),
           );
         }
 
@@ -198,12 +188,11 @@ const VendorProducts = () => {
       setUpdateProductLoadingName("Update product...");
     }
   };
-  console.log("vendo", vendorShopProducts);
   // delete selected image for create
   const handleDeleteCreateProducts = (imageToRemove: File) => {
     if (createImageFiles.length > 0) {
       const updatedImage = createImageFiles?.filter(
-        (image: File) => image.name !== imageToRemove.name
+        (image: File) => image.name !== imageToRemove.name,
       );
 
       setCreateImageFiles(updatedImage);
@@ -216,19 +205,15 @@ const VendorProducts = () => {
     setCreateProductLoadingName("Creating product...");
     try {
       const formData = new FormData();
-
-      // if (ownerId) {
       const productData = {
         ...data,
         shopId: shop?.id,
       };
-      console.log("product", productData);
-      // }
 
       formData.append("data", JSON.stringify(productData));
       if (createImageFiles.length > 0) {
         createImageFiles.forEach((image) =>
-          formData.append("itemImages", image as File)
+          formData.append("itemImages", image as File),
         );
       }
 
@@ -239,7 +224,6 @@ const VendorProducts = () => {
         toast.success("Product created successfully!");
         setCreateProductLoadingName("Create product...");
         onCreateProductModalChange();
-        // router.push("/dashboard/AddProducts");
       }
     } catch (err: any) {
       setEditProductLoading(false);
@@ -251,18 +235,18 @@ const VendorProducts = () => {
   const handleAddProduct = () => {
     onCreateProductModalOpen();
   };
-  console.log({ shop });
+
   // TODO: fix update
   return (
     <>
       <SidebarButton
-        isOpen={isOpen}
-        role="vendor"
-        setIsOpen={setIsOpen}
-        title={"All Products"}
+        handleCreateProductMNodalOpen={handleCreateProductMNodalOpen}
         hasLeftButton={false}
         hasRightButton={true}
-        handleCreateProductMNodalOpen={handleCreateProductMNodalOpen}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"All Products"}
+        userRole="vendor"
       />
       {shop?.product?.length > 0 ? (
         <>
@@ -338,7 +322,7 @@ const VendorProducts = () => {
                         </Dropdown>
                       </TableCell>
                     </TableRow>
-                  )
+                  ),
                 )}
             </TableBody>
           </Table>
@@ -354,18 +338,17 @@ const VendorProducts = () => {
       ) : (
         <>
           <EmptyState
-            onClick={handleAddProduct}
             label="Add Product"
             message="Products found empty."
-            // address="/"
+            onClick={handleAddProduct}
           />
         </>
       )}
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
-        title="Delete Product"
         subTitle="Are you sure want to delete this product?"
+        title="Delete Product"
         onOpenChange={onDeleteModalChange}
       />
       <CreateProductModal

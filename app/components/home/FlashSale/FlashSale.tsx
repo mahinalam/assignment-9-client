@@ -30,7 +30,9 @@ const FlashSale = () => {
         <Container>
           <div className="block sm:hidden">
             <Title title="Flash Sale" />
-            <div className="grid grid-cols-3 gap-4 ">
+            <div className="grid grid-cols-1 gap-4 ">
+              <SkeletonComponent isFlash={false} />
+              <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
@@ -40,9 +42,9 @@ const FlashSale = () => {
 
         {/* for small and lg loading */}
         <Container>
-          <div className="hidden sm:block  xl:hidden ">
+          <div className="hidden sm:block md:hidden  xl:hidden ">
             <Title title="Flash Sale" />
-            <div className="grid   grid-cols-4 gap-2 ">
+            <div className="grid   grid-cols-3 gap-2 ">
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
@@ -70,14 +72,12 @@ const FlashSale = () => {
     );
   }
 
-  console.log("flashProductsData", flashProductsData);
-
   const compareProductIds = compareProducts?.data?.map(
-    (item) => item.product.id,
+    (item: any) => item.product.id,
   );
 
   const wishlistProductsIds = wishlistProducts?.data?.data?.map(
-    (wishlist) => wishlist?.product.id,
+    (wishlist: any) => wishlist?.product.id,
   );
 
   // const wishlistProductsIds = compareProducts?.data?.compareItem?.map((item) => )
@@ -133,26 +133,9 @@ const FlashSale = () => {
               </div>
             </div>
 
-            {/* Mobile View */}
-            <div className="md:hidden block ">
-              <div className="grid grid-cols-2 mt-2 gap-2">
-                {flashProductsData?.data?.data
-                  ?.slice(0, 4)
-                  .map((flashSaleProduct: any) => (
-                    <Link
-                      key={flashSaleProduct.id}
-                      href={`/products/${flashSaleProduct.id}`}
-                    >
-                      <FlashSaleCard product={flashSaleProduct} />
-                    </Link>
-                  ))}
-              </div>
-            </div>
-
             {/* Desktop View */}
-            <div className="hidden md:block bg-white">
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
-                {/* <div className="grid  grid-cols-2"> */}
+            <div className=" bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
                 {flashProductsData?.data?.data?.map(
                   (flashSaleProduct: IProduct) => {
                     const isInCompare = compareProductIds?.includes(
@@ -161,8 +144,6 @@ const FlashSale = () => {
                     const isInWishlist = wishlistProductsIds?.includes(
                       flashSaleProduct.id,
                     );
-
-                    console.log({ isInWishlist });
 
                     return (
                       <FlashSaleCard

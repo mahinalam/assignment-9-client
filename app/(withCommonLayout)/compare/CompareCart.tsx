@@ -40,14 +40,12 @@ const CompareCart = ({ product }: { product: any }) => {
       price: discountPrice,
     };
 
-    console.log({ cartInfo });
     try {
       const res = await createCart(cartInfo).unwrap();
 
       if (res?.success) {
         toast.success("Product added to cart.");
       }
-      console.log("res from cart", res);
     } catch (error: any) {
       toast.error(error.data.message);
     }

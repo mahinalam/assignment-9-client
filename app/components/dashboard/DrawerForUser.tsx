@@ -1,16 +1,12 @@
 import Link from "next/link";
 import { LuUserRoundPen } from "react-icons/lu";
 import { VscListOrdered } from "react-icons/vsc";
-import {
-  RiDashboardLine,
-  RiSettings2Line,
-  RiShoppingBag4Line,
-} from "react-icons/ri";
+import { RiDashboardLine, RiShoppingBag4Line } from "react-icons/ri";
 import { MdLogout } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { AiTwotoneHeart } from "react-icons/ai";
 
 import SidebarComponent from "./SidebarComponent";
-import { AiTwotoneHeart } from "react-icons/ai";
 
 export default function DrawerUserSlide({
   isOpen,
@@ -49,33 +45,6 @@ export default function DrawerUserSlide({
 
         {/* Drawer Body */}
         <div className="p-4 space-y-4">
-          {/* <Link
-            className="hover:bg-gray-500 bg-red-500"
-            href="/dashboard/user/profile"
-          >
-            <SidebarComponent
-              icon={<LuUserRoundPen />}
-              link="/dashboard/user/profile"
-              pathname={pathname}
-              title="Profile"
-            />
-          </Link>
-          <Link href="/dashboard/user/MyOrder">
-            <SidebarComponent
-              icon={<VscListOrdered />}
-              link="/dashboard/user/MyOrder"
-              pathname={pathname}
-              title="Orders"
-            />
-          </Link>
-          <Link href="/dashboard/user/settings">
-            <SidebarComponent
-              icon={<RiSettings2Line />}
-              link="/dashboard/user/settings"
-              pathname={pathname}
-              title="Settings"
-            />
-          </Link> */}
           <Link href="/dashboard/user/Overview">
             <SidebarComponent
               icon={<RiDashboardLine />}

@@ -81,10 +81,10 @@ const productApi = baseApi.injectEndpoints({
       providesTags: ["product"],
     }),
 
-    // getAllVendorProducts: builder.query({
-    //   query: (shopId: string) => `/product/vendor-products/${shopId}`,
-    //   providesTags: ["product"],
-    // }),
+    getAllVendorProducts: builder.query({
+      query: (shopId: string) => `/product/vendor-products/${shopId}`,
+      providesTags: ["product"],
+    }),
 
     createProduct: builder.mutation({
       query: (formData: FormData) => ({

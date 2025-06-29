@@ -10,7 +10,6 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import {
   Dropdown,
   DropdownTrigger,
@@ -35,30 +34,14 @@ import {
   useUpdateProductStatusMutation,
 } from "@/app/redux/features/product/productApi";
 import { IProduct, TQueryParam } from "@/types";
-import { RootState } from "@/app/redux/store";
-import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
-import CreateProductModal from "@/app/components/modal/CreateProductModal";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 import RemoveOrChangeProductStatusModal from "@/app/components/modal/RemoveModal";
 
 const AllProducts = () => {
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
-
-  const { data: currentUserInfo, isSuccess } = useGetSingleUserQuery(userId, {
-    skip: !userId,
-  });
-  // console.log("shopOwnerInfo", shopOwnerInfo);
-  // delete modal
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
     onOpenChange: onDeleteModalChange,
-  } = useDisclosure();
-  // create modal
-  const {
-    isOpen: isCreateModalOpen,
-    onOpen: onCreateModalOpen,
-    onOpenChange: onCreateModalChange,
   } = useDisclosure();
 
   // remove flash product
@@ -100,9 +83,6 @@ const AllProducts = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const [allProductPage, setAllProductPage] = useState(1);
-  const [flashProductsPage, setFlashProductsPage] = useState(1);
-  const [featuredProductsPage, setAllFeaturedProductsPage] = useState(1);
 
   const {
     data: allProducts,
@@ -122,8 +102,6 @@ const AllProducts = () => {
 
   const [deleteProduct] = useDeleteProductMutation();
   const [updateProductStatus] = useUpdateProductStatusMutation();
-
-  console.log("allProducts", allProducts);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
   const [removeFlashProductId, setRemoveFlashProductId] = useState<
     string | null
@@ -142,7 +120,6 @@ const AllProducts = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // console.log(user);
   if (
     isLoading ||
     isAllFlashProductLoading ||
@@ -159,8 +136,6 @@ const AllProducts = () => {
       </>
     );
   }
-
-  console.log("flash products", allFlashProducts?.data);
   // for all products
   const totalProducts = allProducts?.data?.meta?.total || 0;
   const totalProductPages = Math.ceil(totalProducts / 5);
@@ -179,7 +154,7 @@ const AllProducts = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setAllProductParams(queryParams);
   };
@@ -190,7 +165,7 @@ const AllProducts = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setFlashProductsParams(queryParams);
   };
@@ -201,7 +176,7 @@ const AllProducts = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setFeaturedProductsParams(queryParams);
   };
@@ -251,14 +226,12 @@ const AllProducts = () => {
   };
   // remove flash products modal open
   const handleRemoveFlashProductModalOpen = (id: string) => {
-    console.log("id", id);
     setRemoveFlashProductId(id);
     onRemoveFlashProductOpen();
   };
 
   // remove featured products fn
   const handleRemoveFeaturedProduct = async () => {
-    console.log("removeFeaturedProductId", removeFeaturedProductId);
     try {
       if (removeFeaturedProductId) {
         const res = await updateProductStatus({
@@ -283,8 +256,6 @@ const AllProducts = () => {
     setRemoveFeaturtedProductId(id);
     onRemoveFeaturedProductOpen();
   };
-
-  console.log("id make", makeFlashOrFeaturedProduct?.id);
   // make flash or featured product fn
   const handleMakeFlashOrSaleProduct = async () => {
     try {
@@ -320,11 +291,11 @@ const AllProducts = () => {
       <>
         <SidebarButton
           className="mt-8"
+          hasLeftButton={false}
           isOpen={isOpen}
-          role="admin"
           setIsOpen={setIsOpen}
           title={"Featured Products"}
-          hasLeftButton={false}
+          userRole="admin"
         />
         <Table aria-label="Example static collection table" className="mt-4">
           <TableHeader>
@@ -340,7 +311,6 @@ const AllProducts = () => {
               allFeaturedProducts?.data?.data?.length > 0 &&
               allFeaturedProducts?.data?.data?.map((item: IProduct) => (
                 <TableRow key={item?.id}>
-                  {/* <TableCell>{item?.name.slice(0, 15)}...</TableCell> */}
                   <TableCell>
                     <div className="flex gap-2">
                       <div>
@@ -407,7 +377,7 @@ const AllProducts = () => {
         <div className="flex  justify-center mt-8">
           <Pagination
             showControls
-            page={featuredProductsPage}
+            initialPage={featuredProductsParams?.[0].value as number}
             total={totalFeaturedProductsPages}
             onChange={handleAllFeaturedProductsPageChange}
           />
@@ -416,11 +386,11 @@ const AllProducts = () => {
       <>
         <SidebarButton
           className="mt-8"
+          hasLeftButton={false}
           isOpen={isOpen}
-          role="admin"
           setIsOpen={setIsOpen}
           title={"Flash Products"}
-          hasLeftButton={false}
+          userRole="admin"
         />
         <Table aria-label="Example static collection table" className="mt-4">
           <TableHeader>
@@ -437,7 +407,6 @@ const AllProducts = () => {
               allFlashProducts?.data?.data?.map(
                 (item: IProduct & { brand: Record<string, any> }) => (
                   <TableRow key={item?.id}>
-                    {/* <TableCell>{item?.name.slice(0, 15)}...</TableCell> */}
                     <TableCell>
                       <div className="flex gap-2">
                         <div>
@@ -502,14 +471,14 @@ const AllProducts = () => {
                       </Dropdown>
                     </TableCell>
                   </TableRow>
-                )
+                ),
               )}
           </TableBody>
         </Table>
         <div className="flex  justify-center mt-8">
           <Pagination
             showControls
-            page={flashProductsPage}
+            initialPage={flashProductsParams?.[0].value as number}
             total={totalFlashProductsPages}
             onChange={handleAllFlashProductsPageChange}
           />
@@ -518,11 +487,11 @@ const AllProducts = () => {
       <>
         <SidebarButton
           className="mt-4"
+          hasLeftButton={false}
           isOpen={isOpen}
-          role="admin"
           setIsOpen={setIsOpen}
           title={"All Products"}
-          hasLeftButton={false}
+          userRole="admin"
         />
 
         <Table aria-label="Example static collection table" className="mt-4">
@@ -540,7 +509,6 @@ const AllProducts = () => {
               allProducts?.data?.data?.map(
                 (item: IProduct & { brand: Record<string, any> }) => (
                   <TableRow key={item?.id}>
-                    {/* <TableCell>{item?.name.slice(0, 15)}...</TableCell> */}
                     <TableCell>
                       <div className="flex gap-2">
                         <div>
@@ -572,7 +540,7 @@ const AllProducts = () => {
                             onClick={() =>
                               makeFlashOrFeaturedProductModalOpen(
                                 item.id,
-                                "flash"
+                                "flash",
                               )
                             }
                           >
@@ -589,7 +557,7 @@ const AllProducts = () => {
                             onClick={() =>
                               makeFlashOrFeaturedProductModalOpen(
                                 item.id,
-                                "featured"
+                                "featured",
                               )
                             }
                           >
@@ -615,30 +583,25 @@ const AllProducts = () => {
                       </Dropdown>
                     </TableCell>
                   </TableRow>
-                )
+                ),
               )}
           </TableBody>
         </Table>
         <div className="flex  justify-center mt-8">
           <Pagination
             showControls
-            page={allProductPage}
+            initialPage={allProductParams?.[0].value as number}
             total={totalProductPages}
             onChange={handleAllProductsPageChange}
           />
         </div>
       </>
-      {/* // create product modal */}
-      <CreateProductModal
-        isOpen={isCreateModalOpen}
-        onOpenChange={onCreateModalChange}
-      />
       {/* delete product modal */}
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
-        title="Delete Product"
         subTitle="Are you sure want to delete this product?"
+        title="Delete Product"
         onOpenChange={onDeleteModalChange}
       />
       <RemoveOrChangeProductStatusModal

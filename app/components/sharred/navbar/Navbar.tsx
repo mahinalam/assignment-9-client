@@ -7,6 +7,7 @@ import { Badge } from "@nextui-org/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { LuUser } from "react-icons/lu";
 
 import Container from "../Container";
 
@@ -23,32 +24,30 @@ const Navbar = ({
 }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
+  const [isSmallProfileOpen, setIsSmallProfileOpen] = useState(false); // Mobile menu state
   const [query, setQuery] = useState("");
   const [smallSearchIcon, setSmallSearchIcon] = useState(false);
 
-  const { data: categoryData, isLoading: categoryDataLoading } =
-    useGetAllCategoriesQuery(null);
-  const { data: cartData, isLoading: cartDataLoading } =
-    useGetCartQuantityQuery(null);
+  const { data: categoryData } = useGetAllCategoriesQuery(null);
+  const { data: cartData } = useGetCartQuantityQuery(null);
 
   const router = useRouter();
 
   const user = useSelector((state: RootState) => state.auth.user);
   const userRole = user?.role;
 
-  console.log("user role", userRole);
-
-  const { data: currentUserInfo, isLoading: curentUserInfoLoading } =
-    useGetSingleUserQuery(user?.userId, { skip: !user?.userId });
+  const { data: currentUserInfo } = useGetSingleUserQuery(user?.userId, {
+    skip: !user?.userId,
+  });
 
   const dispatch = useDispatch();
 
   const pathname = usePathname();
-  console.log({ query });
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target;
     const searchValue = (form as any).search.value;
+
     router.push(`/products?search=${searchValue}`);
   };
 
@@ -56,6 +55,7 @@ const Navbar = ({
     e.preventDefault();
     const form = e.target;
     const searchValue = (form as any).search.value;
+
     router.push(`/products?search=${searchValue}`);
     setSmallSearchIcon(false);
   };
@@ -88,17 +88,14 @@ const Navbar = ({
             </section>
 
             {/* Search form */}
-            <form
-              className="hidden sm:flex items-center w-1/2"
-              onSubmit={handleSearch}
-            >
+            <form className="flex items-center w-1/2" onSubmit={handleSearch}>
               <Input
                 className="w-full  text-black"
+                name="search"
                 placeholder="Search in Electromert"
                 radius="none"
                 size="lg"
                 type="text"
-                name="search"
               />
               <Button
                 className="bg-pink-200 border-0.5 border-pink-200"
@@ -214,7 +211,7 @@ const Navbar = ({
                             {category.name}
                           </button>
                         </li>
-                      )
+                      ),
                     )}
                   </ul>
                 </div>
@@ -279,21 +276,7 @@ const Navbar = ({
                   </>
                 ) : (
                   <>
-                    {" "}
-                    <svg
-                      className="size-14  w-full text-center "
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <LuUser size={50} />
                   </>
                 )}
                 {/* bsolute rounded-xl shadow-md w-[40vw] md:w-[10vw] bg-black overflow-hidden right-0 top-12 text-sm */}
@@ -319,7 +302,7 @@ const Navbar = ({
                         <>
                           <Link
                             className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
-                            href="/profile"
+                            href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/profile`}
                           >
                             Profile
                           </Link>
@@ -350,56 +333,63 @@ const Navbar = ({
           <div className="lg:hidden md:text-base text-sm absolute top-14 left-0 right-0 bg-white text-black shadow-md rounded-md p-4">
             {/* <Link href="/"> */}
             <p
-              className="py-2 border-b-1 hover:text-primary"
+              className={`py-2 border-b-1 hover:text-primary ${pathname === "/" ? "text-primary" : ""}`}
               onClick={() => handleNavigateForSmallDevice("/")}
             >
               Home
             </p>
             {/* </Link> */}
             <p
-              className="py-2 border-b-1"
+              className={`py-2 border-b-1 hover:text-primary ${pathname === "/products" ? "text-primary" : ""}`}
               onClick={() => handleNavigateForSmallDevice("/products")}
             >
               Products
             </p>
             <p
-              className="py-2 border-b-1"
+              className={`py-2 border-b-1 hover:text-primary ${pathname === "/flash" ? "text-primary" : ""}`}
+              onClick={() => handleNavigateForSmallDevice("/flash")}
+            >
+              Flash
+            </p>
+
+            <p
+              className={`py-2 border-b-1 hover:text-primary ${pathname === "/store" ? "text-primary" : ""}`}
               onClick={() => handleNavigateForSmallDevice("/store")}
             >
               Shops
             </p>
             <p
-              className="py-2 border-b-1"
+              className={`py-2 border-b-1 hover:text-primary ${pathname === "/compare" ? "text-primary" : ""}`}
+              onClick={() => handleNavigateForSmallDevice("/compare")}
+            >
+              Compare
+            </p>
+            <p
+              className={`py-2 border-b-1 hover:text-primary ${pathname === "/contact" ? "text-primary" : ""}`}
               onClick={() => handleNavigateForSmallDevice("/contact")}
             >
               Contact
             </p>
-            {user && (
-              <Link href={`/dashboard/${userRole?.toLowerCase()}/Overview`}>
-                <p className="py-2 border-b-1">Dashboard</p>
-              </Link>
-            )}
           </div>
         )}
 
         <div className="block lg:hidden relative">
           {smallSearchIcon && (
             <form
-              className=" flex items-center fixed top-[62px]  w-full"
+              className=" flex sm:hidden items-center fixed top-[55px] left-0 right-0 w-full"
               onSubmit={handleSearchForSmall}
             >
               {/* search button for small sc */}
               <Input
                 className="w-full !bg-white"
+                name="search"
                 placeholder="Search in Electromert"
                 radius="none"
                 size="md"
                 type="text"
-                name="search"
-                // onChange={(e) => setQuery(e.target.value)}
               />
               <Button
-                className="bg-white"
+                className="bg-white "
                 radius="none"
                 size="md"
                 type="submit"
@@ -421,8 +411,8 @@ const Navbar = ({
               </Button>
             </form>
           )}
-          <div className="flex items-center justify-between">
-            <div className="w-1/3">
+          <div className="flex items-center justify-between ">
+            <div className="">
               <button
                 className=" text-white md:pl-5"
                 onClick={() => setIsOpen(!isOpen)}
@@ -447,16 +437,41 @@ const Navbar = ({
             <section className="w-1/3 sm:hidden block">
               <Link href="/">Electromert</Link>
             </section>
-            {/* 
-            <Input
-              className="w-full hidden sm:block lg:hidden xl:hidden 2xl:hidden "
-              placeholder="Search in Electromert"
-              radius="none"
-              size="lg"
-              type="text"
-              // onChange={(e) => setQuery(e.target.value)}
-            /> */}
-            <Button
+            <form
+              className="sm:flex items-center hidden lg:hidden"
+              onSubmit={handleSearch}
+            >
+              <Input
+                className="w-full  text-black"
+                name="search"
+                placeholder="Search in Electromert"
+                radius="none"
+                size="lg"
+                type="text"
+              />
+              <Button
+                className="bg-pink-200 border-0.5 border-pink-200"
+                radius="none"
+                size="lg"
+                type="submit"
+              >
+                <svg
+                  className="size-6 text-primary font-bold"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Button>
+            </form>
+            {/* <Button
               className="bg-pink-200 border-0.5 border-pink-200 hidden sm:block  lg:hidden xl:hidden 2xl:hidden "
               radius="none"
               size="lg"
@@ -476,9 +491,9 @@ const Navbar = ({
                   strokeLinejoin="round"
                 />
               </svg>
-            </Button>
+            </Button> */}
             {/* cart & search icon */}
-            <section className="w-1/3">
+            <section className=" ">
               <div className="flex items-center justify-end gap-2">
                 {/* search icon */}
                 <svg
@@ -501,7 +516,7 @@ const Navbar = ({
                   />
                 </svg>
                 {/* cart icon*/}
-                <Link className="mt-2 md:pr-5" href="/cart">
+                {/* <Link className="mt-2 md:pr-5" href="/cart">
                   <Badge
                     className="bg-white text-primary text-xs font-bold"
                     content={user ? cartData?.data?.totalQuantity || 0 : 0}
@@ -523,7 +538,71 @@ const Navbar = ({
                       />
                     </svg>
                   </Badge>
-                </Link>
+                </Link> */}
+                <div
+                  className="relative cursor-pointer"
+                  onClick={() => setIsSmallProfileOpen((state) => !state)}
+                >
+                  {user && currentUserInfo?.data?.profilePhoto ? (
+                    <>
+                      <div className="size-14 rounded-full">
+                        <img
+                          alt=""
+                          className="w-full h-full rounded-full"
+                          src={currentUserInfo?.data?.profilePhoto}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <LuUser size={24} />
+                    </>
+                  )}
+                  {/* bsolute rounded-xl shadow-md w-[40vw] md:w-[10vw] bg-black overflow-hidden right-0 top-12 text-sm */}
+                  {isSmallProfileOpen && (
+                    <div className="absolute  z-50  bg-white rounded-xl shadow-md w-[40vw] md:w-[10vw]  overflow-hidden right-0 top-12 text-sm">
+                      <div className="flex flex-col pl-4 cursor-pointer">
+                        {!user ? (
+                          <>
+                            <Link
+                              className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
+                              href="/login"
+                            >
+                              Login
+                            </Link>
+                            <Link
+                              className=" text-black  py-2 hover:bg-neutral-100 transition font-semibold"
+                              href="/signup"
+                            >
+                              Signup
+                            </Link>
+                          </>
+                        ) : (
+                          <>
+                            <Link
+                              className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
+                              href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/profile`}
+                            >
+                              Profile
+                            </Link>
+                            <Link
+                              className=" text-black -4 py-2 hover:bg-neutral-100 transition font-semibold"
+                              href={`/dashboard/${userRole?.toLowerCase() === "customer" ? "user" : userRole?.toLowerCase()}/Overview`}
+                            >
+                              Dashboard
+                            </Link>
+                            <span
+                              className=" text-red-500  py-2 hover:bg-neutral-100 transition font-semibold"
+                              onClick={handleLogout}
+                            >
+                              Logout
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </section>
           </div>

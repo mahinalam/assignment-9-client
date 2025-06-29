@@ -28,14 +28,10 @@ const UsersOrderHistory = () => {
   } = useDisclosure();
 
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
-
-  console.log("vendor", userId);
   const { data: usersOrderHistory, isLoading: userOrderHistoryLoading } =
     useGetUsersOrderHistoryQuery(userId as string);
 
   const [deleteProduct] = useDeleteProductMutation();
-
-  console.log("usersOrderHistory", usersOrderHistory);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -59,9 +55,9 @@ const UsersOrderHistory = () => {
       <div className="mb-5">
         <SidebarButton
           isOpen={isOpen}
-          role="user"
           setIsOpen={setIsOpen}
           title={"My Wishlist"}
+          userRole="user"
         />
       </div>
       <Table aria-label="Example static collection table">
@@ -76,11 +72,11 @@ const UsersOrderHistory = () => {
 
         <TableBody>
           {usersOrderHistory?.data?.data?.map((order: IOrder) => {
-            order.orderItem?.map((orderItem) => (
+            order.orderItem?.map(() => (
               <TableRow key={order.id}>
                 <TableCell>{order.transactionId}</TableCell>
                 <TableCell>{order.paymentStatus}</TableCell>
-                <TableCell>{order.shippingAddress}</TableCell>
+                <TableCell>{order.customerShippingAddress}</TableCell>
                 <TableCell>{order.orderItem.length}</TableCell>
                 <TableCell>{order.totalPrice}</TableCell>
                 <TableCell>
@@ -96,6 +92,8 @@ const UsersOrderHistory = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
+        subTitle="Are you sure want to delete this order?"
+        title="Delete order"
         onOpenChange={onDeleteModalChange}
       />
     </>

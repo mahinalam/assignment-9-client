@@ -41,16 +41,10 @@ const AllUsers = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  //   console.log(vendorId);
-
   const { data: allUsers, isLoading: allUsersLoading } =
     useGetAllUsersQuery(params);
 
   const [deleteUser] = useDeleteUserMutation();
-
-  console.log(" allUsers", allUsers);
-
-  //   console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (allUsersLoading) {
@@ -69,7 +63,7 @@ const AllUsers = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -92,17 +86,15 @@ const AllUsers = () => {
     onDeleteModalOpen();
   };
 
-  console.log("delete modal id", deleteModalId);
-
   return (
     <div className="">
       <SidebarButton
-        isOpen={isOpen}
-        role="admin"
-        setIsOpen={setIsOpen}
-        title={"All Users"}
         className={"mb-5"}
         hasLeftButton={false}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"All Users"}
+        userRole="admin"
       />
       {allUsers?.data?.data?.length > 0 ? (
         <>
@@ -177,7 +169,8 @@ const AllUsers = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteUser}
         isOpen={isDeleteModalOpen}
-        title="User"
+        subTitle="Are you sure want to delete this user?"
+        title="Delete user"
         onOpenChange={onDeleteModalChange}
       />
     </div>

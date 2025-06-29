@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { LuUser, LuUserRoundPen } from "react-icons/lu";
 import Link from "next/link";
-import SidebarComponent from "../components/dashboard/SidebarComponent";
 import { MdLogout } from "react-icons/md";
 import { useDispatch } from "react-redux";
+
 import { logout } from "../redux/features/auth/authSlice";
 import DrawerVendorSlide from "../components/dashboard/DrawerVendorSlide";
 import DrawerAdminSlide from "../components/dashboard/DrawerAdminSlide";
@@ -19,7 +19,7 @@ const DashboardNavbar = ({ currentUserInfo }: any) => {
   };
 
   const renderSidebar = () => {
-    if (currentUserInfo?.role === "VENDOR") {
+    if (currentUserInfo?.data?.role === "VENDOR") {
       return (
         <DrawerVendorSlide isOpen={isSideOpen} setIsOpen={setIsSideOpen} />
       );
@@ -30,11 +30,11 @@ const DashboardNavbar = ({ currentUserInfo }: any) => {
 
   return (
     <>
-      <div className="flex justify-between items-center p-3 lg:p-5 border-b-border border-b">
+      <div className="flex fixed w-full z-50 justify-between items-center bg-white p-3 lg:p-5 border-b-border border-b">
         <div>
           <Link
-            href="/"
             className="md:text-xl text-base text-primary font-semibold "
+            href="/"
           >
             Electromert
           </Link>
@@ -43,8 +43,8 @@ const DashboardNavbar = ({ currentUserInfo }: any) => {
         <div className="flex items-center">
           <div className="lg:hidden block pr-2">
             <button
-              onClick={() => setIsSideOpen(true)}
               className="sm:hidden text-black"
+              onClick={() => setIsSideOpen(true)}
             >
               <svg
                 className="w-6 h-6"
@@ -63,8 +63,8 @@ const DashboardNavbar = ({ currentUserInfo }: any) => {
             </button>
           </div>
           <div
-            onClick={() => setIsOpen(!isOpen)}
             className="relative cursor-pointer"
+            onClick={() => setIsOpen(!isOpen)}
           >
             {currentUserInfo?.data?.profilePhoto ? (
               <div className="size-14 rounded-full">

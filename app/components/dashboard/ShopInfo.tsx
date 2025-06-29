@@ -8,8 +8,6 @@ const ShopInfo = ({
   shopImage,
   setShopImage,
 }: any) => {
-  const { logo, name, description } = shopInfo;
-
   return (
     <div>
       {" "}
@@ -24,17 +22,23 @@ const ShopInfo = ({
           <div className="lg:flex  items-center gap-4 ">
             {/* image section */}
             <div className="lg:pt-0 pt-8">
-              <img alt="" className="size-[100px]" src={logo} />
+              <img alt="" className="size-[100px]" src={shopInfo?.logo} />
             </div>
             <div className="">
               <p className="mb-2 lg:mt-0 mt-6 text-sm font-medium">
                 Upload Image
               </p>
               <label
-                className="flex cursor-pointer items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all hover:bg-athens-gray-50/10"
+                className={`flex items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all hover:bg-athens-gray-50/10 
+    ${!isEditShopButtonOpen ? "cursor-not-allowed opacity-50 pointer-events-none" : "cursor-pointer"}`}
+                aria-label="Upload your files"
+                // className="flex cursor-pointer items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all hover:bg-athens-gray-50/10"
                 htmlFor="image"
               >
-                <div className="flex size-16 items-center justify-center rounded-full bg-athens-gray-50">
+                <div
+                  className={`flex size-16 items-center justify-center rounded-full bg-athens-gray-50 ${!isEditShopButtonOpen ? "cursor-not-allowed" : ""}`}
+                  role="button"
+                >
                   <svg
                     className="lucide lucide-folder-open-dot size-5 text-athens-gray-500"
                     fill="none"
@@ -128,7 +132,7 @@ const ShopInfo = ({
             </label>
             <input
               className="w-full mt-1 lg:mb-8 rounded-md border border-input bg-transparent py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm flex h-12 items-center px-4 text-athens-gray-950 outline-none !ring-0 focus:ring-0"
-              defaultValue={name}
+              defaultValue={shopInfo?.name}
               id="name"
               name="name"
               placeholder="Jhon Deo"
@@ -154,7 +158,7 @@ const ShopInfo = ({
             </label>
             <textarea
               className="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-athens-gray-950 outline-none !ring-0 focus:ring-0"
-              defaultValue={description}
+              defaultValue={shopInfo?.description}
               id="bio"
               name="bio"
               placeholder="Details about shop."
@@ -176,7 +180,7 @@ const ShopInfo = ({
         {!isEditShopButtonOpen ? (
           <>
             <button
-              className="bg-[#1A9CB7] md:px-[60px] md:py-[10px] py-3 w-full md:w-auto rounded-[2px] text-white"
+              className="bg-primary md:px-[60px] md:py-[10px] py-3 w-full md:w-auto rounded-[2px] text-white"
               onClick={() => setIsEditShopButtonOpen(true)}
             >
               Edit Shop
@@ -185,9 +189,9 @@ const ShopInfo = ({
         ) : (
           <>
             <button
-              className="bg-[#1A9CB7] md:px-[60px] md:py-[10px] py-3 w-full md:w-auto rounded-[2px] text-white"
+              className="bg-primary md:px-[60px] md:py-[10px] py-3 w-full md:w-auto rounded-[2px] text-white"
               onClick={() => {
-                isEditShopButtonOpen();
+                hanldeUpdateShopInfo();
               }}
             >
               Save Changes

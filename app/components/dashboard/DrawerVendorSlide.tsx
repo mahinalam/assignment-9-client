@@ -2,10 +2,15 @@ import Link from "next/link";
 import { LuUserRoundPen } from "react-icons/lu";
 import { VscListOrdered } from "react-icons/vsc";
 import { RiDashboardLine } from "react-icons/ri";
-import SidebarComponent from "./SidebarComponent";
 import { AiOutlineProduct } from "react-icons/ai";
 import { GoCodeReview } from "react-icons/go";
 import { usePathname } from "next/navigation";
+import { MdLogout } from "react-icons/md";
+import { useDispatch } from "react-redux";
+
+import SidebarComponent from "./SidebarComponent";
+
+import { logout } from "@/app/redux/features/auth/authSlice";
 
 export default function DrawerVendorSlide({
   isOpen,
@@ -15,6 +20,12 @@ export default function DrawerVendorSlide({
   setIsOpen: any;
 }) {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <>
       {/* Overlay */}
@@ -33,7 +44,9 @@ export default function DrawerVendorSlide({
       >
         {/* Drawer Header */}
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Menu</h2>
+          <Link className="text-lg text-primary  font-semibold" href="/">
+            Electromert
+          </Link>
           <button
             className="text-gray-500 text-xl"
             onClick={() => setIsOpen(false)}
@@ -90,6 +103,15 @@ export default function DrawerVendorSlide({
               title="Reviews"
             />
           </Link>
+          <div onClick={handleLogout}>
+            <SidebarComponent
+              icon={<MdLogout />}
+              isLogout={true}
+              link=""
+              pathname={pathname}
+              title="Logout"
+            />
+          </div>
         </div>
       </div>
     </>

@@ -17,7 +17,7 @@ const authApi = baseApi.injectEndpoints({
       }),
     }),
     signUpVendor: builder.mutation({
-      query: (userInfo: Record<string, unknown>) => ({
+      query: (userInfo: FormData) => ({
         url: "/user/vendor",
         method: "POST",
         body: userInfo,

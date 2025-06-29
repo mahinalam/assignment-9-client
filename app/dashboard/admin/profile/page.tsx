@@ -4,20 +4,21 @@ import { useSelector } from "react-redux";
 import { FiUser } from "react-icons/fi";
 import { Select, SelectItem } from "@nextui-org/react";
 import { toast } from "sonner";
+
 import ProfileInput from "../../user/profile/ProfileInput";
+import Loading from "../../user/profile/Loading";
+
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import Loader from "@/app/components/sharred/Loader";
 import { RootState } from "@/app/redux/store";
 import {
   useGetSingleUserQuery,
   useUpdateMyProfileMutation,
 } from "@/app/redux/features/user/userApi";
-import Loading from "../../user/profile/Loading";
 
 const AdminProfile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const { data: userInfo, isLoading: userDataLoading } = useGetSingleUserQuery(
-    user?.userId
+    user?.userId,
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isEditProfileOpen, setEditProfileOpen] = useState(false);
@@ -39,8 +40,6 @@ const AdminProfile = () => {
   if (userDataLoading) {
     return <Loading />;
   }
-
-  console.log("user info", userInfo);
   const genderOption = [
     { key: "male", label: "Male" },
     { key: "female", label: "Female" },
@@ -58,8 +57,6 @@ const AdminProfile = () => {
         address: updatedProfileData.address,
         gender: updatedProfileData.gender,
       };
-
-      console.log("updatedProfileInfo", updatedProfileInfo);
       const formData = new FormData();
 
       formData.append("data", JSON.stringify(updatedProfileInfo));
@@ -75,17 +72,15 @@ const AdminProfile = () => {
     }
   };
 
-  console.log("gender", userInfo?.data?.admin?.gender);
-
   return (
     <div className="bg-white ">
       <SidebarButton
-        isOpen={isOpen}
-        role="user"
-        setIsOpen={setIsOpen}
-        title={"My Profile"}
         className="mb-5"
         hasLeftButton={false}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"My Profile"}
+        userRole="user"
       />
       {/* image section */}
       <div className="my-4">
@@ -149,7 +144,7 @@ const AdminProfile = () => {
           {" "}
           <div className="grid md:grid-cols-2 grid-cols-1 gap-6 md:mt-0 mt-6">
             <div>
-              <label className="font-medium text-sm " htmlFor="">
+              <label className="font-medium text-sm " htmlFor="select">
                 Select Gender
               </label>
               <Select
@@ -158,6 +153,7 @@ const AdminProfile = () => {
                     ? [userInfo?.data?.admin?.gender]
                     : undefined
                 }
+                id="select"
                 isDisabled={!isEditProfileOpen}
                 onChange={(e) =>
                   setUpdatedProfileData({
@@ -185,6 +181,7 @@ const AdminProfile = () => {
                 Upload Profile
               </p>
               <label
+                aria-label="Upload Your Files"
                 className={`flex ${isEditProfileOpen ? "cursor-pointer hover:bg-athens-gray-50/10" : "cursor-not-allowed"} items-center gap-3 rounded border border-dashed border-athens-gray-200 bg-white p-3 transition-all`}
                 htmlFor="image"
               >

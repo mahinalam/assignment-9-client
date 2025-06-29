@@ -15,7 +15,7 @@ const Description = ({ productData }: { productData: any }) => {
             <div className=" w-full flex flex-col justify-center md:py-2 items-center overflow-hidden">
               <img
                 alt=""
-                className="h-[600px] w-auto object-cover "
+                className="lg:h-[600px] h-[400px] w-auto object-cover "
                 src={productData?.data?.images[1]}
               />
             </div>
@@ -31,7 +31,7 @@ const Description = ({ productData }: { productData: any }) => {
                   <img
                     key={index}
                     alt=""
-                    className="h-[600px] w-auto object-cover "
+                    className="lg:h-[600px] h-[400px] w-auto  "
                     src={image}
                   />
                 ))}

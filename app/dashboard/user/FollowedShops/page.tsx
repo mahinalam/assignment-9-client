@@ -11,14 +11,11 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 import Loading from "./Loading";
 
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { RootState } from "@/app/redux/store";
-import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import {
   useGetUsersFollowingShopsQuery,
   useUnFollowShopMutation,
@@ -39,8 +36,6 @@ const ProductReviews = () => {
     onOpenChange: onDeleteModalChange,
   } = useDisclosure();
 
-  const userId = useSelector((state: RootState) => state.auth.user?.userId);
-  const { data: currentUserInfo } = useGetSingleUserQuery(userId);
   const {
     data: followingShopsData,
     isLoading: followingShopLoading,
@@ -57,7 +52,7 @@ const ProductReviews = () => {
 
   const handleDeleteProduct = async () => {
     try {
-      const result = await unfollowShop(deleteModalId as string).unwrap();
+      await unfollowShop(deleteModalId as string).unwrap();
 
       toast.success("Successfully unfollowed the shop!");
     } catch (error) {
@@ -65,7 +60,6 @@ const ProductReviews = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };
@@ -75,12 +69,11 @@ const ProductReviews = () => {
   const totalPages = Math.ceil(totalFollowingShops / 5);
 
   const handlePageChange = (page: number) => {
-    console.log("page value", page);
     const queryParams: TQueryParam[] = [];
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -88,11 +81,11 @@ const ProductReviews = () => {
   return (
     <>
       <SidebarButton
+        className="mb-5"
         isOpen={isOpen}
-        role="user"
         setIsOpen={setIsOpen}
         title="Following Shops"
-        className="mb-5"
+        userRole="user"
       />
 
       <Table aria-label="Example static collection table">
@@ -104,34 +97,30 @@ const ProductReviews = () => {
           <TableColumn>ACTION</TableColumn>
         </TableHeader>
         <TableBody>
-          {followingShopsData?.data?.data?.map(
-            (shop: any) => (
-              // review.map((review: IReview) => (
-              <TableRow key={shop.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <img alt="" className="size-12" src={shop?.shop.logo} />
-                    </div>
-                    <p>{shop.shop.name}</p>
+          {followingShopsData?.data?.data?.map((shop: any) => (
+            <TableRow key={shop.id}>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <img alt="" className="size-12" src={shop?.shop.logo} />
                   </div>
-                </TableCell>
-                <TableCell>{shop.shop.address}</TableCell>
-                <TableCell>{shop.shop.status}</TableCell>
-                <TableCell>{shop.shop.createdAt}</TableCell>
-                <TableCell>
-                  <Button
-                    className="bg-gray-200"
-                    size="sm"
-                    onClick={() => handleDeleteModalOpen(shop.shop.id)}
-                  >
-                    UNFOLLOW
-                  </Button>
-                </TableCell>
-              </TableRow>
-            )
-            // ))
-          )}
+                  <p>{shop.shop.name}</p>
+                </div>
+              </TableCell>
+              <TableCell>{shop.shop.address}</TableCell>
+              <TableCell>{shop.shop.status}</TableCell>
+              <TableCell>{shop.shop.createdAt}</TableCell>
+              <TableCell>
+                <Button
+                  className="bg-gray-200"
+                  size="sm"
+                  onClick={() => handleDeleteModalOpen(shop.shop.id)}
+                >
+                  UNFOLLOW
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <div className="flex  justify-center mt-8">

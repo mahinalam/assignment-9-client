@@ -25,8 +25,6 @@ const CartPage = ({ cartData }: { cartData: any }) => {
 
   const { id, product, quantity } = cartData;
   const [createCart] = useCreateCartMutation();
-
-  console.log("cartdata", cartData);
   const {
     price,
     discount,
@@ -64,7 +62,6 @@ const CartPage = ({ cartData }: { cartData: any }) => {
       if (res?.success) {
         // toast.success("Product added to cart.");
       }
-      console.log("res from cart", res);
     } catch (error: any) {
       toast.error(error.data.message);
     }

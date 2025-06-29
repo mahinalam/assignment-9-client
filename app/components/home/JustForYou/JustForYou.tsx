@@ -12,14 +12,16 @@ import { useGetUsersWishlistQuery } from "@/app/redux/features/wishlist/wishlist
 
 const JustForYou = () => {
   const { data: productsData, isLoading: productDataLoading } =
-    useGetAllProductsQuery(null);
+    useGetAllProductsQuery([
+      { name: "page", value: 1 },
+      { name: "limit", value: 12 },
+    ]);
 
   const { data: compareProducts, isLoading: compareLoading } =
     useGetUsersCompareProductsQuery(undefined);
 
   const { data: wishlistProducts, isLoading: wishlistProductLoading } =
     useGetUsersWishlistQuery(undefined);
-  // console.log(productsData);
   // if (productDataLoading) {
   //   return <Loader />;
   // }
@@ -87,11 +89,11 @@ const JustForYou = () => {
     );
   }
   const compareProductIds = compareProducts?.data?.map(
-    (item) => item.product.id,
+    (item: any) => item.product.id,
   );
 
   const wishlistProductsIds = wishlistProducts?.data?.data?.map(
-    (wishlist) => wishlist?.product.id,
+    (wishlist: any) => wishlist?.product.id,
   );
 
   return (
@@ -103,43 +105,31 @@ const JustForYou = () => {
             <div className="md:hidden block" />
           </section>
           <div>
-            {/* large screen */}
-            <section className="hidden md:block">
-              <div className="grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-2 bg-white">
-                {productsData?.data?.data?.map((flashSaleProduct: IProduct) => {
-                  const isInCompare = compareProductIds?.includes(
-                    flashSaleProduct.id,
-                  );
-                  const isInWishlist = wishlistProductsIds?.includes(
-                    flashSaleProduct.id,
-                  );
-
-                  console.log({ isInWishlist });
-
-                  return (
-                    <FlashSaleCard
-                      key={flashSaleProduct.id}
-                      isInCompare={isInCompare}
-                      isInWishlist={isInWishlist}
-                      product={flashSaleProduct}
-                    />
-                  );
-                })}
-              </div>
-            </section>
-          </div>
-          <div>
-            {/* small screen */}
-            <section className="md:hidden block">
-              <div className="grid  grid-cols-2 sm:grid-cols-3  gap-4 mt-2 bg-white">
+            <section className="">
+              <div className="grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4 bg-white">
                 {productsData?.data?.data
-                  ?.slice(0, 6)
-                  .map((product: IProduct) => (
-                    <FlashSaleCard key={product.id} product={product} />
-                  ))}
+                  ?.slice(0, 10)
+                  .map((flashSaleProduct: IProduct) => {
+                    const isInCompare = compareProductIds?.includes(
+                      flashSaleProduct.id,
+                    );
+                    const isInWishlist = wishlistProductsIds?.includes(
+                      flashSaleProduct.id,
+                    );
+
+                    return (
+                      <FlashSaleCard
+                        key={flashSaleProduct.id}
+                        isInCompare={isInCompare}
+                        isInWishlist={isInWishlist}
+                        product={flashSaleProduct}
+                      />
+                    );
+                  })}
               </div>
             </section>
           </div>
+          <div />
         </div>
       </div>
     </Container>

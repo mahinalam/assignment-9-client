@@ -12,13 +12,15 @@ import GTInput from "@/app/components/form/GTInput";
 import GTTextArea from "@/app/components/form/GTTestArea";
 import ReviewCart from "@/app/components/ProductDetails/ReviewCart";
 import { IReview } from "@/types";
-
-// import "./Reviews.css";
 import { useCreatePublicReviewMutation } from "@/app/redux/features/review/reviewApi";
-
 import "rc-rate/assets/index.css";
 
-const Reviews = ({ reviewsData: productReviews, shopId, productId }: any) => {
+const Reviews = ({
+  reviewsData: productReviews,
+  shopId,
+  productId,
+  productName,
+}: any) => {
   const [createReview] = useCreatePublicReviewMutation();
   const [userRating, setUserRating] = useState(1);
 
@@ -35,10 +37,6 @@ const Reviews = ({ reviewsData: productReviews, shopId, productId }: any) => {
       };
 
       const res = await createReview(reviewsData).unwrap();
-
-      if (res?.success) {
-        toast.success("Successfully created review!");
-      }
     } catch (err: any) {
       toast.error("Failed to add review.");
     }
@@ -67,18 +65,18 @@ const Reviews = ({ reviewsData: productReviews, shopId, productId }: any) => {
     },
   ];
 
-  console.log("user rating", userRating);
-
   return (
     <div>
       <RatingProgress
         avgReview={productReviews?.aggregateRating?._avg?.rating}
+        productName={productName}
         totalReview={productReviews.result.length}
       />
       {/* <ReviewProgress /> */}
       {productReviews.result.length > 0 ? (
-        productReviews.result?.map((review: IReview) => (
+        productReviews.result?.map((review: IReview, index: number) => (
           <ReviewCart
+            key={index}
             className="pb-4 border-b-1 border-[#E2E8F0] mt-4"
             item={review}
           />
@@ -100,12 +98,11 @@ const Reviews = ({ reviewsData: productReviews, shopId, productId }: any) => {
         <div className="py-3">
           {" "}
           <Select
+            className="min-w-full sm:min-w-[225px] border-border border-1"
+            label="Rating"
             name="rating"
             style={{ background: "transparent" }}
             onChange={(e) => setUserRating(Number(e.target.value))}
-            className="min-w-full sm:min-w-[225px] border-border border-1"
-            // id={id}
-            label="Rating"
           >
             {options.map((option) => (
               <SelectItem key={option.key}>{option.label}</SelectItem>
@@ -129,7 +126,6 @@ const Reviews = ({ reviewsData: productReviews, shopId, productId }: any) => {
               type="submit"
             >
               Submit
-              {/* {createProductLoadingName} */}
             </Button>
           </GTForm>
         </div>

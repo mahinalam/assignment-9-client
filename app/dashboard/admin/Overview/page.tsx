@@ -11,17 +11,16 @@ import {
   TableRow,
 } from "@nextui-org/react";
 
+import Loading from "../../vendor/Overview/Loading";
+
 import { useGetAdminStatsQuery } from "@/app/redux/features/user/userApi";
 import { IOrder, TQueryParam } from "@/types";
 import { useGetAllOrderHistoryQuery } from "@/app/redux/features/order/orderApi";
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
-import Loading from "../../vendor/Overview/Loading";
 
 const AdminOverviewPage = () => {
   const { data: adminStats, isLoading: adminStatsLoading } =
     useGetAdminStatsQuery(undefined);
-
-  console.log("admin stats", adminStats);
   const [params, setParams] = useState<TQueryParam[] | undefined>([
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
@@ -42,7 +41,7 @@ const AdminOverviewPage = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -50,12 +49,12 @@ const AdminOverviewPage = () => {
   return (
     <div className="">
       <SidebarButton
-        isOpen={isOpen}
-        role="user"
-        setIsOpen={setIsOpen}
-        title={"Overview"}
         className="mb-5"
         hasLeftButton={false}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={"Overview"}
+        userRole="user"
       />
       <div className="grid lg:grid-cols-3 grid-cols-1 gap-4">
         <div className="flex items-center justify-between bg-[#DBEAFE] font-bold px-3 py-5 gap-4 rounded-xl">
@@ -211,7 +210,7 @@ const AdminOverviewPage = () => {
                   <TableCell>{order?.orderItem.length}</TableCell>
                   <TableCell>{order?.totalPrice}</TableCell>
                 </TableRow>
-              ))
+              )),
             )}
           </TableBody>
         </Table>

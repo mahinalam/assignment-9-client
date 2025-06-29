@@ -11,12 +11,11 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import moment from "moment";
 import { toast } from "sonner";
 import { GoPlus } from "react-icons/go";
+
 import DeleteModal from "@/app/components/modal/DeleteModal";
-import { RootState } from "@/app/redux/store";
 import {
   useCreateCategoryMutation,
   useDeleteCategoryMutation,
@@ -60,25 +59,18 @@ const ProductReviews = () => {
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [categoryLoadingName, setCategoryLoadingName] =
     useState("Create Category");
-  console.log("category data", categoryData);
-
-  //   console.log("userProductReviews", userProductReviews);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (categoryDataLoading || isFetching) {
     return (
       <div>
-        {/* <Loader /> */}
         <CategoryLoading />
       </div>
     );
   }
-  console.log("image files", imageFile);
 
   const totalCategories = categoryData?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalCategories / 5);
-
-  //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
       const { data } = await deleteCategory(deleteModalId);
@@ -92,27 +84,15 @@ const ProductReviews = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    // console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };
-
-  // Handle page change
-  // const handlePageChange = (page: number) => {
-  //   setCurrentPage(page);
-  //   const updatedQueryParams = queryParams.filter(
-  //     (param) => param.name !== "page"
-  //   );
-
-  //   updatedQueryParams.push({ name: "page", value: page });
-  //   setParams(updatedQueryParams);
-  // };
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -121,9 +101,6 @@ const ProductReviews = () => {
   const handleCreateCategory = async (data: any) => {
     setCategoryLoadingName("Creating category...");
     setCategoryLoading(true);
-    console.log("clikced");
-    // const toastId = toast.loading("Creating category...");
-    console.log("form data", data);
     try {
       const categoryData = {
         ...data,
@@ -148,7 +125,6 @@ const ProductReviews = () => {
       setCategoryLoading(false);
       onCategoryModalChange();
       toast.error(err.message);
-      console.log(err.message);
       setCategoryLoadingName("Create category");
     }
   };
@@ -159,11 +135,11 @@ const ProductReviews = () => {
         <>
           <div className="flex justify-between mb-5">
             <SidebarButton
+              hasLeftButton={false}
               isOpen={isOpen}
-              role="admin"
               setIsOpen={setIsOpen}
               title={"Categories"}
-              hasLeftButton={false}
+              userRole="admin"
             />
             <div className="flex justify-end mb-2">
               <button

@@ -4,24 +4,15 @@ import Rate from "rc-rate";
 
 import "rc-rate/assets/index.css";
 import "./ProductCard.css";
-import { calculateDiscountPercentage } from ".";
-
 import { IProduct } from "@/types";
 import { useGetProductReviewsQuery } from "@/app/redux/features/review/reviewApi";
 
 const ProductCart = ({ product }: { product: IProduct }) => {
-  const { id, name, images, price, discount } = product;
+  const { id, name, images, price } = product;
 
   const { data: reviewData } = useGetProductReviewsQuery([
     { name: "productId", value: id },
   ]);
-
-  console.log("review data", reviewData);
-
-  const { discountPercentage, discountPrice } = calculateDiscountPercentage(
-    Number(price),
-    Number(discount),
-  );
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-2">
@@ -37,9 +28,7 @@ const ProductCart = ({ product }: { product: IProduct }) => {
             <span className="font-semibold">{price}</span>
           </div>
           <div className="md:text-[12px] text-[10px] text-[#9e9e9e] font-semibold">
-            <span>
-              {/* {calculateDiscountPercentage(Number(price), Number(discount))} */}
-            </span>
+            <span />
           </div>
         </div>
 
