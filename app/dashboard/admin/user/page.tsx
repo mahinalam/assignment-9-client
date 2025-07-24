@@ -68,7 +68,6 @@ const AllUsers = () => {
     setParams(queryParams);
   };
 
-  // console.log(vendorOrderHistory);
   const handleDeleteUser = async () => {
     if (deleteModalId) {
       const { data } = await deleteUser(deleteModalId);

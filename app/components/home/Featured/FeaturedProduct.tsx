@@ -20,7 +20,7 @@ const FeaturedProducts = () => {
         <Container>
           <div className="block sm:hidden">
             <Title title="Featured Products" />
-            <div className="grid grid-cols-3 gap-4 ">
+            <div className="grid grid-cols-1 gap-4 ">
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
@@ -32,8 +32,7 @@ const FeaturedProducts = () => {
         <Container>
           <div className="hidden sm:block  xl:hidden ">
             <Title title="Featured Products" />
-            <div className="grid   grid-cols-4 gap-2 ">
-              <SkeletonComponent isFlash={false} />
+            <div className="grid   grid-cols-3 gap-2 ">
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
               <SkeletonComponent isFlash={false} />
@@ -50,7 +49,6 @@ const FeaturedProducts = () => {
               <SkeletonComponent />
               <SkeletonComponent />
               <SkeletonComponent />
-              {/* <SkeletonComponent /> */}
             </div>
           </div>
         </Container>
@@ -76,7 +74,7 @@ const FeaturedProducts = () => {
                       key={flashSaleProduct.id}
                       product={flashSaleProduct}
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>

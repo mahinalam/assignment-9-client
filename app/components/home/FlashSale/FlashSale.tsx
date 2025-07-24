@@ -80,8 +80,6 @@ const FlashSale = () => {
     (wishlist: any) => wishlist?.product.id,
   );
 
-  // const wishlistProductsIds = compareProducts?.data?.compareItem?.map((item) => )
-
   return (
     <Container>
       <div className="w-full ">
@@ -136,25 +134,26 @@ const FlashSale = () => {
             {/* Desktop View */}
             <div className=" bg-white">
               <div className="grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5 mt-2 gap-4">
-                {flashProductsData?.data?.data?.map(
-                  (flashSaleProduct: IProduct) => {
-                    const isInCompare = compareProductIds?.includes(
-                      flashSaleProduct.id,
-                    );
-                    const isInWishlist = wishlistProductsIds?.includes(
-                      flashSaleProduct.id,
-                    );
+                {flashProductsData?.data?.data?.length > 0 &&
+                  flashProductsData?.data?.data?.map(
+                    (flashSaleProduct: IProduct) => {
+                      const isInCompare = compareProductIds?.includes(
+                        flashSaleProduct.id,
+                      );
+                      const isInWishlist = wishlistProductsIds?.includes(
+                        flashSaleProduct.id,
+                      );
 
-                    return (
-                      <FlashSaleCard
-                        key={flashSaleProduct.id}
-                        isInCompare={isInCompare}
-                        isInWishlist={isInWishlist}
-                        product={flashSaleProduct}
-                      />
-                    );
-                  },
-                )}
+                      return (
+                        <FlashSaleCard
+                          key={flashSaleProduct.id}
+                          isInCompare={isInCompare}
+                          isInWishlist={isInWishlist}
+                          product={flashSaleProduct}
+                        />
+                      );
+                    },
+                  )}
               </div>
             </div>
           </section>

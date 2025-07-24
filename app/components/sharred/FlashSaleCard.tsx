@@ -20,9 +20,18 @@ import { useCreateCartMutation } from "@/app/redux/features/cart/cartApi";
 import { RootState } from "@/app/redux/store";
 import { useGetProductReviewsQuery } from "@/app/redux/features/review/reviewApi";
 import { useCreateWishlistMutation } from "@/app/redux/features/wishlist/wishlistApi";
+import { IProduct } from "@/types";
 
-const FlashSaleCard = ({ product, isInCompare, isInWishlist = false }: any) => {
-  const { id, images, name, discount, price, shopId } = product;
+const FlashSaleCard = ({
+  product,
+  isInCompare,
+  isInWishlist = false,
+}: {
+  product: IProduct;
+  isInCompare?: boolean;
+  isInWishlist?: boolean;
+}) => {
+  const { id, images, name, discount, price, shop } = product;
 
   const { data: reviewData } = useGetProductReviewsQuery(id);
   const [isHovered, setIsHovered] = useState(false);
@@ -30,7 +39,7 @@ const FlashSaleCard = ({ product, isInCompare, isInWishlist = false }: any) => {
 
   const { discountPercentage, discountPrice } = calculateDiscountPercentage(
     Number(price),
-    Number(discount)
+    Number(discount),
   );
 
   const userId = useSelector((state: RootState) => state.auth?.user?.userId);
@@ -59,9 +68,9 @@ const FlashSaleCard = ({ product, isInCompare, isInWishlist = false }: any) => {
 
     handleResize();
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   const handleAddToCart = async () => {
     if (!userId) {
       return router.push("/login");
@@ -69,7 +78,7 @@ const FlashSaleCard = ({ product, isInCompare, isInWishlist = false }: any) => {
 
     let cartInfo = {
       productId: id,
-      shopId,
+      shopId: shop?.id,
       quantity: 1,
       price: discountPrice,
     };
@@ -88,6 +97,7 @@ const FlashSaleCard = ({ product, isInCompare, isInWishlist = false }: any) => {
   const handleAddToWishlist = async () => {
     try {
       const res = await addToWishlist({ productId: id }).unwrap();
+
       if (res?.success) onWishlistModalOpen();
     } catch (error: any) {
       toast.error(error.data.message);
@@ -97,6 +107,7 @@ const FlashSaleCard = ({ product, isInCompare, isInWishlist = false }: any) => {
   const handleCreateCompareProduct = async () => {
     try {
       const res = await addCompareProduct({ productId: id }).unwrap();
+
       if (res?.success) onCompareModalOpen();
     } catch (error: any) {
       toast.error(error.data.message);

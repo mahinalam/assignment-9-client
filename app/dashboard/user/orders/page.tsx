@@ -38,7 +38,6 @@ const UsersOrderHistory = () => {
   if (userOrderHistoryLoading) {
     return <div>Loading...</div>;
   }
-  //   console.log(isSuccess);
   const handleDeleteProduct = () => {
     if (deleteModalId) {
       deleteProduct(deleteModalId);

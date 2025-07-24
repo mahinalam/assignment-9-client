@@ -53,14 +53,11 @@ const AllCoupons = () => {
   const [couponLoading, setCouponLoading] = useState(false);
 
   const [addCoupon] = useCreateCouponMutation();
-  //   console.log(vendorId);
 
   const { data: allCoupons, isLoading: allCouponsLoading } =
     useGetAllCouponsQuery(params);
 
   const [deleteCoupon] = useDeleteCouponMutation();
-
-  //   console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   const totalCoupons = allCoupons?.data?.meta?.total || 0;

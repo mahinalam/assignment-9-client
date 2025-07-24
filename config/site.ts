@@ -1,12 +1,9 @@
-// import { RootState } from "@reduxjs/toolkit/query";
-
 export type SiteConfig = typeof siteConfig;
-
-// const user = useSelector((state: RootState) => state.auth.user);
 
 export const siteConfig = {
   name: "ElectroMert E-Commerce",
-  description: "Make beautiful websites regardless of your design experience.",
+  description:
+    "ElectroMert E-Commerce is your one-stop online store for cutting-edge electronics, smart gadgets, and tech accessories.",
   navItems: [
     {
       label: "Home",

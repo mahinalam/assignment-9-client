@@ -62,7 +62,7 @@ const ProductReviews = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -147,9 +147,9 @@ const ProductReviews = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
-        onOpenChange={onDeleteModalChange}
-        title="Delete Order"
         subTitle="Are you sure want to delete this order?"
+        title="Delete Order"
+        onOpenChange={onDeleteModalChange}
       />
     </>
   );

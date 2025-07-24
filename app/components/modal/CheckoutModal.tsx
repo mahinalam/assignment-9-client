@@ -38,7 +38,6 @@ export default function CheckoutModal({
     return handleCreateOrder(payload);
   };
 
-  //   console.log(data);
   return (
     <>
       <Modal isOpen={isOpen} size="2xl" onOpenChange={onOpenChange}>

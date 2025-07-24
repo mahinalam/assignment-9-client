@@ -181,7 +181,6 @@ const AllProducts = () => {
     setFeaturedProductsParams(queryParams);
   };
 
-  //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     try {
       if (deleteModalId) {

@@ -18,7 +18,6 @@ export default function CartRemoveWarningModal({
   btn1,
   btn2,
 }: any) {
-  //   console.log(data);
   return (
     <>
       <Modal isOpen={isOpen} size="sm" onOpenChange={onOpenChange}>

@@ -40,14 +40,11 @@ const AllReviews = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  //   console.log(vendorId);
-
   const { data: allReviews, isLoading: allReviewsLoading } =
     useGetAllReviewsQuery(params);
 
   const [deleteReview] = useDeleteReviewMutation();
 
-  //   console.log("order history from admin", allOrders);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (allReviewsLoading) {
@@ -71,7 +68,6 @@ const AllReviews = () => {
     setParams(queryParams);
   };
 
-  // console.log(vendorOrderHistory);
   const handleDeleteReview = async () => {
     if (deleteModalId) {
       const { data } = await deleteReview(deleteModalId);
@@ -85,7 +81,6 @@ const AllReviews = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    // console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };

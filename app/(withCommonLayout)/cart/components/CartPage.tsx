@@ -31,7 +31,6 @@ const CartPage = ({ cartData }: { cartData: any }) => {
     images,
     name,
     description,
-    stock,
     id: productId,
     shopId,
   } = product;
@@ -46,8 +45,6 @@ const CartPage = ({ cartData }: { cartData: any }) => {
     onRemoveCartClose();
   };
 
-  // const [cartQuantity, setCartQuantity] = useState(quantity);
-
   const handleAddToCart = async (type: "incre" | "decre") => {
     let cartInfo = {
       productId,
@@ -57,11 +54,7 @@ const CartPage = ({ cartData }: { cartData: any }) => {
     };
 
     try {
-      const res = await createCart(cartInfo).unwrap();
-
-      if (res?.success) {
-        // toast.success("Product added to cart.");
-      }
+      await createCart(cartInfo).unwrap();
     } catch (error: any) {
       toast.error(error.data.message);
     }
@@ -93,17 +86,21 @@ const CartPage = ({ cartData }: { cartData: any }) => {
           <div className="block md:hidden pr-4">
             <div className="border-1 border-black inline-flex rounded-lg  gap-4 lg:px-2 lg:py-2 px-1 py-1">
               <button
-                // onClick={() => setQuantity((quantity: any) => quantity - 1)}
                 className="text-sm pl-1 flex items-center"
                 disabled={quantity === 1}
+                onClick={() => {
+                  handleAddToCart("decre");
+                }}
               >
                 <HiMiniMinus />
               </button>
               <span className="text-sm">{quantity}</span>
               <button
-                disabled={quantity === 10}
-                // onClick={() => setQuantity((quantity: any) => quantity + 1)}
                 className="text-sm flex items-center pr-1"
+                disabled={quantity === 10}
+                onClick={() => {
+                  handleAddToCart("incre");
+                }}
               >
                 <HiMiniPlus />
               </button>
@@ -134,12 +131,6 @@ const CartPage = ({ cartData }: { cartData: any }) => {
           </button>
         </div>
       </div>
-      {/* <button
-        className="text-red-500 md:block hidden hover:text-red-600 ml-4"
-        onClick={() => onCartRemoveWarningModalOpen()}
-      >
-        Remove
-      </button> */}
       <button
         className="md:block hidden ml-4"
         onClick={() => onCartRemoveWarningModalOpen()}

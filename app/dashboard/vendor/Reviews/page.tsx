@@ -70,7 +70,6 @@ const ProductReviews = () => {
     setParams(queryParams);
   };
 
-  //   console.log(isSuccess);
   const handleDeleteProduct = async () => {
     try {
       if (deleteModalId) {

@@ -35,7 +35,6 @@ const UsersOrderHistory = () => {
   if (userOrderHistoryLoading) {
     return <div>Loading...</div>;
   }
-  //   console.log(isSuccess);
   const handleDeleteProduct = () => {
     if (deleteModalId) {
       deleteProduct(deleteModalId);
@@ -43,7 +42,6 @@ const UsersOrderHistory = () => {
     }
   };
   const handleDeleteModalOpen = (id: string) => {
-    // console.log("id", id);
     setDeleteModalId(id);
     onDeleteModalOpen();
   };
@@ -80,9 +78,9 @@ const UsersOrderHistory = () => {
       <DeleteModal
         handleDeleteProduct={handleDeleteProduct}
         isOpen={isDeleteModalOpen}
-        onOpenChange={onDeleteModalChange}
-        title="Delete Order"
         subTitle="Are you sure want to delete this order?"
+        title="Delete Order"
+        onOpenChange={onDeleteModalChange}
       />
     </>
   );
