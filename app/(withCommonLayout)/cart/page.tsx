@@ -81,7 +81,7 @@ const AllCart = () => {
 
       if (orderResponse?.success) {
         setCreateOrderLoading(false);
-        window.location.href = orderResponse?.data?.payment_url;
+        window.location.href = orderResponse?.data?.gatewayUrl;
 
         onClose();
       }
