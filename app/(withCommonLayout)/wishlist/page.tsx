@@ -19,18 +19,17 @@ import { useSelector } from "react-redux";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "sonner";
-
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { RootState } from "@/app/redux/store";
-import { useGetSingleUserQuery } from "@/app/redux/features/user/userApi";
 import {
   useDeleteWishlistMutation,
   useGetUsersWishlistQuery,
 } from "@/app/redux/features/wishlist/wishlistApi";
 import { TQueryParam } from "@/types";
 import Container from "@/app/components/sharred/Container";
-import Loader from "@/app/components/sharred/Loader";
 import EmptyState from "@/app/components/dashboard/EmptyState";
+import WishlistSkeletonLoading from "./WishlistLoading";
+
 const Wishlist = () => {
   const {
     isOpen: isDeleteModalOpen,
@@ -45,7 +44,6 @@ const Wishlist = () => {
   const [page, setPage] = useState(1);
 
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
-  const { data: currentUserInfo } = useGetSingleUserQuery(userId);
 
   // get users wishhlist
   const { data: usersWishlistsData, isLoading: usersWishlistLoading } =
@@ -55,7 +53,7 @@ const Wishlist = () => {
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
   if (usersWishlistLoading) {
-    return <Loader />;
+    return <WishlistSkeletonLoading />;
   }
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
@@ -83,7 +81,7 @@ const Wishlist = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 },
+      { name: "limit", value: 5 }
     );
     setParams(queryParams);
   };
@@ -159,7 +157,7 @@ const Wishlist = () => {
                               </Dropdown>
                             </TableCell>
                           </TableRow>
-                        ),
+                        )
                       )}
                     </TableBody>
                   </Table>
