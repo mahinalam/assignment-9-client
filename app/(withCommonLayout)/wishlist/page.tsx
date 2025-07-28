@@ -19,6 +19,10 @@ import { useSelector } from "react-redux";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "sonner";
+import moment from "moment";
+
+import WishlistSkeletonLoading from "./WishlistLoading";
+
 import DeleteModal from "@/app/components/modal/DeleteModal";
 import { RootState } from "@/app/redux/store";
 import {
@@ -28,7 +32,6 @@ import {
 import { TQueryParam } from "@/types";
 import Container from "@/app/components/sharred/Container";
 import EmptyState from "@/app/components/dashboard/EmptyState";
-import WishlistSkeletonLoading from "./WishlistLoading";
 
 const Wishlist = () => {
   const {
@@ -55,6 +58,7 @@ const Wishlist = () => {
   if (usersWishlistLoading) {
     return <WishlistSkeletonLoading />;
   }
+  console.log({ usersWishlistsData });
   const handleDeleteProduct = async () => {
     if (deleteModalId) {
       const res = await deleteWishlist(deleteModalId);
@@ -81,7 +85,7 @@ const Wishlist = () => {
 
     queryParams.push(
       { name: "page", value: page },
-      { name: "limit", value: 5 }
+      { name: "limit", value: 5 },
     );
     setParams(queryParams);
   };
@@ -89,7 +93,7 @@ const Wishlist = () => {
   // Thank you for your message. It has been sent.
   return (
     <>
-      {usersWishlistsData?.data?.data?.wishlistItem?.length > 0 ? (
+      {usersWishlistsData?.data?.data?.length > 0 ? (
         <>
           {" "}
           <div className="mt-[62px] sm:mt-[96px] lg:mt-44 bg-white p-8">
@@ -111,54 +115,54 @@ const Wishlist = () => {
                       <TableColumn>ACTION</TableColumn>
                     </TableHeader>
                     <TableBody>
-                      {usersWishlistsData?.data?.data?.wishlistItem?.map(
-                        (wishlist: any) => (
-                          <TableRow key={wishlist.id}>
-                            <TableCell>
-                              <div className="flex gap-2 items-center">
-                                <div>
-                                  <img
-                                    alt=""
-                                    className="size-12"
-                                    src={wishlist?.product?.images[0]}
-                                  />
-                                </div>
-                                <div>
-                                  <p>{wishlist?.product?.name}</p>
-                                </div>
+                      {usersWishlistsData?.data?.data?.map((wishlist: any) => (
+                        <TableRow key={wishlist.id}>
+                          <TableCell>
+                            <div className="flex gap-2 items-center">
+                              <div>
+                                <img
+                                  alt=""
+                                  className="size-12"
+                                  src={wishlist?.product?.images[0]}
+                                />
                               </div>
-                            </TableCell>
-                            <TableCell>
-                              {wishlist.product?.category?.name}
-                            </TableCell>
-                            <TableCell>{wishlist?.product?.price} ৳</TableCell>
-                            <TableCell>{wishlist?.createdAt}</TableCell>
-                            <TableCell>
-                              <Dropdown placement="bottom-end">
-                                <DropdownTrigger>
-                                  <Button isIconOnly size="sm" variant="light">
-                                    <BiDotsVerticalRounded size={20} />
-                                  </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu aria-label="Product Actions">
-                                  <DropdownItem
-                                    onClick={() =>
-                                      handleDeleteModalOpen(wishlist.product.id)
-                                    }
-                                  >
-                                    <span className="flex items-center gap-1">
-                                      <span>
-                                        <RiDeleteBin5Line size={20} />
-                                      </span>
-                                      <span>Delete</span>
+                              <div>
+                                <p>{wishlist?.product?.name}</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {wishlist.product?.category?.name}
+                          </TableCell>
+                          <TableCell>{wishlist?.product?.price} ৳</TableCell>
+                          <TableCell>
+                            {moment(wishlist.createdAt).format("MMMM D, YYYY")}
+                          </TableCell>
+                          <TableCell>
+                            <Dropdown placement="bottom-end">
+                              <DropdownTrigger>
+                                <Button isIconOnly size="sm" variant="light">
+                                  <BiDotsVerticalRounded size={20} />
+                                </Button>
+                              </DropdownTrigger>
+                              <DropdownMenu aria-label="Product Actions">
+                                <DropdownItem
+                                  onClick={() =>
+                                    handleDeleteModalOpen(wishlist.product.id)
+                                  }
+                                >
+                                  <span className="flex items-center gap-1">
+                                    <span>
+                                      <RiDeleteBin5Line size={20} />
                                     </span>
-                                  </DropdownItem>
-                                </DropdownMenu>
-                              </Dropdown>
-                            </TableCell>
-                          </TableRow>
-                        )
-                      )}
+                                    <span>Delete</span>
+                                  </span>
+                                </DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                   <div className="flex  justify-center mt-8">

@@ -9,6 +9,7 @@ import {
   TableCell,
   Skeleton,
 } from "@nextui-org/react";
+
 import Container from "@/app/components/sharred/Container";
 
 const WishlistSkeletonLoading = () => {

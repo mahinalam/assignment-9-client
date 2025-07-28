@@ -18,6 +18,7 @@ import React, { useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast } from "sonner";
+import moment from "moment";
 
 import Loading from "./Loading";
 
@@ -132,7 +133,9 @@ const Wishlists = () => {
                   </TableCell>
                   <TableCell>{wishlist.product?.category?.name}</TableCell>
                   <TableCell>{wishlist?.product?.price} ৳</TableCell>
-                  <TableCell>{wishlist?.createdAt}</TableCell>
+                  <TableCell>
+                    {moment(wishlist.createdAt).format("MMMM D, YYYY")}
+                  </TableCell>
                   <TableCell>
                     <Dropdown placement="bottom-end">
                       <DropdownTrigger>
