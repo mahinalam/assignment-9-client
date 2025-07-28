@@ -41,7 +41,6 @@ const VendorProducts = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const [page, setPage] = useState(1);
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
@@ -329,7 +328,7 @@ const VendorProducts = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

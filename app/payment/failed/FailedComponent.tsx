@@ -15,6 +15,7 @@ const PaymentFailedPage = () => {
     if (token === process.env.NEXT_PUBLIC_FAILED_TOKEN) {
       setIsValid(true);
       const timer = setTimeout(() => router.push("/"), 8000);
+
       return () => clearTimeout(timer);
     } else {
       router.push("/404"); // redirect to 404 if token is invalid
@@ -36,8 +37,8 @@ const PaymentFailedPage = () => {
         </p>
 
         <Link
-          href="/"
           className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded transition"
+          href="/"
         >
           Return to Homepage
         </Link>

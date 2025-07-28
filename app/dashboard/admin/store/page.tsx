@@ -33,7 +33,6 @@ const AllShops = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const [page, setPage] = useState(1);
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
@@ -42,14 +41,17 @@ const AllShops = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: allShops, isLoading: allShopsLoading } =
-    useGetAllShopsQuery(params);
+  const {
+    data: allShops,
+    isLoading: allShopsLoading,
+    isFetching,
+  } = useGetAllShopsQuery(params);
 
   const [blockShop] = useBlockShopMutation();
 
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  if (allShopsLoading) {
+  if (allShopsLoading || isFetching) {
     return (
       <div>
         <StoresLoading />
@@ -156,7 +158,7 @@ const AllShops = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

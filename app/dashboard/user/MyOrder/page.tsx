@@ -50,8 +50,6 @@ const UsersOrderHistory = () => {
   const [deleteOrder] = useDeleteUsersOrderMutation();
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  const [page, setPage] = useState(1);
-
   const handlePageChange = (page: number) => {
     const queryParams: TQueryParam[] = [];
 
@@ -128,7 +126,7 @@ const UsersOrderHistory = () => {
           <div className="flex justify-center lg:mt-8 mt-5">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

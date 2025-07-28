@@ -40,14 +40,17 @@ const AllReviews = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: allReviews, isLoading: allReviewsLoading } =
-    useGetAllReviewsQuery(params);
+  const {
+    data: allReviews,
+    isLoading: allReviewsLoading,
+    isFetching,
+  } = useGetAllReviewsQuery(params);
 
   const [deleteReview] = useDeleteReviewMutation();
 
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  if (allReviewsLoading) {
+  if (allReviewsLoading || isFetching) {
     return (
       <div>
         <ReviewsLoading />
@@ -163,7 +166,7 @@ const AllReviews = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

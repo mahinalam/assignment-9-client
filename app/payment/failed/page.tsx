@@ -1,7 +1,9 @@
 "use client";
 
 import React, { Suspense } from "react";
+
 import PaymentLoading from "../PaymentLoading";
+
 import PaymentFailedPage from "./FailedComponent";
 
 const FailedPage = () => {

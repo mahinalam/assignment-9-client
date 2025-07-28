@@ -30,17 +30,19 @@ const ProductReviews = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: allOrders, isLoading: allOrdersLoading } =
-    useGetAllOrderHistoryQuery(params);
+  const {
+    data: allOrders,
+    isLoading: allOrdersLoading,
+    isFetching,
+  } = useGetAllOrderHistoryQuery(params);
 
   const [deleteProduct] = useDeleteProductMutation();
 
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  if (allOrdersLoading) {
+  if (allOrdersLoading || isFetching) {
     return (
       <div>
         <OrdersLoading />
@@ -128,7 +130,7 @@ const ProductReviews = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

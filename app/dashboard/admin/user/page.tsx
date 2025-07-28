@@ -32,7 +32,6 @@ const AllUsers = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const [page, setPage] = useState(1);
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
@@ -41,13 +40,16 @@ const AllUsers = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: allUsers, isLoading: allUsersLoading } =
-    useGetAllUsersQuery(params);
+  const {
+    data: allUsers,
+    isLoading: allUsersLoading,
+    isFetching,
+  } = useGetAllUsersQuery(params);
 
   const [deleteUser] = useDeleteUserMutation();
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-  if (allUsersLoading) {
+  if (allUsersLoading || isFetching) {
     return (
       <div>
         <UsersLoading />
@@ -150,7 +152,7 @@ const AllUsers = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

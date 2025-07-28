@@ -1,8 +1,10 @@
 "use client";
 
 import React, { Suspense } from "react";
-import PaymentSuccessPage from "./SuccessComponent";
+
 import PaymentLoading from "../PaymentLoading";
+
+import PaymentSuccessPage from "./SuccessComponent";
 
 const SuccessPage = () => {
   return (

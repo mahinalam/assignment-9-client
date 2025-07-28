@@ -19,21 +19,28 @@ import { useGetAllOrderHistoryQuery } from "@/app/redux/features/order/orderApi"
 import SidebarButton from "@/app/components/dashboard/SidebarButton";
 
 const AdminOverviewPage = () => {
-  const { data: adminStats, isLoading: adminStatsLoading } =
-    useGetAdminStatsQuery(undefined);
-  const [params, setParams] = useState<TQueryParam[] | undefined>([
+  const [allProductParams, setAllProductParams] = useState<
+    TQueryParam[] | undefined
+  >([
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const { data: allOrders, isLoading } = useGetAllOrderHistoryQuery(params);
+  const { data: adminStats, isLoading: adminStatsLoading } =
+    useGetAdminStatsQuery(undefined);
 
-  const [page, setPage] = useState(1);
+  const {
+    data: allOrders,
+    isLoading,
+    isFetching,
+  } = useGetAllOrderHistoryQuery(allProductParams);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  if (adminStatsLoading || isLoading) {
+  if (adminStatsLoading || isLoading || isFetching) {
     return <Loading />;
   }
+
+  console.log({ allOrders });
   const totalOrders = allOrders?.data?.meta?.total || 0;
   const totalPages = Math.ceil(totalOrders / 5);
   const handlePageChange = (page: number) => {
@@ -43,7 +50,7 @@ const AdminOverviewPage = () => {
       { name: "page", value: page },
       { name: "limit", value: 5 },
     );
-    setParams(queryParams);
+    setAllProductParams(queryParams);
   };
 
   return (
@@ -191,7 +198,7 @@ const AdminOverviewPage = () => {
           </TableHeader>
 
           <TableBody>
-            {allOrders?.data?.data?.shop?.order?.map((order: IOrder) =>
+            {allOrders?.data?.data?.map((order: IOrder) =>
               order?.orderItem?.map((item) => (
                 <TableRow key={order.id}>
                   <TableCell className="">
@@ -217,7 +224,7 @@ const AdminOverviewPage = () => {
         <div className="flex  justify-center mt-8">
           <Pagination
             showControls
-            page={page}
+            initialPage={allProductParams?.[0].value as number}
             total={totalPages}
             onChange={handlePageChange}
           />

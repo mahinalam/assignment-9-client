@@ -28,14 +28,17 @@ const UsersOrderHistory = () => {
   } = useDisclosure();
 
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
-  const { data: usersOrderHistory, isLoading: userOrderHistoryLoading } =
-    useGetUsersOrderHistoryQuery(userId as string);
+  const {
+    data: usersOrderHistory,
+    isLoading: userOrderHistoryLoading,
+    isFetching,
+  } = useGetUsersOrderHistoryQuery(userId as string);
 
   const [deleteProduct] = useDeleteProductMutation();
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  if (userOrderHistoryLoading) {
+  if (userOrderHistoryLoading || isFetching) {
     return <div>Loading...</div>;
   }
   const handleDeleteProduct = () => {

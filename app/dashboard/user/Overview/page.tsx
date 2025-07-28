@@ -24,12 +24,14 @@ const UserOverViewPage = () => {
     { name: "page", value: 1 },
     { name: "limit", value: 5 },
   ]);
-  const [page, setPage] = useState(1);
-  const { data: usersOrderHistory, isLoading: userOrdersLoading } =
-    useGetUsersOrderHistoryQuery(params);
+  const {
+    data: usersOrderHistory,
+    isLoading: userOrdersLoading,
+    isFetching,
+  } = useGetUsersOrderHistoryQuery(params);
   const [isOpen, setIsOpen] = useState(false);
 
-  if (userStatsLoading || userOrdersLoading) {
+  if (userStatsLoading || userOrdersLoading || isFetching) {
     return <Loading />;
   }
 
@@ -173,7 +175,7 @@ const UserOverViewPage = () => {
           </TableHeader>
 
           <TableBody>
-            {usersOrderHistory?.data?.data?.shop?.order?.map((order: IOrder) =>
+            {usersOrderHistory?.data?.data?.map((order: IOrder) =>
               order?.orderItem?.map((item) => (
                 <TableRow key={order.id}>
                   <TableCell className="">
@@ -199,7 +201,7 @@ const UserOverViewPage = () => {
         <div className="flex  justify-center mt-8">
           <Pagination
             showControls
-            page={page}
+            initialPage={params?.[0].value as number}
             total={totalPages}
             onChange={handlePageChange}
           />

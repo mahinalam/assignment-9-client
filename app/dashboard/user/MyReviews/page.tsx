@@ -45,7 +45,6 @@ const ProductReviews = () => {
   const [deleteReview] = useDeleteReviewMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
 
   if (userReviewsLoading || isFetching) {
     return <Loading />;
@@ -156,7 +155,7 @@ const ProductReviews = () => {
           <div className="flex  justify-center mt-8">
             <Pagination
               showControls
-              page={page}
+              initialPage={params?.[0].value as number}
               total={totalPages}
               onChange={handlePageChange}
             />

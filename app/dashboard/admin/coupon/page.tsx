@@ -54,8 +54,11 @@ const AllCoupons = () => {
 
   const [addCoupon] = useCreateCouponMutation();
 
-  const { data: allCoupons, isLoading: allCouponsLoading } =
-    useGetAllCouponsQuery(params);
+  const {
+    data: allCoupons,
+    isLoading: allCouponsLoading,
+    isFetching,
+  } = useGetAllCouponsQuery(params);
 
   const [deleteCoupon] = useDeleteCouponMutation();
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
@@ -73,7 +76,7 @@ const AllCoupons = () => {
     setParams(queryParams);
   };
 
-  if (allCouponsLoading) {
+  if (allCouponsLoading || isFetching) {
     return (
       <div>
         <CouponsLoading />
